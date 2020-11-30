@@ -1,0 +1,119 @@
+{% extends "metdataexplorer/base.html" %}
+{% load tethys_gizmos %}
+
+{% block header_buttons %}
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
+    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+  </div>
+{% endblock %}
+
+{% block app_content %}
+  <div id="main-body">
+    <div id="map"></div>
+    <div id="lower-content">
+      <div style="width: 50%; height: 100%; float: left;">
+        <div class="half-box">
+          <button id="up-file" class="fa fa-angle-double-up" style="float: left; height: 26px; width: 5%; margin: 5px 0px 10px 2%"></button>
+          <input id="url-input" type="text" placeholder="Thredds URL" style="width: 86%; margin: 5px 0px 10px 0px; display: inline-block">
+          <button class="fa fa-save" style="float: right; height: 26px; width: 5%; margin: 5px 2% 10px 0px"></button>
+          <div id="filetree-div" class="inner-div"></div>
+        </div>
+      </div>
+      <div style="width: 50%; height: 100%; float: right;">
+        <div class="half-box">
+          <button id="file-metadata-button" class="data-button" style="float: left;">File Metadata</button>
+          <button id="var-metadata-button" class="data-button" style="float: right;">Variable Metadata</button>
+          <div id="metadata-div" class="inner-div">
+          </div>
+          <div id="var-metadata-div" class="inner-div" style="display: none">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{# Use the after_app_content block for modals #}
+{% block after_app_content %}
+  <!-- Help Modal -->
+  <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="width: 26px"><span aria-hidden="true">X</span></button>
+          <h5 class="modal-title" id="help-modal-label">Help</h5>
+        </div>
+        <div class="modal-body">
+          <p>To view a dataset, enter the Thredds server url into the input bar in the
+            left, bottom toolbar. Navigate to the file you want to view and select it.
+            Use the rectangle tool to draw a bounding box on the map, or select a shape feature
+            to get the timeseries.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Shapefile -->
+  <div class="modal fade" id="uploadshp-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="width: 26px"><span aria-hidden="true">X</span></button>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+        <div class="modal-text-container">
+          <h2>Upload a Shapefile</h2>
+          <br>
+          <div>
+            <input type="file" class="local-file-upload" id="shapefile-upload"
+                   style="display: inline-block" accept=".shp,.prj,.shx,.dbf," multiple>
+            <button type="button" class="btn btn-success" id="uploadshp" style="width: 200px">Submit Shapefile</button>
+          </div>
+          <div>
+            <br>
+            <p>
+              Select four files with the endings '.shp', '.shx', '.prj', and '.dbf'.
+            </p>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeseries -->
+  <div class="modal fade" id="timeseries-model" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" style="width: 30%; float: left" id="download-csv">Download CSV</button>
+          <button type="button" style="width: 10%" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
+        </div>
+        <div id="point_plot" style="width: 80%; height: 80%;"></div>
+        <div id="chart"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inspect NetCDF -->
+  <div class="modal fade" id="inspect-netcdf-model" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" style="width: 10%" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
+        </div>
+        <div id="inspect-div" style="width: 80%; height: 80%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- loading -->
+  <div class="modal fade" id="loading-model" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="loader"></div>
+  </div>
+{% endblock %}
+
+{% block app_actions %}
+
+{% endblock %}
