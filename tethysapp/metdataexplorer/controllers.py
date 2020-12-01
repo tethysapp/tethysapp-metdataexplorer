@@ -5,6 +5,7 @@ from tethys_sdk.gizmos import Button, TextInput, SelectInput, RangeSlider
 from siphon.catalog import TDSCatalog
 import requests
 import netCDF4
+import json
 
 
 @login_required()
@@ -22,8 +23,9 @@ def build_data_tree(request):
 
     try:
         ds = TDSCatalog(url)
-    except RuntimeError:
-        return JsonResponse({'dataTree': 'Invalid URL'})
+    except OSError:
+        exception = json.dumps('Invalid URL')
+        return JsonResponse({'dataTree': exception})
 
     folders = ds.catalog_refs
     for x in enumerate(folders):
@@ -46,8 +48,9 @@ def metadata(request):
 
     try:
         ds = netCDF4.Dataset(url)
-    except RuntimeError:
-        return JsonResponse({'variables_sorted': 'Invalid file'})
+    except OSError:
+        exception = json.dumps('Invalid file')
+        return JsonResponse({'variables_sorted': exception})
 
     for attr in ds.__dict__:
         str_attrs[str(attr)] = str(ds.__dict__[attr])
@@ -62,10 +65,15 @@ def metadata(request):
 def get_dimensions(request):
     url = request.GET['opendapURL']
     variable = request.GET['variable']
-    ds = netCDF4.Dataset(url)
     variables = {}
     var_attr = {}
     dimensions = []
+
+    try:
+        ds = netCDF4.Dataset(url)
+    except OSError:
+        exception = json.dumps('Invalid THREDDS URL')
+        return JsonResponse({'variables': exception})
 
     for dim in ds[variable].dimensions:
         dimensions.append(dim)

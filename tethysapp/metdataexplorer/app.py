@@ -6,7 +6,7 @@ class metdataexplorer(TethysAppBase):
     Tethys app class for NetCDF Viewer.
     """
 
-    name = 'MET Data Explorer'
+    name = 'Met Data Explorer'
     index = 'metdataexplorer:home'
     icon = 'metdataexplorer/images/nc.png'
     package = 'metdataexplorer'

@@ -45,7 +45,8 @@ function get_timeseries(coord) {
       method: 'GET',
       success: function (result) {
         var data = result['data'];
-        if (typeof(data) == String) {
+        if (typeof(data) == 'string') {
+          $('#loading-model').modal('hide');
           alert(data);
         } else {
           draw_graph(data);

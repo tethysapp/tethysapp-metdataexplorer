@@ -29,12 +29,17 @@ function get_metadata() {
     contentType: "application/json",
     method: 'GET',
     success: function (result) {
-      var variablesSorted = result['variables_sorted']
-      var attrs = result['attrs'];
-      print_metadata(variablesSorted, attrs);
-      getDimensions();
-      update_wmslayer();
-      $('#loading-model').modal('hide');
+      var variablesSorted = result['variables_sorted'];
+      if (typeof variablesSorted == 'string') {
+        $('#loading-model').modal('hide');
+        alert(variablesSorted);
+      } else {
+        var attrs = result['attrs'];
+        print_metadata(variablesSorted, attrs);
+        getDimensions();
+        update_wmslayer();
+        $('#loading-model').modal('hide');
+      }
     }
   })
 }

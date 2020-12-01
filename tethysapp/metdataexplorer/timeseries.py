@@ -42,12 +42,12 @@ def get_box_values(request):
     path_to_netcdf = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace', 'temp.nc')
     try:
         urllib.request.urlretrieve(json.loads(subset_url), path_to_netcdf)
-    except RuntimeError:
-        return JsonResponse({'data': 'Invalid file'})
-
+    except OSError:
+        data = json.dumps('Invalid file')
+        return JsonResponse({'data': data})
     try:
         data = mean_of_timeseries(path_to_netcdf, var, time)
-    except RuntimeError:
-        return JsonResponse({'data': 'Invalid dimensions'})
-
-    return JsonResponse({'data': data})
+        return JsonResponse({'data': data})
+    except ValueError:
+        data = json.dumps('Invalid Dimensions')
+        return JsonResponse({'data': data})
