@@ -30,9 +30,9 @@ function get_metadata() {
     method: 'GET',
     success: function (result) {
       var variablesSorted = result['variables_sorted'];
-      if (typeof variablesSorted == 'string') {
+      if (variablesSorted == false) {
         $('#loading-model').modal('hide');
-        alert(variablesSorted);
+        alert('Invalid file');
       } else {
         var attrs = result['attrs'];
         print_metadata(variablesSorted, attrs);
@@ -84,28 +84,32 @@ function getDimensions() {
     success: function (result) {
       let dims = result['dims'];
       var variables = result['variables'];
-      let html = ''
-      for (var i = 0; i < dims.length; i++) {
-        html += '<option>' + dims[i] + '</option>';
-      }
-      $('#time').empty();
-      $('#time').append(html);
-      $('#time option:nth-child(3)').attr('selected', 'selected');
-      $('#lat').empty();
-      $('#lat').append(html);
-      $('#lat option:nth-child(1)').attr('selected', 'selected');
-      $('#lng').empty();
-      $('#lng').append(html);
-      $('#lng option:nth-child(2)').attr('selected', 'selected');
+      if (variables == false) {
+        alert('Invalid THREDDS URL');
+      } else {
+        let html = ''
+        for (var i = 0; i < dims.length; i++) {
+          html += '<option>' + dims[i] + '</option>';
+        }
+        $('#time').empty();
+        $('#time').append(html);
+        $('#time option:nth-child(3)').attr('selected', 'selected');
+        $('#lat').empty();
+        $('#lat').append(html);
+        $('#lat option:nth-child(1)').attr('selected', 'selected');
+        $('#lng').empty();
+        $('#lng').append(html);
+        $('#lng option:nth-child(2)').attr('selected', 'selected');
 
-      var html3 = '';
-      html3 += '<b style="padding-left: 40px">' + variable + ':<b/>'
-      for (var attr in variables[variable]) {
-        html3 += '<p style="padding-left: 40px">' + attr + ': ' + variables[variable][attr] + '</p>';
+        var html3 = '';
+        html3 += '<b style="padding-left: 40px">' + variable + ':<b/>'
+        for (var attr in variables[variable]) {
+          html3 += '<p style="padding-left: 40px">' + attr + ': ' + variables[variable][attr] + '</p>';
+        }
+        $('#var-metadata-div').empty();
+        $('#var-metadata-div').append(html3);
       }
-      $('#var-metadata-div').empty();
-      $('#var-metadata-div').append(html3);
-      }
+    }
   });
 }
 

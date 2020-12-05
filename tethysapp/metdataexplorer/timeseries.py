@@ -49,5 +49,5 @@ def get_box_values(request):
         data = mean_of_timeseries(path_to_netcdf, var, time)
         return JsonResponse({'data': data})
     except ValueError:
-        data = json.dumps('Invalid Dimensions')
+        data = False
         return JsonResponse({'data': data})

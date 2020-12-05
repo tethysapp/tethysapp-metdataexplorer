@@ -22,13 +22,10 @@ def rename_shp(request):
 
 
 def delete_shp(request):
-    try:
-        shp_name = request.GET['shp_name'].strip('"')
-        directory = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace')
-        os.remove(os.path.join(directory, shp_name + '.geojson'))
-        result = True
-    except:
-        result = False
+    shp_name = request.GET['filename'].strip('"')
+    directory = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace')
+    os.remove(os.path.join(directory, shp_name + '.geojson'))
+    result = True
 
     return JsonResponse({'result': result})
 

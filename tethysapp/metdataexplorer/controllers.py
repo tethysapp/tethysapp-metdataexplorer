@@ -1,19 +1,32 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from tethys_sdk.permissions import login_required
-from tethys_sdk.gizmos import Button, TextInput, SelectInput, RangeSlider
 from siphon.catalog import TDSCatalog
 import requests
 import netCDF4
 import json
 
+from .model import Base, Thredds, Groups
+
+from .app import metdataexplorer as app
+
 
 @login_required()
 def home(request):
-    return render(request, 'metdataexplorer/home.html',)
 
-def api(request):
-    return render(request, 'metdataexplorer/api.html',)
+    SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
+    session = SessionMaker()
+
+    groups = session.query(Groups).all()
+    thredds = session.query(Thredds).all()
+
+    session.close()
+
+    context = {
+        'groups': groups,
+        'thredds': thredds,
+    }
+    return render(request, 'metdataexplorer/home.html', context)
 
 def build_data_tree(request):
     url = request.GET['url']
@@ -49,7 +62,7 @@ def metadata(request):
     try:
         ds = netCDF4.Dataset(url)
     except OSError:
-        exception = json.dumps('Invalid file')
+        exception = False
         return JsonResponse({'variables_sorted': exception})
 
     for attr in ds.__dict__:
@@ -72,7 +85,7 @@ def get_dimensions(request):
     try:
         ds = netCDF4.Dataset(url)
     except OSError:
-        exception = json.dumps('Invalid THREDDS URL')
+        exception = False
         return JsonResponse({'variables': exception})
 
     for dim in ds[variable].dimensions:

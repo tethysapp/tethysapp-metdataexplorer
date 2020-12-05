@@ -1,4 +1,5 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
+from tethys_sdk.app_settings import PersistentStoreDatabaseSetting
 
 
 class metdataexplorer(TethysAppBase):
@@ -30,11 +31,6 @@ class metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.controllers.home'
             ),
             UrlMap(
-                name='api',
-                url='metdataexplorer/api',
-                controller='metdataexplorer.controllers.api'
-            ),
-            UrlMap(
                 name='build_data_tree',
                 url='metdataexplorer/buildDataTree',
                 controller='metdataexplorer.controllers.build_data_tree'
@@ -64,6 +60,33 @@ class metdataexplorer(TethysAppBase):
                 url='metdataexplorer/getDimensions',
                 controller='metdataexplorer.controllers.get_dimensions'
             ),
+            UrlMap(
+                name='deleteShapefile',
+                url='metdataexplorer/shapefile/delete',
+                controller='metdataexplorer.shapefile.delete_shp'
+            ),
+            UrlMap(
+                name='saveThredds',
+                url='metdataexplorer/database/saveThredds',
+                controller='metdataexplorer.database.save_thredds'
+            ),
+            UrlMap(
+                name='saveGroup',
+                url='metdataexplorer/database/saveGroup',
+                controller='metdataexplorer.database.save_group'
+            ),
         )
 
         return url_maps
+
+    def persistent_store_settings(self):
+        ps_settings = (
+            PersistentStoreDatabaseSetting(
+                name='thredds_db',
+                description='Database to store thredds URLs.',
+                initializer='metdataexplorer.init_stores.init_thredds_db',
+                required=True
+            ),
+        )
+
+        return ps_settings

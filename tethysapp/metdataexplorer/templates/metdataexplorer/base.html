@@ -14,7 +14,16 @@
 
 {% block app_navigation_items %}
   <br>
-
+  <div>
+    <div id="groups-title" class="titles">
+      <h1>My Groups</h1>
+      <img id="add-group" class="add-button" src="{% static 'metdataexplorer/images/addButton.png' %}">
+    </div>
+    <div id="groups">
+      {% block groups %}
+      {% endblock %}
+    </div>
+  </div>
   <div>
     <div style="text-align: center;">
       <b style="color: #333333">File Information</b>
@@ -108,5 +117,6 @@
   <script src="{% static 'metdataexplorer/js/main.js' %}" type="text/javascript"></script>
   <script src="{% static 'metdataexplorer/js/map.js' %}" type="text/javascript"></script>
   <script src="{% static 'metdataexplorer/js/draw.js' %}" type="text/javascript"></script>
+  <script src="{% static 'metdataexplorer/js/databases.js' %}" type="text/javascript"></script>
   <script src="{% static 'metdataexplorer/js/timeseries.js' %}" type="text/javascript"></script>
 {% endblock %}

@@ -43,9 +43,9 @@ function add_user_layers() {
       let filenames = jQuery.parseJSON(result['filenames']);
       var geojson = jQuery.parseJSON(result['geojson']);
       if (filenames !== []) {
-        $('#properties').append('<option value="" disabled selected hidden></option>');
         for (var i = 0, len = geojson.length; i < len; i++) {
           let current_layer = jQuery.parseJSON(geojson[i]);
+          current_layer.name = filenames[i];
           let geojson_layer = make_file_layer(current_layer);
 
           $('#shp-select').append('<option id="' + filenames[i].split(" ").join("") + '" value="' + filenames[i] + '">' + filenames[i] + '</option>');
@@ -56,7 +56,6 @@ function add_user_layers() {
           for(var s = 0, leng = (option_keys).length; s < leng; s++) {
             option_insert = option_insert + '<option value="' + option_keys[s] + '">' + option_keys[s] + '</option>';
           }
-
           $('#' + filenames[i].split(" ").join("") + '').data('options', option_insert);
           $('#' + filenames[i].split(" ").join("") + '').data('option_keys', option_keys);
           $('#' + filenames[i].split(" ").join("") + '').data('name', filenames[i].split(" ").join(""));
@@ -129,19 +128,42 @@ function uploadShapefile() {
         processData: false,
         contentType: false,
         success: function (result) {
-            let id = jQuery.parseJSON(result['filenames']);
             $('#shp-select').empty();
             if (shpfileAdded == true) {
-                mapObj.removeLayer(user_layer);
+                mapObj.removeLayer(shpLayer);
+                shpLayer = new L.FeatureGroup().addTo(mapObj);
             }
-            add_user_layers(id);
+            add_user_layers();
             $('#uploadshp-modal').modal('hide');
         },
     });
 }
 
+function deleteGeojson() {
+    let filename = $('#shp-select').val();
+    $.ajax({
+        url: 'shapefile/delete/',
+        data: {
+        'filename': filename,
+        },
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'GET',
+        success: function (result) {
+            $('#shp-select').empty();
+            if (shpfileAdded == true) {
+                mapObj.removeLayer(shpLayer);
+                shpLayer = new L.FeatureGroup().addTo(mapObj);
+            }
+            add_user_layers();
+        }
+    });
+}
+
 $('#uploadshp').click(uploadShapefile);
+$('#del-shp').click(deleteGeojson);
 $('#zoom-shp').click(function () {
+    console.log(shpLayer)
     var bounds = shpLayer.getBounds();
     mapObj.flyToBounds(bounds);
 })
