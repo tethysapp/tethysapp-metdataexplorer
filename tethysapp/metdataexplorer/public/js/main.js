@@ -179,4 +179,9 @@ $('#var-metadata-button').click(function() {
   $('#var-metadata-button').css('background-color', 'rgba(205, 209, 253, 1)');
   $('#file-metadata-button').css('background-color', 'rgba(130, 141, 205, 1)');
 });
+$('.url-list-label').click(function () {
+  let url = $(this).attr('data-url');
+  $('#url-input').val(url);
+  get_files(url)
+});
 

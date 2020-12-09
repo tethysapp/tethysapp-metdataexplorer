@@ -12,13 +12,15 @@ class Thredds(Base):
     description = Column(String(2000))
     spatial = Column(String(100))
     tags = Column(String(100))
+    group = Column(String(100))
 
-    def __init__(self, name, url, description, spatial, tags):
+    def __init__(self, name, url, description, spatial, tags, group):
         self.name = name
         self.url = url
         self.description = description
         self.spatial = spatial
         self.tags = tags
+        self.group = group
 
 
 class Groups(Base):

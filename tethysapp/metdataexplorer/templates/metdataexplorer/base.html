@@ -13,17 +13,51 @@
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 
 {% block app_navigation_items %}
+  <span id="main-group" style="display: none">
+    <div class="titles">
+      <div class="name" style="width: 60%;">
+      </div>
+      <div style="width: 40%; padding-right: 15px">
+        <img class="add-url img-button" src="{% static 'metdataexplorer/images/addButton.png' %}" style="height: 20px; width: auto">
+        <img class="info-group img-button" src="{% static 'metdataexplorer/images/infoButton.png' %}" style="height: 20px; width: auto">
+        <img class="delete-group img-button" onclick="deleteGroup.call(this)" src="{% static 'metdataexplorer/images/trashButtonBlue.png' %}" style="height: 20px; width: auto">
+      </div>
+    </div>
+    <div class="group-container" style="width: 96%; height: auto; background-color: white; margin: 0% 2% 0% 2%; padding: 2px; display: none">
+    </div>
+  </span>
+
+  <div id="main-url" class="url-list" style="display:none;">
+    <div class="url-list-label" style="width: 60%;">
+    </div>
+    <div style="width: 40%; padding-right: 5px">
+      <img id="delete-url" class="img-button" src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
+      <img id="search-url" class="img-button" src="{% static 'metdataexplorer/images/searchButtonGray.png' %}" style="height: 15px; width: auto;">
+      <img id="info-url" class="img-button" src="{% static 'metdataexplorer/images/infoButtonGray.png' %}" style="height: 15px; width: auto;">
+      <img id="filter-url" class="img-button" onclick="deleteURL.call(this)" src="{% static 'metdataexplorer/images/filterButtonGray.png' %}" style="height: 15px; width: auto;">
+    </div>
+  </div>
+
+<!--Start app navigation-->
   <br>
   <div>
     <div id="groups-title" class="titles">
-      <h1>My Groups</h1>
-      <img id="add-group" class="add-button" src="{% static 'metdataexplorer/images/addButton.png' %}">
+      <div style="width: 50%">
+        <h1>My Groups</h1>
+      </div>
+      <div style="width: 50%; padding-right: 15px">
+        <img id="add-group" class="img-button" src="{% static 'metdataexplorer/images/addButton.png' %}">
+        <img id="delete-all-group" class="img-button" src="{% static 'metdataexplorer/images/trashButtonRed.png' %}">
+        <img id="search-group" class="img-button" src="{% static 'metdataexplorer/images/searchButton.png' %}">
+      </div>
     </div>
     <div id="groups">
       {% block groups %}
       {% endblock %}
     </div>
   </div>
+  <button id="test">test</button>
+  <div id="testdiv"></div>
   <div>
     <div style="text-align: center;">
       <b style="color: #333333">File Information</b>
@@ -36,7 +70,6 @@
     <select id="lat" style="width: 50%; margin: 5px 0px 5px 0px;"></select><br>
     <label for="lng" style="padding-right: 55px">Longitude:</label>
     <select id="lng" style="width: 50%; margin: 5px 0px 20px 0px;"></select><br>
-    <!--<button id="inspect-netcdf">Inspect NetCDF</button>-->
     <br>
     <div style="text-align: center;">
       <b style="color: #333333">Layer View Options</b>

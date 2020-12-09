@@ -75,6 +75,11 @@ class metdataexplorer(TethysAppBase):
                 url='metdataexplorer/database/saveGroup',
                 controller='metdataexplorer.database.save_group'
             ),
+            UrlMap(
+                name='deleteGroup',
+                url='metdataexplorer/database/deleteGroup',
+                controller='metdataexplorer.database.delete_group'
+            ),
         )
 
         return url_maps

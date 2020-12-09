@@ -27,15 +27,32 @@ def save_thredds(request):
     description = request.GET['description']
     spatial = request.GET['map']
     tags = request.GET['tags']
+    group = request.GET['group']
 
     SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
     session = SessionMaker()
 
-    db = Thredds(url=url, name=name, description=description, spatial=spatial, tags=tags)
+    db = Thredds(url=url, name=name, description=description, spatial=spatial, tags=tags, group=group)
 
     session.add(db)
     session.commit()
     session.close()
+
+    success = True
+    return JsonResponse({'success': success})
+
+
+def delete_group(request):
+    group = request.GET['group']
+
+    SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
+    session = SessionMaker()
+
+    session.query(Thredds).filter(Thredds.group == group).delete(synchronize_session=False)
+    deletegroup = session.query(Groups).filter(Groups.name == group).first()
+
+    session.delete(deletegroup)
+    session.commit()
 
     success = True
     return JsonResponse({'success': success})

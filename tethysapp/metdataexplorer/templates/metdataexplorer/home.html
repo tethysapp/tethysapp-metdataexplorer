@@ -9,23 +9,37 @@
 {% endblock %}
 
 {% block groups %}
-  <div>
     {% for group in groups %}
-      <div >
-        <div class="titles" style="width: 100%; background-color: #4532fc; margin: 5px 0px 5px 0px">
-          <h3>{{ group.name }}</h3>
-          <img id="add-url" class="add-button" src="{% static 'metdataexplorer/images/addButton.png' %}" style="height: 20px; width: auto">
-        </div>
-        <div style="width: 96%; height: 200px; background-color: white; margin: 0% 2% 0% 2%;">
-          {% for thredd in thredds %}
-          <div class="url-list">
-            <h4>{{ thredd.name }}</h4>
+      <span id="{{ forloop.counter }}" data-name="{{ group.name }}">
+        <div class="titles">
+          <div class="name" style="width: 60%;">
+            <h3>{{ group.name }}</h3>
           </div>
+          <div style="width: 40%; padding-right: 15px">
+            <img class="add-url img-button" data-name="{{ group.name }}" src="{% static 'metdataexplorer/images/addButton.png' %}" style="height: 20px; width: auto">
+            <img class="info-group img-button" src="{% static 'metdataexplorer/images/infoButton.png' %}" style="height: 20px; width: auto">
+            <img class="delete-group img-button" data-name="{{ group.name }}" onclick="deleteGroup.call(this)" src="{% static 'metdataexplorer/images/trashButtonBlue.png' %}" style="height: 20px; width: auto">
+          </div>
+        </div>
+        <div class="group-container" style="width: 96%; height: auto; background-color: white; margin: 0% 2% 0% 2%; padding: 2px">
+          {% for thredd in thredds %}
+          {% if thredd.group == group.name %}
+          <div class="url-list">
+            <div class="url-list-label" data-url="{{ thredd.url }}" style="width: 60%;">
+              <h4>{{ thredd.name }}</h4>
+            </div>
+            <div style="width: 40%; padding-right: 5px">
+              <img class="delete-url img-button" src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
+              <img class="search-url img-button" src="{% static 'metdataexplorer/images/searchButtonGray.png' %}" style="height: 15px; width: auto;">
+              <img class="info-url img-button" src="{% static 'metdataexplorer/images/infoButtonGray.png' %}" style="height: 15px; width: auto;">
+              <img class="filter-url img-button" src="{% static 'metdataexplorer/images/filterButtonGray.png' %}" style="height: 15px; width: auto;">
+            </div>
+          </div>
+          {% endif %}
           {% endfor %}
         </div>
-      </div>
+      </span>
     {% endfor %}
-  </div>
 {% endblock %}
 
 {% block app_content %}
@@ -36,7 +50,6 @@
         <div class="half-box">
           <button id="up-file" class="fa fa-angle-double-up" style="float: left; height: 26px; width: 5%; margin: 5px 0px 10px 2%"></button>
           <input id="url-input" type="text" placeholder="Thredds URL" style="width: 86%; margin: 5px 0px 10px 0px; display: inline-block">
-          <button id="save-url" class="fa fa-save" style="float: right; height: 26px; width: 5%; margin: 5px 2% 10px 0px"></button>
           <div id="filetree-div" class="inner-div"></div>
         </div>
       </div>
@@ -151,7 +164,7 @@
         <div class="modal-header">
           <div style="display: flex; align-items: center; justify-content: center;">
             <div style="width: 95%;">
-              <h2 style="float: left">Add a Thredds URL</h2>
+              <h2 id="add-url-group" style="float: left">Add a Thredds URL for </h2>
               <button type="button" style="width: 10%; float: right" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
             </div>
           </div>
