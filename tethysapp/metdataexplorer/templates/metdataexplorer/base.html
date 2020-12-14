@@ -31,10 +31,10 @@
     <div class="url-list-label" style="width: 60%;">
     </div>
     <div style="width: 40%; padding-right: 5px">
-      <img id="delete-url" class="img-button" src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
-      <img id="search-url" class="img-button" src="{% static 'metdataexplorer/images/searchButtonGray.png' %}" style="height: 15px; width: auto;">
-      <img id="info-url" class="img-button" src="{% static 'metdataexplorer/images/infoButtonGray.png' %}" style="height: 15px; width: auto;">
-      <img id="filter-url" class="img-button" onclick="deleteURL.call(this)" src="{% static 'metdataexplorer/images/filterButtonGray.png' %}" style="height: 15px; width: auto;">
+      <img class="delete-url img-button" onclick="deleteThredds.call(this)" src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
+      <img class="search-url img-button" src="{% static 'metdataexplorer/images/searchButtonGray.png' %}" style="height: 15px; width: auto;">
+      <img class="info-url img-button" src="{% static 'metdataexplorer/images/infoButtonGray.png' %}" style="height: 15px; width: auto;">
+      <img class="filter-url img-button" src="{% static 'metdataexplorer/images/filterButtonGray.png' %}" style="height: 15px; width: auto;">
     </div>
   </div>
 
@@ -56,8 +56,6 @@
       {% endblock %}
     </div>
   </div>
-  <button id="test">test</button>
-  <div id="testdiv"></div>
   <div>
     <div style="text-align: center;">
       <b style="color: #333333">File Information</b>
@@ -66,10 +64,10 @@
     <select id="variable-input" style="width: 50%; margin: 20px 0px 5px 0px;"></select><br>
     <label for="time" style="padding-right: 89px">Time:</label>
     <select id="time" style="width: 50%; margin: 5px 0px 5px 0px;"></select><br>
-    <label for="lat" style="padding-right: 67px">Latitude:</label>
+<!--    <label for="lat" style="padding-right: 67px">Latitude:</label>
     <select id="lat" style="width: 50%; margin: 5px 0px 5px 0px;"></select><br>
     <label for="lng" style="padding-right: 55px">Longitude:</label>
-    <select id="lng" style="width: 50%; margin: 5px 0px 20px 0px;"></select><br>
+    <select id="lng" style="width: 50%; margin: 5px 0px 20px 0px;"></select><br>-->
     <br>
     <div style="text-align: center;">
       <b style="color: #333333">Layer View Options</b>
@@ -93,7 +91,7 @@
   <br>
   <label for="wmslayer-bounds" style="padding-right: 55px">Set Data Bounds</label>
   <input id="wmslayer-bounds" style="width: 100%; margin: 5px 0px 20px 0px; padding: 5px" value="0,25">
-  <br>
+<!--  <br>
   <div style="text-align: center;">
     <b style="color: #333333">Shape Layers</b>
   </div>
@@ -102,7 +100,7 @@
   </select>
   <button id="upload-shp">Upload Shapefile</button>
   <button id="zoom-shp">Zoom to Shapefile</button>
-  <button id="del-shp">Delete Shapefile</button>
+  <button id="del-shp">Delete Shapefile</button>-->
 {% endblock %}
 
 {% block app_content %}

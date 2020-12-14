@@ -55,6 +55,13 @@ button {
     width: 100%;
 }
 
+#inset-map {
+    margin: 0px;
+    padding: 0px;
+    height: 300px;
+    width: 100%;
+}
+
 #lower-content {
     height: 30%;
     width: 100%;

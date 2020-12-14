@@ -14,6 +14,7 @@ mapObj.on(L.Draw.Event.CREATED, function (e) {
 
 shpLayer.on('click', function (e) {
   var coords = e.layer.getBounds();
+  console.log(coords);
   var coord = {0:{0:{'lat': coords['_southWest']['lat'], 'lng': coords['_southWest']['lng']},
       1:{'lat': coords['_northEast']['lat'], 'lng': coords['_southWest']['lng']},
       2:{'lat': coords['_northEast']['lat'], 'lng': coords['_northEast']['lng']},

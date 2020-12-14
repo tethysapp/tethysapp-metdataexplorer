@@ -4,6 +4,7 @@ let subsetURL = '';
 let wmsURL = '';
 let opendapURL = '';
 let shpfileAdded = false;
+let geojsons = {};
 
 add_user_layers();
 
@@ -166,7 +167,7 @@ $('#wmslayer-style').change(function () {update_wmslayer();});
 $('#wmslayer-bounds').change(function () {update_wmslayer();});
 $('#opacity-slider').change(function () {dataLayerObj.setOpacity($('#opacity-slider').val())});
 $('#variable-input').change(function () {getDimensions();});
-$('#upload-shp').click(function() {$('#uploadshp-modal').modal('show')});
+$('#upload-shp').click(function() {$('#add-thredds-model').modal('hide'); $('#uploadshp-modal').modal('show')});
 $('#file-metadata-button').click(function() {
   $('#var-metadata-div').css('display', 'none');
   $('#metadata-div').css('display', 'block');
@@ -178,10 +179,5 @@ $('#var-metadata-button').click(function() {
   $('#var-metadata-div').css('display', 'block');
   $('#var-metadata-button').css('background-color', 'rgba(205, 209, 253, 1)');
   $('#file-metadata-button').css('background-color', 'rgba(130, 141, 205, 1)');
-});
-$('.url-list-label').click(function () {
-  let url = $(this).attr('data-url');
-  $('#url-input').val(url);
-  get_files(url)
 });
 

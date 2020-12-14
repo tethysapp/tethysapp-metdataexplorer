@@ -40,27 +40,7 @@ function add_user_layers() {
     contentType: "application/json",
     method: 'GET',
     success: function (result) {
-      let filenames = jQuery.parseJSON(result['filenames']);
-      var geojson = jQuery.parseJSON(result['geojson']);
-      if (filenames !== []) {
-        for (var i = 0, len = geojson.length; i < len; i++) {
-          let current_layer = jQuery.parseJSON(geojson[i]);
-          current_layer.name = filenames[i];
-          let geojson_layer = make_file_layer(current_layer);
-
-          $('#shp-select').append('<option id="' + filenames[i].split(" ").join("") + '" value="' + filenames[i] + '">' + filenames[i] + '</option>');
-          $('#' + filenames[i].split(" ").join("") + '').data('layer', geojson_layer);
-
-          let option_insert = '';
-          let option_keys = Object.keys(current_layer.features[0].properties);
-          for(var s = 0, leng = (option_keys).length; s < leng; s++) {
-            option_insert = option_insert + '<option value="' + option_keys[s] + '">' + option_keys[s] + '</option>';
-          }
-          $('#' + filenames[i].split(" ").join("") + '').data('options', option_insert);
-          $('#' + filenames[i].split(" ").join("") + '').data('option_keys', option_keys);
-          $('#' + filenames[i].split(" ").join("") + '').data('name', filenames[i].split(" ").join(""));
-        }
-      }
+      geojsons = result['geojson'];
     },
   });
 }
@@ -68,6 +48,10 @@ function add_user_layers() {
 
 //Create a geojson layer on the map using the shapefile the user uploaded
 function make_file_layer(geojson) {
+    if (shpfileAdded == true) {
+        mapObj.removeLayer(shpLayer);
+        shpLayer = new L.FeatureGroup().addTo(mapObj);
+    }
     let polygons = geojson;
     let style = {
         "color": "#ffffff",
@@ -76,14 +60,14 @@ function make_file_layer(geojson) {
     };
     user_layer =  L.geoJSON(polygons, {
         style: style,
-        onEachFeature: EachFeature,
+        //onEachFeature: EachFeature,
     });
     shpfileAdded = true;
     return user_layer.addTo(shpLayer);
 }
 
 //Set the popup for each feature
-function EachFeature(feature, layer) {
+/*function EachFeature(feature, layer) {
     layer.on('click', function(){
         $('#shp-select > option').each(function() {
             let id = $(this).val();
@@ -96,13 +80,13 @@ function EachFeature(feature, layer) {
                 }
             }
         });
-/*        layer.bindPopup('<div id="name-insert" style="text-align: center">'
+/!*        layer.bindPopup('<div id="name-insert" style="text-align: center">'
                         + '<h1>' + feature.properties[$('#properties').val()] + '</h1></div>'
                         + '<br><button id="get-timeseries" style="width: 100%; height: 50px;'
                         + 'background-color: aqua" onclick="timeseriesFromShp(`' + String(feature.properties[$('#properties').val()]) + '`)">'
-                        + 'Get Timeseries</button><div id="loading" class="loader"></div>');*/
+                        + 'Get Timeseries</button><div id="loading" class="loader"></div>');*!/
     });
-}
+}*/
 
 
 //ADD A USER SHAPEFILE TO THE MAP
@@ -128,18 +112,21 @@ function uploadShapefile() {
         processData: false,
         contentType: false,
         success: function (result) {
-            $('#shp-select').empty();
-            if (shpfileAdded == true) {
+            geojsonName = result['filenames'];
+            geojsonFile = result['geojson'];
+            //$('#shp-select').empty();
+            /*if (shpfileAdded == true) {
                 mapObj.removeLayer(shpLayer);
                 shpLayer = new L.FeatureGroup().addTo(mapObj);
-            }
+            }*/
             add_user_layers();
             $('#uploadshp-modal').modal('hide');
+            $('#add-thredds-model').modal('show');
         },
     });
 }
 
-function deleteGeojson() {
+/*function deleteGeojson() {
     let filename = $('#shp-select').val();
     $.ajax({
         url: 'shapefile/delete/',
@@ -158,12 +145,12 @@ function deleteGeojson() {
             add_user_layers();
         }
     });
-}
+}*/
 
 $('#uploadshp').click(uploadShapefile);
-$('#del-shp').click(deleteGeojson);
-$('#zoom-shp').click(function () {
+//$('#del-shp').click(deleteGeojson);
+/*$('#zoom-shp').click(function () {
     console.log(shpLayer)
     var bounds = shpLayer.getBounds();
     mapObj.flyToBounds(bounds);
-})
+})*/

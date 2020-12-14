@@ -7,7 +7,7 @@ import json
 ###################################################################################
 
 # MAP CONTROLLERS
-
+'''
 def rename_shp(request):
     try:
         shp_name = request.GET['shp_name'].strip('"')
@@ -28,7 +28,7 @@ def delete_shp(request):
     result = True
 
     return JsonResponse({'result': result})
-
+'''
 
 ####################################################################################
 
@@ -48,7 +48,7 @@ def shp_to_geojson(file_path):
     return geojson_file, filename
 
 
-def uploadShapefile(request):
+def upload_shapefile(request):
     files = request.FILES.getlist('files')
     shp_path = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces')
 
@@ -58,28 +58,25 @@ def uploadShapefile(request):
             for chunk in files[n].chunks():
                 dst.write(chunk)
 
-
     geojson, filename = shp_to_geojson(shp_path)
-    filenames = json.dumps(filename)
 
     for file in glob.glob(os.path.join(shp_path, '*')):
         if os.path.splitext(os.path.basename(file))[0] == filename:
             os.remove(file)
 
-    return JsonResponse({'filenames': filenames})
+    print(filename)
+    return JsonResponse({'filenames': filename, 'geojson': geojson})
+
+
 
 def user_geojsons(request):
     geojson_path = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace')
     files = glob.glob(os.path.join(geojson_path, '*.geojson'))
-    geojson = []
-    filenames = []
+    geojson = {}
 
     for file in files:
-        geojson.append(geopandas.read_file(file))
-        filenames.append(os.path.basename(file)[:-8])
+        geojson[os.path.basename(file)[:-8]] = geopandas.read_file(file)
 
-    geojson = json.dumps(geojson)
-    filenames = json.dumps(filenames)
-    return JsonResponse({'geojson': geojson, 'filenames': filenames})
+    return JsonResponse({'geojson': geojson})
 
 ############################################################################################

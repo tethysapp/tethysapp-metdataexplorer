@@ -38,7 +38,7 @@ class metdataexplorer(TethysAppBase):
             UrlMap(
                 name='uploadShapefile',
                 url='metdataexplorer/shapefile/uploadShapefile/',
-                controller='metdataexplorer.shapefile.uploadShapefile'
+                controller='metdataexplorer.shapefile.upload_shapefile'
             ),
             UrlMap(
                 name='user_geojson',
@@ -60,11 +60,11 @@ class metdataexplorer(TethysAppBase):
                 url='metdataexplorer/getDimensions',
                 controller='metdataexplorer.controllers.get_dimensions'
             ),
-            UrlMap(
-                name='deleteShapefile',
-                url='metdataexplorer/shapefile/delete',
-                controller='metdataexplorer.shapefile.delete_shp'
-            ),
+            #UrlMap(
+            #    name='deleteShapefile',
+            #    url='metdataexplorer/shapefile/delete',
+            #    controller='metdataexplorer.shapefile.delete_shp'
+            #),
             UrlMap(
                 name='saveThredds',
                 url='metdataexplorer/database/saveThredds',
@@ -79,6 +79,26 @@ class metdataexplorer(TethysAppBase):
                 name='deleteGroup',
                 url='metdataexplorer/database/deleteGroup',
                 controller='metdataexplorer.database.delete_group'
+            ),
+            UrlMap(
+                name='deleteURL',
+                url='metdataexplorer/database/deleteURL',
+                controller='metdataexplorer.database.delete_url'
+            ),
+            UrlMap(
+                name='deleteAll',
+                url='metdataexplorer/database/deleteAll',
+                controller='metdataexplorer.database.delete_all'
+            ),
+            UrlMap(
+                name='groupInfo',
+                url='metdataexplorer/database/groupInfo',
+                controller='metdataexplorer.database.group_info'
+            ),
+            UrlMap(
+                name='threddsInfo',
+                url='metdataexplorer/database/threddsInfo/',
+                controller='metdataexplorer.database.thredds_info'
             ),
         )
 

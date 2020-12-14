@@ -1,4 +1,5 @@
 let mapObj = map();
+let insetMapObj = insetMap();
 let basemapObj = basemaps();
 let layerControlObj = L.control.layers(basemapObj,).addTo(mapObj);
 
@@ -67,4 +68,18 @@ function data_layer() {
   } catch(err) {
     alert('Invalid values.');
   }
+}
+
+// Inset map
+function insetMap() {
+  let insetmap = L.map('inset-map', {
+    center: [0, 0],
+    zoom: 3,
+    minZoom: 2,
+    zoomSnap: .5,
+    boxZoom: true,
+    fullscreenControl: true,
+    maxBounds: L.latLngBounds(L.latLng(-100.0, -270.0), L.latLng(100.0, 270.0)),
+  })
+  return L.esri.basemapLayer('Streets').addTo(insetmap);
 }

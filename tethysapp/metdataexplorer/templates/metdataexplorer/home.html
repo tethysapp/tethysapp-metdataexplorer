@@ -24,12 +24,12 @@
         <div class="group-container" style="width: 96%; height: auto; background-color: white; margin: 0% 2% 0% 2%; padding: 2px">
           {% for thredd in thredds %}
           {% if thredd.group == group.name %}
-          <div class="url-list">
-            <div class="url-list-label" data-url="{{ thredd.url }}" style="width: 60%;">
+          <div class="url-list" data-url="{{ thredd.url }}" data-name="{{ thredd.name }}" data-spatial="{{ thredd.spatial }}">
+            <div class="url-list-label" style="width: 60%;">
               <h4>{{ thredd.name }}</h4>
             </div>
             <div style="width: 40%; padding-right: 5px">
-              <img class="delete-url img-button" src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
+              <img class="delete-url img-button" onclick="deleteThredds.call(this)" src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
               <img class="search-url img-button" src="{% static 'metdataexplorer/images/searchButtonGray.png' %}" style="height: 15px; width: auto;">
               <img class="info-url img-button" src="{% static 'metdataexplorer/images/infoButtonGray.png' %}" style="height: 15px; width: auto;">
               <img class="filter-url img-button" src="{% static 'metdataexplorer/images/filterButtonGray.png' %}" style="height: 15px; width: auto;">
@@ -148,10 +148,10 @@
             <input id="group-title-input" class="inputsty">
             <label for="group-description-input" style="float: left">Description (Required):</label>
             <textarea id="group-description-input"></textarea>
+          <div>
+            <button id="add-group-submit" style="width: 100px; float: right; margin: 10px;">Add</button>
           </div>
-        </div>
-        <div>
-          <button id="add-group-submit" style="width: 100px; float: right;">Add</button>
+          </div>
         </div>
       </div>
     </div>
@@ -164,27 +164,78 @@
         <div class="modal-header">
           <div style="display: flex; align-items: center; justify-content: center;">
             <div style="width: 95%;">
-              <h2 id="add-url-group" style="float: left">Add a Thredds URL for </h2>
+              <h2 id="add-url-name" style="float: left">Add a Thredds URL for </h2>
               <button type="button" style="width: 10%; float: right" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
             </div>
           </div>
         </div>
         <div style="display: flex; align-items: center; justify-content: center;">
           <div style="width: 90%; height: auto">
-            <label for="thredds-title-input" style="float: left">Title (Required):</label>
-            <input id="thredds-title-input" class="inputsty">
-            <label for="thredds-url-input" style="float: left">URL (Required):</label>
-            <input id="thredds-url-input" class="inputsty">
-            <label for="thredds-tags-input" style="float: left">Tags:</label>
-            <input id="thredds-tags-input" class="inputsty">
-            <label for="thredds-map-input" style="float: left">Spatial Extents:</label>
-            <input id="thredds-map-input" class="inputsty">
-            <label for="thredds-description-input" style="float: left;">Description (Required):</label>
-            <textarea id="thredds-description-input" style="width: 100%; height: 200px"></textarea>
+            <div>
+              <label for="thredds-title-input" style="float: left">Title (Required):</label>
+              <input id="thredds-title-input" class="inputsty">
+              <label for="thredds-url-input" style="float: left">URL (Required):</label>
+              <input id="thredds-url-input" class="inputsty">
+              <label for="thredds-tags-input" style="float: left">Tags:</label>
+              <input id="thredds-tags-input" class="inputsty">
+            </div>
+            <div>
+              <b style="float: left; font-size: 11pt; color: #333; padding: 0px">Spatial Extents:</b><br>
+              <button id="upload-shp" style="width: 50%; float: left">Upload Shapefile</button>
+              <button style="width: 50%; float: right">Draw on Map</button>
+            </div>
+            <div>
+              <label for="thredds-description-input" style="float: left;">Description (Required):</label>
+              <textarea id="thredds-description-input" style="width: 100%; height: 200px"></textarea>
+            </div>
+            <div>
+              <button id="add-thredds-submit" style="width: 100px; float: right; margin: 10px">Add</button>
+            </div>
           </div>
         </div>
-        <div>
-          <button id="add-thredds-submit" style="width: 100px; float: right;">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- database info -->
+  <div class="modal fade" id="database-info-model" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
+            <div style="width: 95%; display:flex; justify-content: center;"><h1 style="font-size: 23pt; color: black; ">Group Metadata</h1></div>
+            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
+          </div>
+        </div>
+        <div style="display: inline-block; width: 90%; height: auto; text-align: left; margin: 5%">
+          <h1 style="color: black">Group Name</h1>
+          <div id="database-info-name" style="width: 100%"></div>
+          <h1 style="color: black">Group Description</h1>
+          <div id="database-info-description" style="width: 100%; height: auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- url info -->
+  <div class="modal fade" id="url-info-model" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
+            <div style="width: 95%; display:flex; justify-content: center;"><h1 style="font-size: 23pt; color: black; ">Thredds Server Information</h1></div>
+            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
+          </div>
+        </div>
+        <div style="display: inline-block; width: 90%; height: auto; text-align: left; margin: 5%">
+          <div style="display: flex; justify-content: center; width: 100%">
+            <h1 id="url-info-name" style="color: black"></h1>
+          </div>
+          <div id="inset-map"></div>
+          <h1 style="color: black">URL</h1>
+          <div id="url-info-url" style="width: 100%; height: auto"></div>
+          <h1 style="color: black">Description</h1>
+          <div id="url-info-description" style="width: 100%; height: auto"></div>
         </div>
       </div>
     </div>
