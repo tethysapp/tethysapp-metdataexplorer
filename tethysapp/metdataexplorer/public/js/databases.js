@@ -1,5 +1,6 @@
 let groupName = '';
 let groupID = '';
+let geojsonName = 'No spatial reference';
 
 function deleteAll() {
     let con = confirm('Are you sure you want to delete all groups? This action cannot be undone.')
@@ -83,6 +84,7 @@ function saveThredds() {
             $('#' + groupID + '').find('.group-container').append(clone);
             $('#cloned').find('.url-list-label').append('<h4>' + name + '</h4>');
             $('#cloned').removeAttr('id');
+            geojsonName = 'No spatial reference'
         }
     })
 }

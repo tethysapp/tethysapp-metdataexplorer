@@ -17,6 +17,7 @@ function update_filepath() {
     wmsURL = $(this).attr('data-wms-url');
     opendapURL = $(this).attr('data-opendap-url');
     subsetURL = $(this).attr('data-subset-url');
+    console.log(wmsURL)
     get_metadata();
   }
 }

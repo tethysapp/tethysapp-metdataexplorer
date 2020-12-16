@@ -53,9 +53,12 @@ function data_layer() {
       format: 'image/png',
       transparent: true,
       BGCOLOR: '0x000000',
+      abovemaxcolor: 'extend',
+      belowmincolor: 'extend',
       styles: style,
       colorscalerange: range,
     });
+
     wmsLayerTime = L.timeDimension.layer.wms(wmsLayer, {
       name: 'time',
       requestTimefromCapabilities: true,
