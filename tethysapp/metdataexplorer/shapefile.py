@@ -2,35 +2,7 @@ from django.http import JsonResponse
 import geopandas
 import os
 import glob
-import json
 
-###################################################################################
-
-# MAP CONTROLLERS
-'''
-def rename_shp(request):
-    try:
-        shp_name = request.GET['shp_name'].strip('"')
-        new_name = request.GET['new_name'].strip('"')
-        directory = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace')
-        os.rename(os.path.join(directory, shp_name + '.geojson'), os.path.join(directory, new_name + '.geojson'))
-        result = True
-    except:
-        result = False
-
-    return JsonResponse({'new_name': new_name, 'result': result})
-
-
-def delete_shp(request):
-    shp_name = request.GET['filename'].strip('"')
-    directory = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace')
-    os.remove(os.path.join(directory, shp_name + '.geojson'))
-    result = True
-
-    return JsonResponse({'result': result})
-'''
-
-####################################################################################
 
 def shp_to_geojson(file_path):
     file_list = glob.glob(os.path.join(file_path, '*.shp'))
@@ -64,7 +36,6 @@ def upload_shapefile(request):
         if os.path.splitext(os.path.basename(file))[0] == filename:
             os.remove(file)
 
-    print(filename)
     return JsonResponse({'filenames': filename, 'geojson': geojson})
 
 
@@ -74,8 +45,11 @@ def user_geojsons(request):
     files = glob.glob(os.path.join(geojson_path, '*.geojson'))
     geojson = {}
 
-    for file in files:
-        geojson[os.path.basename(file)[:-8]] = geopandas.read_file(file)
+    if len(files) == 0:
+        geojson = False
+    else:
+        for file in files:
+            geojson[os.path.basename(file)[:-8]] = geopandas.read_file(file)
 
     return JsonResponse({'geojson': geojson})
 

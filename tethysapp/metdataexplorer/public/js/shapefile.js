@@ -40,7 +40,9 @@ function add_user_layers() {
     contentType: "application/json",
     method: 'GET',
     success: function (result) {
+      console.log(result['geojson'])
       geojsons = result['geojson'];
+      console.log(geojsons)
     },
   });
 }
@@ -114,11 +116,6 @@ function uploadShapefile() {
         success: function (result) {
             geojsonName = result['filenames'];
             geojsonFile = result['geojson'];
-            //$('#shp-select').empty();
-            /*if (shpfileAdded == true) {
-                mapObj.removeLayer(shpLayer);
-                shpLayer = new L.FeatureGroup().addTo(mapObj);
-            }*/
             add_user_layers();
             $('#uploadshp-modal').modal('hide');
             $('#add-thredds-model').modal('show');
@@ -126,31 +123,5 @@ function uploadShapefile() {
     });
 }
 
-/*function deleteGeojson() {
-    let filename = $('#shp-select').val();
-    $.ajax({
-        url: 'shapefile/delete/',
-        data: {
-        'filename': filename,
-        },
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'GET',
-        success: function (result) {
-            $('#shp-select').empty();
-            if (shpfileAdded == true) {
-                mapObj.removeLayer(shpLayer);
-                shpLayer = new L.FeatureGroup().addTo(mapObj);
-            }
-            add_user_layers();
-        }
-    });
-}*/
 
 $('#uploadshp').click(uploadShapefile);
-//$('#del-shp').click(deleteGeojson);
-/*$('#zoom-shp').click(function () {
-    console.log(shpLayer)
-    var bounds = shpLayer.getBounds();
-    mapObj.flyToBounds(bounds);
-})*/

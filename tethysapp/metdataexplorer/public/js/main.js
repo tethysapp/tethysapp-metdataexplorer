@@ -4,7 +4,7 @@ let subsetURL = '';
 let wmsURL = '';
 let opendapURL = '';
 let shpfileAdded = false;
-let geojsons = {};
+let geojsons = false;
 
 add_user_layers();
 

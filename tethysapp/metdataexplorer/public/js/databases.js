@@ -167,10 +167,12 @@ $('#add-thredds-submit').click(saveThredds);
 $('.url-list-label').click(function () {
   let url = $(this).parents().closest('.url-list').attr('data-url');
   let geoname = $(this).parents().closest('.url-list').attr('data-spatial');
-  let geojson = JSON.parse(geojsons[geoname]);
-  make_file_layer(geojson);
+  if (geojsons !== false) {
+    let geojson = JSON.parse(geojsons[geoname]);
+    make_file_layer(geojson);
+    var bounds = shpLayer.getBounds();
+    mapObj.flyToBounds(bounds);
+  }
   $('#url-input').val(url);
   get_files(url)
-  var bounds = shpLayer.getBounds();
-  mapObj.flyToBounds(bounds);
 });
