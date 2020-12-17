@@ -167,7 +167,8 @@ $('#add-thredds-submit').click(saveThredds);
 $('.url-list-label').click(function () {
   let url = $(this).parents().closest('.url-list').attr('data-url');
   let geoname = $(this).parents().closest('.url-list').attr('data-spatial');
-  if (geojsons !== false) {
+  console.log(geoname)
+  if (geoname !== 'No spatial reference') {
     let geojson = JSON.parse(geojsons[geoname]);
     make_file_layer(geojson);
     var bounds = shpLayer.getBounds();
