@@ -1,6 +1,8 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer
 
+from geoalchemy2 import Geometry
+
 Base = declarative_base()
 
 class Thredds(Base):
@@ -10,7 +12,7 @@ class Thredds(Base):
     name = Column(String(100))
     url = Column(String(2083))
     description = Column(String(2000))
-    spatial = Column(String(100))
+    spatial = Column(Geometry('POLYGON'))
     tags = Column(String(100))
     group = Column(String(100))
 

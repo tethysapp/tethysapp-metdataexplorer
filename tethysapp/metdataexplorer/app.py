@@ -110,7 +110,8 @@ class metdataexplorer(TethysAppBase):
                 name='thredds_db',
                 description='Database to store thredds URLs.',
                 initializer='metdataexplorer.init_stores.init_thredds_db',
-                required=True
+                required=True,
+                spatial=True,
             ),
         )
 
