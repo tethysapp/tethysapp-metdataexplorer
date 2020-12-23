@@ -12,7 +12,7 @@ class Thredds(Base):
     name = Column(String(100))
     url = Column(String(2083))
     description = Column(String(2000))
-    spatial = Column(Geometry('POLYGON'))
+    spatial = Column(Geometry('MULTIPOLYGON'))
     tags = Column(String(100))
     group = Column(String(100))
 
@@ -20,7 +20,7 @@ class Thredds(Base):
         self.name = name
         self.url = url
         self.description = description
-        self.spatial = spatial
+        self.spatial = 'SRID=4326;MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)),((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1)))'
         self.tags = tags
         self.group = group
 

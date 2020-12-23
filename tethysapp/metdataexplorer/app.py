@@ -60,11 +60,6 @@ class metdataexplorer(TethysAppBase):
                 url='metdataexplorer/getDimensions',
                 controller='metdataexplorer.controllers.get_dimensions'
             ),
-            #UrlMap(
-            #    name='deleteShapefile',
-            #    url='metdataexplorer/shapefile/delete',
-            #    controller='metdataexplorer.shapefile.delete_shp'
-            #),
             UrlMap(
                 name='saveThredds',
                 url='metdataexplorer/database/saveThredds',

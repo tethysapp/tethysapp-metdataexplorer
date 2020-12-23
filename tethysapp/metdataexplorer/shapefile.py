@@ -12,9 +12,9 @@ def shp_to_geojson(file_path):
     new_directory = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace')
 
     shpfile = geopandas.read_file(filepath)
-    shpfile.to_file(os.path.join(new_directory, filename + '.geojson'), driver='GeoJSON')
+    shpfile.to_file(os.path.join(new_directory, 'temp.geojson'), driver='GeoJSON')
 
-    book = open(os.path.join(new_directory, filename + '.geojson'), "r")
+    book = open(os.path.join(new_directory, 'temp.geojson'), "r")
     geojson_file = book.read()
 
     return geojson_file, filename

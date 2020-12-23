@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 import os
+import geoalchemy2
 
 from .model import Base, Thredds, Groups
 from .app import metdataexplorer as app
@@ -40,10 +41,16 @@ def save_thredds(request):
     url = request.GET['url']
     name = request.GET['name']
     description = request.GET['description']
-    spatial = request.GET['map']
+    #geojson = request.GET['map']
     tags = request.GET['tags']
     group = request.GET['group']
 
+    path = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace', 'temp.geojson')
+    book = open(path, "r")
+    geojson = book.read()
+
+    spatial = geoalchemy2.functions.ST_GeomFromGeoJSON(geojson)
+    print(spatial)
     SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
     session = SessionMaker()
 
