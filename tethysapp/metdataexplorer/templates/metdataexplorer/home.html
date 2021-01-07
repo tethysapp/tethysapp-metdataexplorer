@@ -30,7 +30,7 @@
             <h3>{{ group.name }}</h3>
           </div>
           <div style="width: 40%; padding-right: 15px">
-            <img class="add-url img-button" data-name="{{ group.name }}" src="{% static 'metdataexplorer/images/addButton.png' %}" style="height: 20px; width: auto">
+            <!--<img class="add-url img-button" data-name="{{ group.name }}" src="{% static 'metdataexplorer/images/addButton.png' %}" style="height: 20px; width: auto">-->
             <img class="info-group img-button" src="{% static 'metdataexplorer/images/infoButton.png' %}" style="height: 20px; width: auto">
             <img class="delete-group img-button" data-name="{{ group.name }}" onclick="deleteGroup.call(this)" src="{% static 'metdataexplorer/images/trashButtonBlue.png' %}" style="height: 20px; width: auto">
           </div>
@@ -66,9 +66,24 @@
     <div id="lower-content">
       <div style="width: 50%; height: 100%; float: left;">
         <div class="half-box">
-          <button id="up-file" class="fa fa-angle-double-up" style="float: left; height: 26px; width: 5%; margin: 5px 0px 10px 2%"></button>
-          <input id="url-input" type="text" placeholder="Thredds URL" style="width: 86%; margin: 5px 0px 10px 0px; display: inline-block">
-          <div id="filetree-div" class="inner-div"></div>
+          <div style="display:flex; justify-content: center; width: 100%">
+            <img id="up-file" class="img-button" src="{% static 'metdataexplorer/images/upArrowButton.png' %}" style="height: 25px; width: auto; margin: 5px 0px 10px 0px;">
+            <input id="url-input" type="text" placeholder="Thredds URL" style="width: 85%; margin: 5px 0px 10px 0px; border-radius: 0px; border-width: 1px;">
+            <img class="add-url img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 25px; width: auto; margin: 5px 0px 10px 0px;">
+          </div>
+          <div id="filetree-div" class="inner-div">
+          </div>
+          <div id="file-info-div" style="display: none; flex-direction: column; padding: 0px 15px 0px 15px; overflow-y: scroll; height: 70%; width: 100%;">
+            <!--<b style="color: #333333; font-size: 12pt"></b>-->
+            <div>
+              <label for="variable-input" style="padding-right: 60px">Variables:</label>
+              <select id="variable-input" style="width: 50%; margin: 20px 0px 5px 0px;"></select>
+            </div>
+            <div>
+              <label for="time" style="padding-right: 89px">Time:</label>
+              <select id="time" style="width: 50%; margin: 5px 0px 5px 0px;"></select>
+            </div>
+          </div>
         </div>
       </div>
       <div style="width: 50%; height: 100%; float: right;">

@@ -14,6 +14,10 @@ function update_filepath() {
     $('#url-input').val(newURL);
     get_files(newURL);
   } else if ($(this).attr('class') == 'file') {
+    $('#url-input').val($(this).text().slice(2));
+    $('#layer-display-container').css('display', 'inline');
+    $('#filetree-div').css('display', 'none');
+    $('#file-info-div').css('display', 'flex');
     wmsURL = $(this).attr('data-wms-url');
     opendapURL = $(this).attr('data-opendap-url');
     subsetURL = $(this).attr('data-subset-url');
@@ -126,6 +130,9 @@ function get_files(url) {
       if (dataTree == 'Invalid URL') {
         alert(dataTree)
       } else {
+        $('#layer-display-container').css('display', 'none');
+        $('#filetree-div').css('display', 'block');
+        $('#file-info-div').css('display', 'none');
         var correctURL = result['correct_url'];
         let html = ''
         for (var file in dataTree['files']) {
@@ -161,38 +168,11 @@ $('#up-file').click(function () {
   }
 })
 
-$('#url-input').change(get_files($('#url-input').val()));
+$('#url-input').change(function () {get_files($('#url-input').val())});
 $('#variable-input').change(update_wmslayer);
 $('#wmslayer-style').change(update_wmslayer);
 $('#wmslayer-bounds').change(update_wmslayer);
 $('#variable-input').change(getDimensions);
 $('#opacity-slider').change(function () {dataLayerObj.setOpacity($('#opacity-slider').val())});
 $('#upload-shp').click(function() {$('#add-thredds-model').modal('hide'); $('#uploadshp-modal').modal('show')});
-
-$('#file-metadata-button').click(function() {
-  $('#var-metadata-div').css('display', 'none');
-  $('#metadata-div').css('display', 'block');
-  $('#file-metadata-button').css('background-color', '#1600F0');
-  $('#var-metadata-button').css('background-color', 'rgba(130, 141, 205, 1)');
-});
-$('#var-metadata-button').click(function() {
-  $('#metadata-div').css('display', 'none');
-  $('#var-metadata-div').css('display', 'block');
-  $('#var-metadata-button').css('background-color', '#1600F0');
-  $('#file-metadata-button').css('background-color', 'rgba(130, 141, 205, 1)');
-});
-
-$('#demo-group-button').click(function (){
-  $('#demo-group-button').css('background-color', '#1600F0')
-  $('#user-group-button').css('background-color', '#828cfa')
-  $('#demo-group-container').css('display', 'block');
-  $('#user-group-container').css('display', 'none');
-})
-
-$('#user-group-button').click(function (){
-  $('#user-group-button').css('background-color', '#1600F0')
-  $('#demo-group-button').css('background-color', '#828cfa')
-  $('#user-group-container').css('display', 'block');
-  $('#demo-group-container').css('display', 'none');
-})
 

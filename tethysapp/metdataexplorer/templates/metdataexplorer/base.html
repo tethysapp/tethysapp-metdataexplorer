@@ -44,9 +44,6 @@
       {% block group_buttons %}
       {% endblock %}
     </div>
-
-
-
 <!--    <div id="groups-title" class="titles">
       <div style="width: 50%">
         <h1>My Groups</h1>
@@ -57,23 +54,20 @@
         <img id="search-group" class="img-button" src="{% static 'metdataexplorer/images/searchButton.png' %}">
       </div>
     </div>-->
-
-
-
     <div id="groups">
       {% block groups %}
       {% endblock %}
     </div>
   </div>
-  <div>
-    <div style="text-align: center;">
+  <div id="layer-display-container" style="display:none;">
+<!--    <div style="text-align: center;">
       <b style="color: #333333">File Information</b>
     </div>
     <label for="variable-input" style="padding-right: 60px">Variables:</label>
     <select id="variable-input" style="width: 50%; margin: 20px 0px 5px 0px;"></select><br>
     <label for="time" style="padding-right: 89px">Time:</label>
     <select id="time" style="width: 50%; margin: 5px 0px 5px 0px;"></select><br>
-    <br>
+    <br>-->
     <div style="text-align: center;">
       <b style="color: #333333">Layer View Options</b>
     </div>
@@ -83,19 +77,20 @@
       <input type="range" min="0" max="1" value="1" step="0.01" class="slider" id="opacity-slider">
     </div>
     <br>
+
+    <label for="wmslayer-style" style="padding-right: 55px">Select Color Style</label>
+    <select id="wmslayer-style" style="width: 100%; margin: 5px 0px 20px 0px; padding: 5px">
+      <option value="boxfill/rainbow">RAINBOW</option>
+      <option value="boxfill/occam">OCCAM</option>
+      <option value="boxfill/alg">ALG</option>
+      <option value="boxfill/alg2">ALG2</option>
+      <option value="boxfill/ncview">NC VIEW</option>
+      <option value="boxfill/redblue">RED BLUE</option>
+    </select>
+    <br>
+    <label for="wmslayer-bounds" style="padding-right: 55px">Set Data Bounds</label>
+    <input id="wmslayer-bounds" style="width: 100%; margin: 5px 0px 20px 0px; padding: 5px" value="0,25">
   </div>
-  <label for="wmslayer-style" style="padding-right: 55px">Select Color Style</label>
-  <select id="wmslayer-style" style="width: 100%; margin: 5px 0px 20px 0px; padding: 5px">
-    <option value="boxfill/rainbow">RAINBOW</option>
-    <option value="boxfill/occam">OCCAM</option>
-    <option value="boxfill/alg">ALG</option>
-    <option value="boxfill/alg2">ALG2</option>
-    <option value="boxfill/ncview">NC VIEW</option>
-    <option value="boxfill/redblue">RED BLUE</option>
-  </select>
-  <br>
-  <label for="wmslayer-bounds" style="padding-right: 55px">Set Data Bounds</label>
-  <input id="wmslayer-bounds" style="width: 100%; margin: 5px 0px 20px 0px; padding: 5px" value="0,25">
 <!--Test Button-->
   <button id="geoserver-button">Geoserver</button>
 {% endblock %}
@@ -148,5 +143,5 @@
   <script src="{% static 'metdataexplorer/js/databases.js' %}" type="text/javascript"></script>
   <script src="{% static 'metdataexplorer/js/timeseries.js' %}" type="text/javascript"></script>
   <!--test script-->
-  <script src="{% static 'metdataexplorer/js/geoserver.js' %}" type="text/javascript"></script>
+  <script src="{% static 'metdataexplorer/js/interface.js' %}" type="text/javascript"></script>
 {% endblock %}
