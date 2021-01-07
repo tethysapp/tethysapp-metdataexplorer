@@ -96,6 +96,11 @@ class metdataexplorer(TethysAppBase):
                 url='metdataexplorer/database/threddsInfo/',
                 controller='metdataexplorer.database.thredds_info'
             ),
+            UrlMap(
+                name='threddsProxy',
+                url='metdataexplorer/threddsProxy/',
+                controller='metdataexplorer.controllers.thredds_proxy'
+            ),
         )
 
         return url_maps
@@ -106,11 +111,8 @@ class metdataexplorer(TethysAppBase):
                 name='thredds_db',
                 description='Database to store thredds URLs.',
                 initializer='metdataexplorer.init_stores.init_thredds_db',
-                required=True,
-                spatial=True,
+                required=True
             ),
         )
 
         return ps_settings
-
-

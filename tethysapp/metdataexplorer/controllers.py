@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from tethys_sdk.permissions import login_required
 from siphon.catalog import TDSCatalog
@@ -22,14 +22,12 @@ def home(request):
 
     session.close()
 
-    length = str(100/len(groups)) + '%'
-
     context = {
         'groups': groups,
-        'thredds': thredds,
-        'length': length,
+        'thredds': thredds
     }
     return render(request, 'metdataexplorer/home.html', context)
+
 
 def build_data_tree(request):
     url = request.GET['url']
@@ -53,6 +51,7 @@ def build_data_tree(request):
 
     data_tree['folders'] = folders_dict
     data_tree['files'] = files_dict
+
     correct_url = ds.catalog_url
     return JsonResponse({'dataTree': data_tree, 'correct_url': correct_url})
 
@@ -101,3 +100,15 @@ def get_dimensions(request):
 
     dimensions.sort()
     return JsonResponse({'variables': variables, 'dims': dimensions})
+
+
+def thredds_proxy(request):
+    if 'main_url' in request.GET:
+        request_url = request.GET['main_url']
+        query_params = request.GET.dict()
+        query_params.pop('main_url', None)
+        r = requests.get(request_url, params=query_params)
+
+        return HttpResponse(r.content, content_type="image/png")
+    else:
+        return JsonResponse({})

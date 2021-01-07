@@ -5,6 +5,7 @@ from geoalchemy2 import Geometry
 
 Base = declarative_base()
 
+
 class Thredds(Base):
     __tablename__ = 'thredds'
 
@@ -12,7 +13,7 @@ class Thredds(Base):
     name = Column(String(100))
     url = Column(String(2083))
     description = Column(String(2000))
-    spatial = Column(Geometry('MULTIPOLYGON'))
+    spatial = Column(String(2083))
     tags = Column(String(100))
     group = Column(String(100))
 
@@ -35,4 +36,3 @@ class Groups(Base):
     def __init__(self, name, description):
         self.name = name
         self.description = description
-
