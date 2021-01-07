@@ -8,9 +8,23 @@
   </div>
 {% endblock %}
 
+{% block group_buttons %}
+  {% for group in groups %}
+    {% if group.name == "Demo Group" %}
+      <button id="demo-group-button" style="width: 50%; background-color: #1600F0; color: white">Demo Group</button>
+    {% else %}
+      <button id="user-group-button" style="width: 50%; background-color: #828cfa; color: white">{{ group.name }}</button>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+
 {% block groups %}
     {% for group in groups %}
-      <span id="{{ forloop.counter }}" data-name="{{ group.name }}">
+    {% if group.name == "Demo Group" %}
+      <span id="demo-group-container" data-name="{{ group.name }}" style="display: block;">
+    {% else %}
+      <span id="user-group-container" data-name="{{ group.name }}" style="display: none;">
+    {% endif %}
         <div class="titles">
           <div class="name" style="width: 60%;">
             <h3>{{ group.name }}</h3>
@@ -44,7 +58,11 @@
 
 {% block app_content %}
   <div id="main-body">
-    <div id="map"></div>
+    <div id="map">
+      <div id="get-data-button" class="btn-group" style="z-index: 401; margin: 10px; position: absolute; left: 0; bottom: 40px;">
+        <button>Get Data Bounds</button>
+      </div>
+    </div>
     <div id="lower-content">
       <div style="width: 50%; height: 100%; float: left;">
         <div class="half-box">
@@ -165,7 +183,7 @@
           <div style="display: flex; align-items: center; justify-content: center;">
             <div style="width: 95%;">
               <h2 id="add-url-name" style="float: left">Add a Thredds URL for </h2>
-              <button type="button" style="width: 10%; float: right" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
+              <button id="info-box-exit" type="button" style="width: 10%; float: right" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">X</span></button>
             </div>
           </div>
         </div>
@@ -179,10 +197,13 @@
               <label for="thredds-tags-input" style="float: left">Tags:</label>
               <input id="thredds-tags-input" class="inputsty">
             </div>
-            <div>
-              <b style="float: left; font-size: 11pt; color: #333; padding: 0px">Spatial Extents:</b><br>
+            <div style="height: auto; width: 100%; min-height: 20px;">
+              <b style="float: left; font-size: 11pt; color: #333; padding: 0px;">Spatial Extents:  </b>
+              <p id="spatial-extent-label" style="float: left; font-size: 11pt; color: #333; padding: 0px;"></p>
+            </div>
+            <div style="height: auto; width: 100%;">
               <button id="upload-shp" style="width: 50%; float: left">Upload Shapefile</button>
-              <button style="width: 50%; float: right">Draw on Map</button>
+              <button id="draw-on-map-button" style="width: 50%; float: right">Draw on Map</button>
             </div>
             <div>
               <label for="thredds-description-input" style="float: left;">Description (Required):</label>
@@ -231,7 +252,7 @@
           <div style="display: flex; justify-content: center; width: 100%">
             <h1 id="url-info-name" style="color: black"></h1>
           </div>
-          <div id="inset-map"></div>
+          <div id="inset-map-one"></div>
           <h1 style="color: black">URL</h1>
           <div id="url-info-url" style="width: 100%; height: auto"></div>
           <h1 style="color: black">Description</h1>

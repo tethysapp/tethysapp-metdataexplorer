@@ -22,9 +22,12 @@ def home(request):
 
     session.close()
 
+    length = str(100/len(groups)) + '%'
+
     context = {
         'groups': groups,
         'thredds': thredds,
+        'length': length,
     }
     return render(request, 'metdataexplorer/home.html', context)
 

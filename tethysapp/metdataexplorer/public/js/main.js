@@ -6,7 +6,7 @@ let opendapURL = '';
 let shpfileAdded = false;
 let geojsons = false;
 
-add_user_layers();
+//add_user_layers();
 
 function update_filepath() {
   if ($(this).attr('class') == 'folder') {
@@ -17,7 +17,6 @@ function update_filepath() {
     wmsURL = $(this).attr('data-wms-url');
     opendapURL = $(this).attr('data-opendap-url');
     subsetURL = $(this).attr('data-subset-url');
-    console.log(wmsURL)
     get_metadata();
   }
 }
@@ -69,7 +68,7 @@ function print_metadata(variablesSorted, attrs) {
   }
   $('#metadata-div').empty();
   $('#metadata-div').append(html2);
-  $('#file-metadata-button').css('background-color', 'rgba(205, 209, 253, 1)');
+  $('#file-metadata-button').css('background-color', '#1600F0');
 }
 
 function getDimensions() {
@@ -162,23 +161,38 @@ $('#up-file').click(function () {
   }
 })
 
-$('#url-input').change(function () {get_files($('#url-input').val());});
-$('#variable-input').change(function () {update_wmslayer();});
-$('#wmslayer-style').change(function () {update_wmslayer();});
-$('#wmslayer-bounds').change(function () {update_wmslayer();});
+$('#url-input').change(get_files($('#url-input').val()));
+$('#variable-input').change(update_wmslayer);
+$('#wmslayer-style').change(update_wmslayer);
+$('#wmslayer-bounds').change(update_wmslayer);
+$('#variable-input').change(getDimensions);
 $('#opacity-slider').change(function () {dataLayerObj.setOpacity($('#opacity-slider').val())});
-$('#variable-input').change(function () {getDimensions();});
 $('#upload-shp').click(function() {$('#add-thredds-model').modal('hide'); $('#uploadshp-modal').modal('show')});
+
 $('#file-metadata-button').click(function() {
   $('#var-metadata-div').css('display', 'none');
   $('#metadata-div').css('display', 'block');
-  $('#file-metadata-button').css('background-color', 'rgba(205, 209, 253, 1)');
+  $('#file-metadata-button').css('background-color', '#1600F0');
   $('#var-metadata-button').css('background-color', 'rgba(130, 141, 205, 1)');
 });
 $('#var-metadata-button').click(function() {
   $('#metadata-div').css('display', 'none');
   $('#var-metadata-div').css('display', 'block');
-  $('#var-metadata-button').css('background-color', 'rgba(205, 209, 253, 1)');
+  $('#var-metadata-button').css('background-color', '#1600F0');
   $('#file-metadata-button').css('background-color', 'rgba(130, 141, 205, 1)');
 });
+
+$('#demo-group-button').click(function (){
+  $('#demo-group-button').css('background-color', '#1600F0')
+  $('#user-group-button').css('background-color', '#828cfa')
+  $('#demo-group-container').css('display', 'block');
+  $('#user-group-container').css('display', 'none');
+})
+
+$('#user-group-button').click(function (){
+  $('#user-group-button').css('background-color', '#1600F0')
+  $('#demo-group-button').css('background-color', '#828cfa')
+  $('#user-group-container').css('display', 'block');
+  $('#demo-group-container').css('display', 'none');
+})
 

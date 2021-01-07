@@ -1,5 +1,7 @@
 let mapObj = map();
-let insetMapObj = insetMap();
+let insetMapObj = insetMap('inset-map-one');
+//let insetMapObjTwo = insetMap('inset-map-two');
+
 let basemapObj = basemaps();
 let layerControlObj = L.control.layers(basemapObj,).addTo(mapObj);
 
@@ -72,8 +74,8 @@ function data_layer() {
 }
 
 // Inset map
-function insetMap() {
-  let insetmap = L.map('inset-map', {
+function insetMap(map) {
+  let insetmap = L.map(map, {
     center: [0, 0],
     zoom: 3,
     minZoom: 2,

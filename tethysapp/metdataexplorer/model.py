@@ -8,7 +8,7 @@ Base = declarative_base()
 class Thredds(Base):
     __tablename__ = 'thredds'
 
-    id = Column(Integer, primary_key=True)  # Record number.
+    id = Column(Integer, primary_key=True)
     name = Column(String(100))
     url = Column(String(2083))
     description = Column(String(2000))
@@ -16,11 +16,11 @@ class Thredds(Base):
     tags = Column(String(100))
     group = Column(String(100))
 
-    def __init__(self, name, url, description, spatial, tags, group):
+    def __init__(self, name, url, description, wkt, tags, group):
         self.name = name
         self.url = url
         self.description = description
-        self.spatial = 'SRID=4326;MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)),((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1)))'
+        self.spatial = 'SRID=4326;MULTIPOLYGON{0}'.format(wkt)
         self.tags = tags
         self.group = group
 

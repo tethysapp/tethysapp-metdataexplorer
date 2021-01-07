@@ -45,7 +45,7 @@ button {
     height: 30px;
     background-color: white;
     border-color: #cccccc;
-    margin-top: 10px;
+    margin: 10px 0px 2px 0px;
 }
 
 #map {
@@ -55,11 +55,11 @@ button {
     width: 100%;
 }
 
-#inset-map {
+#inset-map-one #inset-map-two {
     margin: 0px;
     padding: 0px;
     height: 300px;
-    width: 100%;
+    width: 300px;
 }
 
 #lower-content {

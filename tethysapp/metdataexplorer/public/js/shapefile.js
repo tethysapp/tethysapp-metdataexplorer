@@ -33,19 +33,17 @@ function getCookie(name) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //LOAD EXISTING USER LAYERS TO MAP
-function add_user_layers() {
+/*function add_user_layers() {
   $.ajax({
     url: 'shapefile/user_geojsons/',
     dataType: 'json',
     contentType: "application/json",
     method: 'GET',
     success: function (result) {
-      console.log(result['geojson'])
       geojsons = result['geojson'];
-      console.log(geojsons)
     },
   });
-}
+}*/
 
 
 //Create a geojson layer on the map using the shapefile the user uploaded
@@ -116,7 +114,6 @@ function uploadShapefile() {
         success: function (result) {
             geojsonName = result['filenames'];
             geojsonFile = result['geojson'];
-            add_user_layers();
             $('#uploadshp-modal').modal('hide');
             $('#add-thredds-model').modal('show');
         },

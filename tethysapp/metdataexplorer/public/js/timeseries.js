@@ -1,27 +1,5 @@
 let chartdata = {};
 
-drawnItems.on('click', function (e) {
-  var coord = e.layer.getLatLngs();
-  get_timeseries(coord);
-});
-
-/* Controls for when drawing on the maps */
-mapObj.on(L.Draw.Event.CREATED, function (e) {
-  drawnItems.addLayer(e.layer);
-  var coord = e.layer.getLatLngs();
-  get_timeseries(coord);
-});
-
-shpLayer.on('click', function (e) {
-  var coords = e.layer.getBounds();
-  console.log(coords);
-  var coord = {0:{0:{'lat': coords['_southWest']['lat'], 'lng': coords['_southWest']['lng']},
-      1:{'lat': coords['_northEast']['lat'], 'lng': coords['_southWest']['lng']},
-      2:{'lat': coords['_northEast']['lat'], 'lng': coords['_northEast']['lng']},
-      3:{'lat': coords['_southWest']['lat'], 'lng': coords['_northEast']['lng']}}};
-  get_timeseries(coord);
-});
-
 function get_timeseries(coord) {
   if (subsetURL == '') {
     alert('Please select a data layer.');

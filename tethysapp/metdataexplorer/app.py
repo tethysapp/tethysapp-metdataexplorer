@@ -1,5 +1,6 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import PersistentStoreDatabaseSetting
+from tethys_sdk.app_settings import SpatialDatasetServiceSetting
 
 
 class metdataexplorer(TethysAppBase):
@@ -111,3 +112,5 @@ class metdataexplorer(TethysAppBase):
         )
 
         return ps_settings
+
+

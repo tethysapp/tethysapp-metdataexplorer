@@ -3,6 +3,8 @@ import geopandas
 import os
 import glob
 
+from .app import metdataexplorer as app
+
 
 def shp_to_geojson(file_path):
     file_list = glob.glob(os.path.join(file_path, '*.shp'))

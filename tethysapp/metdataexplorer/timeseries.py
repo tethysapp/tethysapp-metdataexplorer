@@ -33,7 +33,7 @@ def mean_of_timeseries(path: str, variable: str, time_dim: str):
     df = pd.DataFrame(data=results)
     return df
 
-###########################################################################################
+######################################################################################
 
 def get_box_values(request):
     time = request.GET['time']

@@ -1,6 +1,5 @@
 from django.http import JsonResponse
-import os
-import geoalchemy2
+import json
 
 from .model import Base, Thredds, Groups
 from .app import metdataexplorer as app
@@ -41,20 +40,14 @@ def save_thredds(request):
     url = request.GET['url']
     name = request.GET['name']
     description = request.GET['description']
-    #geojson = request.GET['map']
     tags = request.GET['tags']
     group = request.GET['group']
+    spatial = request.GET['map']
 
-    path = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace', 'temp.geojson')
-    book = open(path, "r")
-    geojson = book.read()
-
-    spatial = geoalchemy2.functions.ST_GeomFromGeoJSON(geojson)
-    print(spatial)
     SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
     session = SessionMaker()
 
-    db = Thredds(url=url, name=name, description=description, spatial=spatial, tags=tags, group=group)
+    db = Thredds(url=url, name=name, description=description, wkt='(' + spatial + ')', tags=tags, group=group)
 
     session.add(db)
     session.commit()
@@ -121,14 +114,26 @@ def thredds_info(request):
     session = SessionMaker()
 
     db = session.query(Thredds).filter(Thredds.group == group).filter(Thredds.name == name).first()
-
+    spatial = session.query(Thredds.spatial.ST_AsGeoJSON()).filter(Thredds.group == group).filter(Thredds.name == name).first()
     session.close()
 
     array['name'] = db.name
     array['description'] = db.description
     array['url'] = db.url
     array['description'] = db.description
-    array['spatial'] = db.spatial
 
+    coordinates = {}
+    spatial_array = json.loads(spatial[0])
+
+    for list_one in spatial_array['coordinates']:
+        coordinates['geometry'] = list_one
+
+    array['spatial'] = {
+        'type': 'Feature',
+        'geometry': {
+            "type": "Polygon",
+            "coordinates": coordinates['geometry'],
+        }
+    }
     return JsonResponse({'array': array})
 

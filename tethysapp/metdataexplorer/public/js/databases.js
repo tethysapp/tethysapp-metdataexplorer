@@ -1,6 +1,7 @@
 let groupName = '';
 let groupID = '';
 let geojsonName = 'No spatial reference';
+let urlInfoBox = false;
 
 function deleteAll() {
     let con = confirm('Are you sure you want to delete all groups? This action cannot be undone.')
@@ -61,17 +62,19 @@ function deleteGroup() {
 }
 
 function saveThredds() {
+    urlInfoBox = false;
     let name = $('#thredds-title-input').val();
     let url = $('#thredds-url-input').val();
     let tags = $('#thredds-tags-input').val();
     let description = $('#thredds-description-input').val();
+    let spatial = $('#spatial-extent-label').text();
     $.ajax({
         url: 'database/saveThredds/',
         data: {
             'name': name,
             'url': url,
             'tags': tags,
-            'map': geojsonName,
+            'map': spatial,
             'description': description,
             'group': groupName,
         },
@@ -144,36 +147,47 @@ function threddsInfo (){
             $('#url-info-name').empty().append(array.name);
             $('#url-info-url').empty().append('<p>' + array.url + '</p>');
             $('#url-info-description').empty().append('<p>' + array.description + '</p>');
-            $('#url-info-model').modal('show')
+            $('#url-info-model').modal('show');
         }
     })
 }
 
 $('.info-group').click(groupInfo);
 $('.info-url').click(threddsInfo);
-
 $('#delete-all-group').click(deleteAll);
-$('#add-group').click(function () {$('#add-group-model').modal('show')});
 $('#add-group-submit').click(saveGroup);
+$('#add-thredds-submit').click(saveThredds);
+
+$('#info-box-exit').click(function () {urlInfoBox = false;})
+$('#add-group').click(function () {$('#add-group-model').modal('show')});
 
 $('.add-url').click(function () {
+    urlInfoBox = true;
     groupName = $(this).parents('span').attr('data-name');
     groupID = $(this).parents('span').attr('id');
     $('#add-url-name').append(groupName);
     $('#add-thredds-model').modal('show');
 });
-$('#add-thredds-submit').click(saveThredds);
 
 $('.url-list-label').click(function () {
   let url = $(this).parents().closest('.url-list').attr('data-url');
-  let geoname = $(this).parents().closest('.url-list').attr('data-spatial');
-  console.log(geoname)
-  if (geoname !== 'No spatial reference') {
-    let geojson = JSON.parse(geojsons[geoname]);
-    make_file_layer(geojson);
-    var bounds = shpLayer.getBounds();
-    mapObj.flyToBounds(bounds);
-  }
+  let name = $(this).parents().closest('.url-list').attr('data-name');
+  let group = $(this).parents('span').attr('data-name');
   $('#url-input').val(url);
   get_files(url)
+  $.ajax({
+    url: 'database/threddsInfo/',
+    data: {
+      'name': name,
+      'group': group,
+    },
+    dataType: 'json',
+    contentType: "application/json",
+    method: 'GET',
+    success: function (result) {
+      let array = result['array'];
+      let feature = L.geoJson(array['spatial']);
+      mapObj.flyToBounds(feature.getBounds());
+    }
+  })
 });

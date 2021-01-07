@@ -16,5 +16,6 @@ requirements:
       - siphon
       - netCDF4
       - numpy
+      - geojson
   pip:
 post:
