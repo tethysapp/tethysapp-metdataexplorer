@@ -32,18 +32,18 @@
           <div style="width: 40%; padding-right: 15px">
             <!--<img class="add-url img-button" data-name="{{ group.name }}" src="{% static 'metdataexplorer/images/addButton.png' %}" style="height: 20px; width: auto">-->
             <img class="info-group img-button" src="{% static 'metdataexplorer/images/infoButton.png' %}" style="height: 20px; width: auto">
-            <img class="delete-group img-button" data-name="{{ group.name }}" onclick="deleteGroup.call(this)" src="{% static 'metdataexplorer/images/trashButtonBlue.png' %}" style="height: 20px; width: auto">
+            <img class="delete-all img-button" data-name="{{ group.name }}" onclick="deleteDB.call(this)" src="{% static 'metdataexplorer/images/trashButtonBlue.png' %}" style="height: 20px; width: auto">
           </div>
         </div>
         <div class="group-container" style="width: 96%; height: auto; background-color: white; margin: 0% 2% 0% 2%; padding: 2px">
           {% for thredd in thredds %}
           {% if thredd.group == group.name %}
           <!--data-url="{{ thredd.url }}" data-name="{{ thredd.title }}" data-spatial="{{ thredd.spatial }}"-->
-          <div class="url-list" data-thredds='{"type":"{{ thredd.type }}", "name":"{{ thredd.name }}",
+          <div class="url-list" data-thredds='{"type":"{{ thredd.server_type }}", "name":"{{ thredd.name }}",
            "group":"{{ thredd.group }}", "title":"{{ thredd.title }}", "tags":"{{ thredd.tags }}",
            "url":"{{ thredd.url }}", "spatial":"{{ thredd.spatial }}", "color":"{{ thredd.color }}",
            "description":"{{ thredd.description }}", "attributes":"{{ thredd.attributes }}",
-           "time":"{{ thredd.times }}", "units":"{{ thredd.units }}"}'>
+           "time":"{{ thredd.time }}", "units":"{{ thredd.units }}"}'>
             <div class="url-list-label" style="width: 60%; overflow-x: scroll">
               <h4>{{ thredd.title }}</h4>
             </div>
@@ -278,15 +278,10 @@
       let URL_threddsProxy = "{% url 'metdataexplorer:threddsProxy' %}";
       let URL_buildDataTree = "{% url 'metdataexplorer:buildDataTree' %}";
       let URL_uploadShapefile = "{% url 'metdataexplorer:uploadShapefile' %}";
-      //let URL_userGeojson = "{% url 'metdataexplorer:userGeojson' %}";
       let URL_getBoxValues = "{% url 'metdataexplorer:getBoxValues' %}";
       let URL_metadata = "{% url 'metdataexplorer:metadata' %}";
       let URL_getDimensions = "{% url 'metdataexplorer:getDimensions' %}";
-      let URL_deleteGroup = "{% url 'metdataexplorer:deleteGroup' %}";
-      let URL_deleteURL = "{% url 'metdataexplorer:deleteURL' %}";
-      let URL_deleteAll = "{% url 'metdataexplorer:deleteAll' %}";
-      //let URL_groupInfo = "{% url 'metdataexplorer:groupInfo' %}";
-      //let URL_threddsInfo = "{% url 'metdataexplorer:threddsInfo' %}";
+      let URL_deleteContainer = "{% url 'metdataexplorer:deleteContainer' %}";
 
       let URL_updateDB = "{% url 'metdataexplorer:updateDB' %}";
   </script>

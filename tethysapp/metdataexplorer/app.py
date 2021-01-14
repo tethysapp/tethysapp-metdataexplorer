@@ -61,30 +61,10 @@ class metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.controllers.get_dimensions'
             ),
             UrlMap(
-                name='deleteGroup',
-                url='metdataexplorer/deleteGroup/',
-                controller='metdataexplorer.database.delete_group'
+                name='deleteContainer',
+                url='metdataexplorer/deleteContainer/',
+                controller='metdataexplorer.database.delete_container'
             ),
-            UrlMap(
-                name='deleteURL',
-                url='metdataexplorer/deleteURL/',
-                controller='metdataexplorer.database.delete_url'
-            ),
-            UrlMap(
-                name='deleteAll',
-                url='metdataexplorer/deleteAll/',
-                controller='metdataexplorer.database.delete_all'
-            ),
-            #UrlMap(
-            #    name='groupInfo',
-            #    url='metdataexplorer/groupInfo/',
-            #    controller='metdataexplorer.database.group_info'
-            #),
-            #UrlMap(
-            #    name='threddsInfo',
-            #    url='metdataexplorer/threddsInfo/',
-            #    controller='metdataexplorer.database.thredds_info'
-            #),
             UrlMap(
                 name='threddsProxy',
                 url='metdataexplorer/threddsProxy/',

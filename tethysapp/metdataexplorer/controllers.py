@@ -4,7 +4,6 @@ from tethys_sdk.permissions import login_required
 from siphon.catalog import TDSCatalog
 import requests
 import netCDF4
-import json
 
 from .model import Thredds, Groups
 from .app import metdataexplorer as app

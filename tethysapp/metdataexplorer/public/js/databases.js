@@ -7,7 +7,7 @@ function addAttribute(attribute) {
 
 function createDBArray() {
     if ($('#name-in-form').attr('data-type') == 'file') {
-        var url = `{opendap: ${opendapURL}, wms: ${wmsURL}, subset: ${subsetURL}}`;
+        var url = `opd:${opendapURL},wms:${wmsURL},sub:${subsetURL}`;
     } else {
         var url = $('#url-input').val();
     }
@@ -58,27 +58,38 @@ function createDBArray() {
 }
 
 function deleteDB () {
-    let name = $(this).parents().closest('.url-list').attr('data-thredds');
-    let group = $(this).parents('span').attr('data-name');
-
-    console.log(name)
-    console.log(group)
-    let json = JSON.parse(name);
-    console.log(json)
-/*    let con = confirm('Are you sure you want to delete ' + name + '? This action cannot be undone.')
+    if ($(this).attr('class') == 'delete-url img-button') {
+        var all = false;
+        let json = $(this).parents().closest('.url-list').attr('data-thredds');
+        let thredds_array = JSON.parse(json);
+        var dbInfo = {
+            'all': all,
+            'title': thredds_array['title'],
+            'group': thredds_array['group'],
+        }
+    } else {
+        var all = true;
+        var dbInfo = {
+            'all': all,
+            'title': 'all servers',
+        }
+    }
+    let con = confirm('Are you sure you want to delete ' + dbInfo['title'] + '? This action cannot be undone.')
     if (con == true) {
-        $(this).parents().closest('.url-list').remove();
+        if (dbInfo['all']) {
+            console.log('HI')
+            $(this).parents().closest('span').children().closest('.group-container').empty();
+        } else {
+            $(this).parents().closest('.url-list').remove();
+        }
         $.ajax({
-            url: URL_deleteURL,
-            data: {
-                'name': name,
-                'group': group,
-            },
+            url: URL_deleteContainer,
+            data: dbInfo,
             dataType: 'json',
-            contentType: "application/json",
+            contentType: 'application/json',
             method: 'GET',
         })
-    }*/
+    }
 }
 
 /*function deleteAll() {

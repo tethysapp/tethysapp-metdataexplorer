@@ -1,5 +1,4 @@
 from django.http import JsonResponse
-import json
 
 from .model import Thredds, Groups
 from .app import metdataexplorer as app
@@ -34,6 +33,25 @@ def update_database(request):
     return JsonResponse({'success': success})
 
 
+def delete_container(request):
+    array = request.GET.dict()
+
+    SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
+    session = SessionMaker()
+
+    if array['all'] == 'true':
+        session.query(Thredds).delete(synchronize_session=False)
+    else:
+        delete_url = session.query(Thredds).filter(Thredds.group == array['group']).filter(
+            Thredds.title == array['title']).first()
+        session.delete(delete_url)
+
+    session.commit()
+    success = True
+    return JsonResponse({'success': success})
+
+
+'''
 def delete_all(request):
 
     SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
@@ -62,24 +80,8 @@ def delete_group(request):
 
     success = True
     return JsonResponse({'success': success})
-
-
-def delete_url(request):
-    name = request.GET['name']
-    group = request.GET['group']
-
-    SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
-    session = SessionMaker()
-
-    deleteurl = session.query(Thredds).filter(Thredds.group == group).filter(Thredds.name == name).first()
-
-    session.delete(deleteurl)
-    session.commit()
-
-    success = True
-    return JsonResponse({'success': success})
-
-'''
+    
+    
 def group_info(request):
     group = request.GET['group']
     group_array = {}

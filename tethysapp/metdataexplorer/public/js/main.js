@@ -6,6 +6,7 @@ let URLpath = [];
 let subsetURL = "";
 let wmsURL = "";
 let opendapURL = "";
+let containerAttributes = {};
 //timeseries.js
 let chartdata = {};
 //databases.js
@@ -13,16 +14,6 @@ let geojsonName = 'No spatial reference';
 let urlInfoBox = false;
 //Included with draw.js: drawnItems, shpLayer
 //Included with map.js: mapObj, insetMapObj, basemapObj, layerControlObj
-
-function update_wmslayer() {
-    if (firstlayeradded == true) {
-        layerControlObj.removeLayer(dataLayerObj);
-        mapObj.removeLayer(dataLayerObj);
-    }
-    dataLayerObj = data_layer();
-    dataLayerObj.setOpacity($("#opacity-slider").val());
-    layerControlObj.addOverlay(dataLayerObj, "netcdf Layer");
-}
 
 function update_filepath() {
     if ($(this).attr("class") == "folder") {
@@ -132,7 +123,7 @@ function get_files(url) {
     $('#name-in-form').attr('data-type', 'folder');
     $.ajax({
         url: URL_buildDataTree,
-        data: {url: url},
+        data: {'url': url},
         dataType: "json",
         contentType: "application/json",
         method: "GET",
@@ -166,4 +157,14 @@ function get_files(url) {
             }
         }
     })
+}
+
+function update_wmslayer() {
+    if (firstlayeradded == true) {
+        layerControlObj.removeLayer(dataLayerObj);
+        mapObj.removeLayer(dataLayerObj);
+    }
+    dataLayerObj = data_layer();
+    dataLayerObj.setOpacity($("#opacity-slider").val());
+    layerControlObj.addOverlay(dataLayerObj, "netcdf Layer");
 }

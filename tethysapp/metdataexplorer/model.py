@@ -17,7 +17,7 @@ class Thredds(Base):
     spatial = Column(String(2000))
     color = Column(String(100))
     description = Column(String(4000))
-    attributes = Column(String(4000))
+    attributes = Column(String(20000))
     time = Column(String(100))
     units = Column(String(100))
 

@@ -72,46 +72,32 @@ $('#add-url').click(function () {
 });
 
 $("#upload-shp").click(function () {
-    $("#add-thredds-model").modal("hide")
-    $("#uploadshp-modal").modal("show")
-})
-
+    $("#add-thredds-model").modal("hide");
+    $("#uploadshp-modal").modal("show");
+});
 $("#url-input").change(function () {
     get_files($("#url-input").val());
-})
+});
 $("#variable-input").change(function () {
     update_wmslayer();
     getDimensions();
-})
-$("#wmslayer-style").change(update_wmslayer)
-$("#wmslayer-bounds").change(update_wmslayer)
+});
+$("#wmslayer-style").change(update_wmslayer);
+$("#wmslayer-bounds").change(update_wmslayer);
 $("#opacity-slider").change(function () {
     dataLayerObj.setOpacity($("#opacity-slider").val());
-})
+});
 
 $('.url-list-label').click(function () {
     let thredds = $(this).parents().closest('.url-list').data('thredds');
-    console.log(thredds);
-    let url = $(this).parents().closest('.url-list').attr('data-url');
-    let name = $(this).parents().closest('.url-list').attr('data-name');
-    let group = $(this).parents('span').attr('data-name');
-    $('#url-input').val(url);
-    get_files(url)
-    $.ajax({
-        url: URL_threddsInfo,
-        data: {
-            'name': name,
-            'group': group,
-        },
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'GET',
-        success: function (result) {
-            let array = result['array'];
-            let feature = L.geoJson(array['spatial']);
-            mapObj.flyToBounds(feature.getBounds());
-        }
-    })
+    if (thredds['type'] == 'file') {
+        let url_array = thredds['url'].split(',');
+        opendapURL = url_array['0'].slice(4);
+        wmsURL = url_array['1'].slice(4);
+        subsetURL = url_array['2'].slice(4);
+    } else {
+        get_files(thredds['url']);
+    }
 });
 
 
