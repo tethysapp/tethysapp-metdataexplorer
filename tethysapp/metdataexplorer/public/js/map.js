@@ -1,6 +1,5 @@
 let mapObj = map();
 let insetMapObj = insetMap('inset-map-one');
-//let insetMapObjTwo = insetMap('inset-map-two');
 
 let basemapObj = basemaps();
 let layerControlObj = L.control.layers(basemapObj,).addTo(mapObj);

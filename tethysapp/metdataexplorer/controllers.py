@@ -6,8 +6,7 @@ import requests
 import netCDF4
 import json
 
-from .model import Base, Thredds, Groups
-
+from .model import Thredds, Groups
 from .app import metdataexplorer as app
 
 
@@ -38,7 +37,7 @@ def build_data_tree(request):
     try:
         ds = TDSCatalog(url)
     except OSError:
-        exception = json.dumps('Invalid URL')
+        exception = 'Invalid URL'
         return JsonResponse({'dataTree': exception})
 
     folders = ds.catalog_refs

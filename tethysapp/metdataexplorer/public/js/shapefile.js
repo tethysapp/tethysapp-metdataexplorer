@@ -35,7 +35,7 @@ function getCookie(name) {
 //LOAD EXISTING USER LAYERS TO MAP
 /*function add_user_layers() {
   $.ajax({
-    url: 'shapefile/user_geojsons/',
+    url: URL_user_geojsons,
     dataType: 'json',
     contentType: "application/json",
     method: 'GET',
@@ -105,7 +105,7 @@ function uploadShapefile() {
     });
 
     $.ajax({
-        url: '/apps/metdataexplorer/shapefile/uploadShapefile/',
+        url: URL_uploadShapefile,
         type: 'POST',
         data: data,
         dataType: 'json',

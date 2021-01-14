@@ -28,7 +28,8 @@ function getDataBounds() {
 }
 
 function getThreddsBounds() {
-  $('#add-thredds-model').modal('hide');
+  $('#main-body').css('display', 'block');
+  $('#db-forms').css('display', 'none');
   let rectangleDrawer = new L.Draw.Rectangle(mapObj);
   rectangleDrawer.enable();
 }
@@ -60,8 +61,8 @@ mapObj.on(L.Draw.Event.CREATED, function (e) {
     }
     bounds += coord[0][0].lng.toFixed(2) + ' ' + coord[0][0].lat.toFixed(2) + '))';
     $('#spatial-extent-label').empty().append(bounds);
-    console.log(bounds)
-    $('#add-thredds-model').modal('show');
+    $('#main-body').css('display', 'none');
+    $('#db-forms').css('display', 'block');
   } else {
     drawnItems.addLayer(e.layer);
     let coord = e.layer.getLatLngs();

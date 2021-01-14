@@ -1,6 +1,5 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import PersistentStoreDatabaseSetting
-from tethys_sdk.app_settings import SpatialDatasetServiceSetting
 
 
 class metdataexplorer(TethysAppBase):
@@ -28,78 +27,73 @@ class metdataexplorer(TethysAppBase):
         url_maps = (
             UrlMap(
                 name='home',
-                url='metdataexplorer',
+                url='metdataexplorer/',
                 controller='metdataexplorer.controllers.home'
             ),
             UrlMap(
-                name='build_data_tree',
-                url='metdataexplorer/buildDataTree',
+                name='buildDataTree',
+                url='metdataexplorer/buildDataTree/',
                 controller='metdataexplorer.controllers.build_data_tree'
             ),
             UrlMap(
                 name='uploadShapefile',
-                url='metdataexplorer/shapefile/uploadShapefile/',
+                url='metdataexplorer/uploadShapefile/',
                 controller='metdataexplorer.shapefile.upload_shapefile'
             ),
             UrlMap(
-                name='user_geojson',
-                url='metdataexplorer/shapefile/user_geojsons/',
+                name='userGeojson',
+                url='metdataexplorer/userGeojsons/',
                 controller='metdataexplorer.shapefile.user_geojsons'
             ),
             UrlMap(
-                name='get_box_values',
-                url='metdataexplorer/timeseries/get_box_values/',
+                name='getBoxValues',
+                url='metdataexplorer/getBoxValues/',
                 controller='metdataexplorer.timeseries.get_box_values'
             ),
             UrlMap(
                 name='metadata',
-                url='metdataexplorer/metadata',
+                url='metdataexplorer/metadata/',
                 controller='metdataexplorer.controllers.metadata'
             ),
             UrlMap(
                 name='getDimensions',
-                url='metdataexplorer/getDimensions',
+                url='metdataexplorer/getDimensions/',
                 controller='metdataexplorer.controllers.get_dimensions'
             ),
             UrlMap(
-                name='saveThredds',
-                url='metdataexplorer/database/saveThredds',
-                controller='metdataexplorer.database.save_thredds'
-            ),
-            UrlMap(
-                name='saveGroup',
-                url='metdataexplorer/database/saveGroup',
-                controller='metdataexplorer.database.save_group'
-            ),
-            UrlMap(
                 name='deleteGroup',
-                url='metdataexplorer/database/deleteGroup',
+                url='metdataexplorer/deleteGroup/',
                 controller='metdataexplorer.database.delete_group'
             ),
             UrlMap(
                 name='deleteURL',
-                url='metdataexplorer/database/deleteURL',
+                url='metdataexplorer/deleteURL/',
                 controller='metdataexplorer.database.delete_url'
             ),
             UrlMap(
                 name='deleteAll',
-                url='metdataexplorer/database/deleteAll',
+                url='metdataexplorer/deleteAll/',
                 controller='metdataexplorer.database.delete_all'
             ),
-            UrlMap(
-                name='groupInfo',
-                url='metdataexplorer/database/groupInfo',
-                controller='metdataexplorer.database.group_info'
-            ),
-            UrlMap(
-                name='threddsInfo',
-                url='metdataexplorer/database/threddsInfo/',
-                controller='metdataexplorer.database.thredds_info'
-            ),
+            #UrlMap(
+            #    name='groupInfo',
+            #    url='metdataexplorer/groupInfo/',
+            #    controller='metdataexplorer.database.group_info'
+            #),
+            #UrlMap(
+            #    name='threddsInfo',
+            #    url='metdataexplorer/threddsInfo/',
+            #    controller='metdataexplorer.database.thredds_info'
+            #),
             UrlMap(
                 name='threddsProxy',
                 url='metdataexplorer/threddsProxy/',
                 controller='metdataexplorer.controllers.thredds_proxy'
+            ),
+            UrlMap(
+                name='updateDB',
+                url='metdataexplorer/updateDB/',
+                controller='metdataexplorer.database.update_database'
             ),
         )
 

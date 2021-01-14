@@ -1,5 +1,3 @@
-let chartdata = {};
-
 function get_timeseries(coord) {
   if (subsetURL == '') {
     alert('Please select a data layer.');
@@ -13,7 +11,7 @@ function get_timeseries(coord) {
     var time = $('#time').val();
     var subsetUrlFull = subsetURL + '?var=' + vars + '&north=' + maxlat + '&west=' + minlng + '&east=' + maxlng + '&south=' + minlat + '&disableProjSubset=on&horizStride=1&temporal=all';
     $.ajax({
-      url: 'timeseries/get_box_values/',
+      url: URL_getBoxValues,
       data: {
         'subsetURL': JSON.stringify(subsetUrlFull),
         'var': vars,

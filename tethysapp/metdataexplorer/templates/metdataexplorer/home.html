@@ -11,9 +11,9 @@
 {% block group_buttons %}
   {% for group in groups %}
     {% if group.name == "Demo Group" %}
-      <button id="demo-group-button" style="width: 50%; background-color: #1600F0; color: white">Demo Group</button>
+      <button id="demo-group-button" style="width: 50%; background-color: #1600F0; color: white;" data-clicked="true">Demo Group</button>
     {% else %}
-      <button id="user-group-button" style="width: 50%; background-color: #828cfa; color: white">{{ group.name }}</button>
+      <button id="user-group-button" style="width: 50%; background-color: #828cfa; color: white" data-clicked="false">{{ group.name }}</button>
     {% endif %}
   {% endfor %}
 {% endblock %}
@@ -38,15 +38,20 @@
         <div class="group-container" style="width: 96%; height: auto; background-color: white; margin: 0% 2% 0% 2%; padding: 2px">
           {% for thredd in thredds %}
           {% if thredd.group == group.name %}
-          <div class="url-list" data-url="{{ thredd.url }}" data-name="{{ thredd.name }}" data-spatial="{{ thredd.spatial }}">
-            <div class="url-list-label" style="width: 60%;">
-              <h4>{{ thredd.name }}</h4>
+          <!--data-url="{{ thredd.url }}" data-name="{{ thredd.title }}" data-spatial="{{ thredd.spatial }}"-->
+          <div class="url-list" data-thredds='{"type":"{{ thredd.type }}", "name":"{{ thredd.name }}",
+           "group":"{{ thredd.group }}", "title":"{{ thredd.title }}", "tags":"{{ thredd.tags }}",
+           "url":"{{ thredd.url }}", "spatial":"{{ thredd.spatial }}", "color":"{{ thredd.color }}",
+           "description":"{{ thredd.description }}", "attributes":"{{ thredd.attributes }}",
+           "time":"{{ thredd.times }}", "units":"{{ thredd.units }}"}'>
+            <div class="url-list-label" style="width: 60%; overflow-x: scroll">
+              <h4>{{ thredd.title }}</h4>
             </div>
             <div style="width: 40%; padding-right: 5px">
-              <img class="delete-url img-button" onclick="deleteThredds.call(this)" src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
+              <img class="delete-url img-button" onclick="deleteDB.call(this)" src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
               <img class="search-url img-button" src="{% static 'metdataexplorer/images/searchButtonGray.png' %}" style="height: 15px; width: auto;">
               <img class="info-url img-button" src="{% static 'metdataexplorer/images/infoButtonGray.png' %}" style="height: 15px; width: auto;">
-              <img class="filter-url img-button" src="{% static 'metdataexplorer/images/filterButtonGray.png' %}" style="height: 15px; width: auto;">
+              <img class="edit-url img-button" src="{% static 'metdataexplorer/images/editButton.png' %}" style="height: 15px; width: auto;">
             </div>
           </div>
           {% endif %}
@@ -69,12 +74,11 @@
           <div style="display:flex; justify-content: center; width: 100%">
             <img id="up-file" class="img-button" src="{% static 'metdataexplorer/images/upArrowButton.png' %}" style="height: 25px; width: auto; margin: 5px 0px 10px 0px;">
             <input id="url-input" type="text" placeholder="Thredds URL" style="width: 85%; margin: 5px 0px 10px 0px; border-radius: 0px; border-width: 1px;">
-            <img class="add-url img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 25px; width: auto; margin: 5px 0px 10px 0px;">
+            <img id="add-url" class="img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 25px; width: auto; margin: 5px 0px 10px 0px;">
           </div>
           <div id="filetree-div" class="inner-div">
           </div>
           <div id="file-info-div" style="display: none; flex-direction: column; padding: 0px 15px 0px 15px; overflow-y: scroll; height: 70%; width: 100%;">
-            <!--<b style="color: #333333; font-size: 12pt"></b>-->
             <div>
               <label for="variable-input" style="padding-right: 60px">Variables:</label>
               <select id="variable-input" style="width: 50%; margin: 20px 0px 5px 0px;"></select>
@@ -94,6 +98,56 @@
           </div>
           <div id="var-metadata-div" class="inner-div" style="display: none">
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--HTML for the add file form-->
+  <div id="db-forms" style="display: none; overflow-y: scroll">
+    <div style="width: 100%; height: auto; min-height: 20px">
+      <div style="margin: 15px 0px 0px 20px"><b>Save:&nbsp</b><b id="name-in-form" data-type="folder"></b></div>
+    </div>
+    <div style="display: flex; flex-direction: row;">
+      <div style="width: 50%; padding: 15px 20px 20px 20px; flex-direction: column;">
+        <div>
+          <div style="width: 100%; height: 20px;"><b>Upload to: User Group</b></div>
+          <label for="title-input" style="float: left; padding-top: 10px;">Title (Required):</label>
+          <input id="title-input" class="inputsty">
+          <label for="tags-input" style="float: left">Tags:</label>
+          <input id="tags-input" class="inputsty">
+        </div>
+        <div style="height: auto; width: 100%; min-height: 20px;">
+          <b style="padding-top: 20px;">Spatial Extents: </b>
+          <p id="spatial-extent-label" style="float: left; font-size: 11pt; color: #333; padding: 25px;"></p>
+        </div>
+        <div style="height: auto; width: 100%; display: flex">
+          <button id="upload-shp" style="width: 50%;">Upload Shapefile</button>
+          <button id="draw-on-map-button" style="width: 50%;">Draw on Map</button>
+        </div>
+        <label for="color-range-input" style="float: left">Default Color Range:</label>
+        <input id="color-range-input" class="inputsty" placeholder="0,25">
+        <div>
+          <label for="description-input" style="float: left;">Description (Required):</label>
+          <textarea id="description-input" style="width: 100%; height: 200px"></textarea>
+        </div>
+      </div>
+      <div style="width: 50%; padding: 20px; flex-direction: column;">
+        <b style="float: left; font-size: 11pt; color: #333; padding-top: 25px;">Attributes to Display:  </b><br>
+        <div style="display: flex; flex-direction: row; width: 100%; height: 30px; padding: 5px 0px 2px 0px">
+          <input id="add-attribute" class="inputsty">
+          <img id="add-attribute-button" class="img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 25px; width:auto; margin: 0px">
+          <button id="select-all-button" data-select="true">Select All</button>
+        </div>
+        <div id="attributes" style="width: 100%; height: 245px; border-style: solid; border-color:#000; border-width: 1px; border-radius: 3px; overflow-y: scroll; overflow-x: scroll">
+        </div>
+        <label for="dimensions" style="float: left">Time Dimension</label>
+        <select id="dimensions" class="inputsty" style="height: 27px"></select>
+        <label for="units" style="float: left">Units:</label>
+        <input id="units" class="inputsty">
+        <div style="display: flex; flex-direction: row">
+          <button id="add-submit" style="width: 50%; margin-top: 65px;">Save</button>
+          <button id="add-cancel" style="width: 50%; margin-top: 65px;">Back to Map</button>
         </div>
       </div>
     </div>
@@ -163,76 +217,6 @@
     </div>
   </div>
 
-  <!-- Add Group -->
-  <div class="modal fade" id="add-group-model" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div style="display: flex; align-items: center; justify-content: center;">
-            <div style="width: 95%;">
-              <h2 style="float: left">Add a Group of Thredds Data Servers</h2>
-              <button type="button" style="width: 10%; float: right" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
-            </div>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; justify-content: center;">
-          <div style="width: 90%; height: auto">
-            <label for="group-title-input" style="float: left">Title (Required):</label>
-            <input id="group-title-input" class="inputsty">
-            <label for="group-description-input" style="float: left">Description (Required):</label>
-            <textarea id="group-description-input"></textarea>
-          <div>
-            <button id="add-group-submit" style="width: 100px; float: right; margin: 10px;">Add</button>
-          </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add Thredds URL -->
-  <div class="modal fade" id="add-thredds-model" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div style="display: flex; align-items: center; justify-content: center;">
-            <div style="width: 95%;">
-              <h2 id="add-url-name" style="float: left">Add a Thredds URL for </h2>
-              <button id="info-box-exit" type="button" style="width: 10%; float: right" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">X</span></button>
-            </div>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; justify-content: center;">
-          <div style="width: 90%; height: auto">
-            <div>
-              <label for="thredds-title-input" style="float: left">Title (Required):</label>
-              <input id="thredds-title-input" class="inputsty">
-              <label for="thredds-url-input" style="float: left">URL (Required):</label>
-              <input id="thredds-url-input" class="inputsty">
-              <label for="thredds-tags-input" style="float: left">Tags:</label>
-              <input id="thredds-tags-input" class="inputsty">
-            </div>
-            <div style="height: auto; width: 100%; min-height: 20px;">
-              <b style="float: left; font-size: 11pt; color: #333; padding: 0px;">Spatial Extents:  </b>
-              <p id="spatial-extent-label" style="float: left; font-size: 11pt; color: #333; padding: 0px;"></p>
-            </div>
-            <div style="height: auto; width: 100%;">
-              <button id="upload-shp" style="width: 50%; float: left">Upload Shapefile</button>
-              <button id="draw-on-map-button" style="width: 50%; float: right">Draw on Map</button>
-            </div>
-            <div>
-              <label for="thredds-description-input" style="float: left;">Description (Required):</label>
-              <textarea id="thredds-description-input" style="width: 100%; height: 200px"></textarea>
-            </div>
-            <div>
-              <button id="add-thredds-submit" style="width: 100px; float: right; margin: 10px">Add</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- database info -->
   <div class="modal fade" id="database-info-model" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
     <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
@@ -292,6 +276,19 @@
   {{ block.super }}
   <script>
       let URL_threddsProxy = "{% url 'metdataexplorer:threddsProxy' %}";
+      let URL_buildDataTree = "{% url 'metdataexplorer:buildDataTree' %}";
+      let URL_uploadShapefile = "{% url 'metdataexplorer:uploadShapefile' %}";
+      //let URL_userGeojson = "{% url 'metdataexplorer:userGeojson' %}";
+      let URL_getBoxValues = "{% url 'metdataexplorer:getBoxValues' %}";
+      let URL_metadata = "{% url 'metdataexplorer:metadata' %}";
+      let URL_getDimensions = "{% url 'metdataexplorer:getDimensions' %}";
+      let URL_deleteGroup = "{% url 'metdataexplorer:deleteGroup' %}";
+      let URL_deleteURL = "{% url 'metdataexplorer:deleteURL' %}";
+      let URL_deleteAll = "{% url 'metdataexplorer:deleteAll' %}";
+      //let URL_groupInfo = "{% url 'metdataexplorer:groupInfo' %}";
+      //let URL_threddsInfo = "{% url 'metdataexplorer:threddsInfo' %}";
+
+      let URL_updateDB = "{% url 'metdataexplorer:updateDB' %}";
   </script>
 
 {% endblock %}

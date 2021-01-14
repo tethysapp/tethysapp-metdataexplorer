@@ -1,13 +1,91 @@
-let groupName = '';
-let groupID = '';
-let geojsonName = 'No spatial reference';
-let urlInfoBox = false;
+function addAttribute(attribute) {
+    let count = $('.attr-checkbox').length
+    let html = `<div style="display: flex; flex-direction: row; margin-top: 5px;"><input id="checkbox${count}" type="checkbox" class="attr-checkbox" checked style="margin: 0px 10px 0px 10px;">
+              <label for="checkbox${count}" style="padding: 0px; margin: 0px">${attribute}</label></div>`;
+    $('#attributes').append(html);
+}
 
-function deleteAll() {
+function createDBArray() {
+    if ($('#name-in-form').attr('data-type') == 'file') {
+        var url = `{opendap: ${opendapURL}, wms: ${wmsURL}, subset: ${subsetURL}}`;
+    } else {
+        var url = $('#url-input').val();
+    }
+    let attr = [];
+    $('.attr-checkbox').each(function () {
+        if (this.checked) {
+            attr.push($(this).next('label').text());
+        }
+    })
+    if ($('#demo-group-button').attr('data-clicked') === 'true') {
+        var group = 'Demo Group';
+        var groupID = 'demo-group-container';
+    } else {
+        var group = 'User Group';
+        var groupID = 'user-group-container';
+    }
+    let databaseInfo = {
+        type: $('#name-in-form').attr('data-type'),
+        name: $('#name-in-form').text(),
+        group: group,
+        title: $('#title-input').val(),
+        URLS: url,
+        tags: $('#tags-input').val(),
+        spatial: $('#spatial-extent-label').text(),
+        colorRange: $('#color-range-input').val(),
+        description: $('#description-input').val(),
+        attributes: `${attr}`,
+        timeDimensions: $('#dimensions').val(),
+        units: $('#units').val(),
+    };
+    console.log(JSON.stringify(databaseInfo))
+    $.ajax({
+        url: URL_updateDB,
+        dataType: 'json',
+        data: databaseInfo,
+        contentType: "application/json",
+        method: 'GET',
+        success: function () {
+            $('#main-body').css('display', 'block');
+            $('#db-forms').css('display', 'none');
+            let clone = $('#main-url').clone(true).attr('id', 'cloned').css('display', 'flex').attr('data-thredds', JSON.stringify(databaseInfo));
+            $('#' + groupID + '').find('.group-container').append(clone);
+            $('#cloned').find('.url-list-label').append(`<h4>${$('#title-input').val()}</h4>`);
+            $('#cloned').removeAttr('id');
+            clearForm();
+        }
+    })
+}
+
+function deleteDB () {
+    let name = $(this).parents().closest('.url-list').attr('data-thredds');
+    let group = $(this).parents('span').attr('data-name');
+
+    console.log(name)
+    console.log(group)
+    let json = JSON.parse(name);
+    console.log(json)
+/*    let con = confirm('Are you sure you want to delete ' + name + '? This action cannot be undone.')
+    if (con == true) {
+        $(this).parents().closest('.url-list').remove();
+        $.ajax({
+            url: URL_deleteURL,
+            data: {
+                'name': name,
+                'group': group,
+            },
+            dataType: 'json',
+            contentType: "application/json",
+            method: 'GET',
+        })
+    }*/
+}
+
+/*function deleteAll() {
     let con = confirm('Are you sure you want to delete all groups? This action cannot be undone.')
     if (con == true) {
         $.ajax({
-            url: 'database/deleteAll/',
+            url: URL_deleteAll,
             dataType: 'json',
             contentType: "application/json",
             method: 'GET',
@@ -18,36 +96,13 @@ function deleteAll() {
     }
 }
 
-function saveGroup() {
-    let name = $('#group-title-input').val();
-    let description = $('#group-description-input').val();
-    $.ajax({
-        url: 'database/saveGroup/',
-        data: {
-        'name': name,
-        'description': description,
-        },
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'GET',
-        success: function (result) {
-            $('#add-group-model').modal('hide')
-            let newid = $("#groups span").length + 1;
-            let clone = $('#main-group').clone(true).attr('id', newid).attr('data-name', name).css('display', 'block');
-            $('#groups').append(clone);
-            $('#' + newid + '').find('.name').append('<h3>' + name + '</h3>');
-            $('#' + newid + '').find('.group-container').css('display', 'block');
-        }
-    })
-}
-
 function deleteGroup() {
     let group = $(this).parents('span').attr('data-name');
     let id = $(this).parents('span').attr('id');
     let con = confirm('Are you sure you want to delete ' + group + '? This action cannot be undone.')
     if (con == true) {
         $.ajax({
-        url: 'database/deleteGroup/',
+        url: URL_deleteGroup,
         data: {
         'group': group,
         },
@@ -61,60 +116,10 @@ function deleteGroup() {
     }
 }
 
-function saveThredds() {
-    urlInfoBox = false;
-    let name = $('#thredds-title-input').val();
-    let url = $('#thredds-url-input').val();
-    let tags = $('#thredds-tags-input').val();
-    let description = $('#thredds-description-input').val();
-    let spatial = $('#spatial-extent-label').text();
-    $.ajax({
-        url: 'database/saveThredds/',
-        data: {
-            'name': name,
-            'url': url,
-            'tags': tags,
-            'map': spatial,
-            'description': description,
-            'group': groupName,
-        },
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'GET',
-        success: function (result) {
-            $('#add-thredds-model').modal('hide')
-            let clone = $('#main-url').clone(true).attr('id', 'cloned').css('display', 'flex').attr('data-url', url).attr('data-name', name).attr('data-spatial', geojsonName);
-            $('#' + groupID + '').find('.group-container').append(clone);
-            $('#cloned').find('.url-list-label').append('<h4>' + name + '</h4>');
-            $('#cloned').removeAttr('id');
-            geojsonName = 'No spatial reference'
-        }
-    })
-}
-
-function deleteThredds (){
-    let name = $(this).parents().closest('.url-list').attr('data-name');
-    let group = $(this).parents('span').attr('data-name');
-    let con = confirm('Are you sure you want to delete ' + name + '? This action cannot be undone.')
-    if (con == true) {
-        $(this).parents().closest('.url-list').remove();
-        $.ajax({
-            url: 'database/deleteURL/',
-            data: {
-                'name': name,
-                'group': group,
-            },
-            dataType: 'json',
-            contentType: "application/json",
-            method: 'GET',
-        })
-    }
-}
-
 function groupInfo (){
     let group = $(this).parents('span').attr('data-name');
     $.ajax({
-        url: 'database/groupInfo/',
+        url: URL_groupInfo,
         data: {
         'group': group,
         },
@@ -134,7 +139,7 @@ function threddsInfo (){
     let name = $(this).parents().closest('.url-list').attr('data-name');
     let group = $(this).parents('span').attr('data-name');
     $.ajax({
-        url: 'database/threddsInfo/',
+        url: URL_threddsInfo,
         data: {
             'name': name,
             'group': group,
@@ -150,44 +155,16 @@ function threddsInfo (){
             $('#url-info-model').modal('show');
         }
     })
-}
+}*/
 
-$('.info-group').click(groupInfo);
-$('.info-url').click(threddsInfo);
-$('#delete-all-group').click(deleteAll);
-$('#add-group-submit').click(saveGroup);
-$('#add-thredds-submit').click(saveThredds);
-
-$('#info-box-exit').click(function () {urlInfoBox = false;})
-$('#add-group').click(function () {$('#add-group-model').modal('show')});
-
-$('.add-url').click(function () {
-    urlInfoBox = true;
-    groupName = $(this).parents('span').attr('data-name');
-    groupID = $(this).parents('span').attr('id');
-    $('#add-url-name').append(groupName);
-    $('#add-thredds-model').modal('show');
+$('#info-box-exit').click(function () {
+    urlInfoBox = false;
+})
+$('#add-group').click(function () {
+    $('#add-group-model').modal('show')
 });
 
-$('.url-list-label').click(function () {
-  let url = $(this).parents().closest('.url-list').attr('data-url');
-  let name = $(this).parents().closest('.url-list').attr('data-name');
-  let group = $(this).parents('span').attr('data-name');
-  $('#url-input').val(url);
-  get_files(url)
-  $.ajax({
-    url: 'database/threddsInfo/',
-    data: {
-      'name': name,
-      'group': group,
-    },
-    dataType: 'json',
-    contentType: "application/json",
-    method: 'GET',
-    success: function (result) {
-      let array = result['array'];
-      let feature = L.geoJson(array['spatial']);
-      mapObj.flyToBounds(feature.getBounds());
-    }
-  })
-});
+//$('.info-group').click(groupInfo);
+//$('.info-url').click(threddsInfo);
+//$('#delete-all-group').click(deleteAll);
+//$('#add-group-submit').click(saveGroup);

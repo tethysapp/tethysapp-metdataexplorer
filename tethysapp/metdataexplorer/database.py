@@ -1,8 +1,37 @@
 from django.http import JsonResponse
 import json
 
-from .model import Base, Thredds, Groups
+from .model import Thredds, Groups
 from .app import metdataexplorer as app
+
+
+def update_database(request):
+    database_info = request.GET.dict()
+    SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
+    session = SessionMaker()
+
+    db = Thredds(
+        server_type=database_info['type'],
+        name=database_info['name'],
+        group=database_info['group'],
+        title=database_info['title'],
+        tags=database_info['tags'],
+        url=database_info['URLS'],
+        spatial=database_info['spatial'],
+        color=database_info['colorRange'],
+        description=database_info['description'],
+        attributes=database_info['attributes'],
+        time=database_info['timeDimensions'],
+        units=database_info['units'],
+    )
+
+    session.add(db)
+    session.commit()
+
+    session.close()
+
+    success = 'Dababase Updated'
+    return JsonResponse({'success': success})
 
 
 def delete_all(request):
@@ -14,44 +43,6 @@ def delete_all(request):
     session.query(Groups).delete(synchronize_session=False)
 
     session.commit()
-
-    success = True
-    return JsonResponse({'success': success})
-
-
-def save_group(request):
-    name = request.GET['name']
-    description = request.GET['description']
-
-    SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
-    session = SessionMaker()
-
-    db = Groups(name=name, description=description)
-
-    session.add(db)
-    session.commit()
-    session.close()
-
-    success = True
-    return JsonResponse({'success': success})
-
-
-def save_thredds(request):
-    url = request.GET['url']
-    name = request.GET['name']
-    description = request.GET['description']
-    tags = request.GET['tags']
-    group = request.GET['group']
-    spatial = request.GET['map']
-
-    SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
-    session = SessionMaker()
-
-    db = Thredds(url=url, name=name, description=description, wkt='(' + spatial + ')', tags=tags, group=group)
-
-    session.add(db)
-    session.commit()
-    session.close()
 
     success = True
     return JsonResponse({'success': success})
@@ -88,7 +79,7 @@ def delete_url(request):
     success = True
     return JsonResponse({'success': success})
 
-
+'''
 def group_info(request):
     group = request.GET['group']
     group_array = {}
@@ -136,4 +127,4 @@ def thredds_info(request):
         }
     }
     return JsonResponse({'array': array})
-
+'''

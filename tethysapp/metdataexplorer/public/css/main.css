@@ -1,7 +1,11 @@
-html, body, #app-content, #inner-app-content, #outer-container, #main-body {
+html, body, #app-content, #inner-app-content, #outer-container, #main-body, #dbforms {
     margin: 0px;
     padding: 0px;
     height: 100%;
+}
+
+label {
+    padding-top: 20px;
 }
 
 p {
@@ -9,7 +13,10 @@ p {
 }
 
 b {
-    font-size: 13pt;
+    float: left;
+    font-size: 11pt;
+    color: #333;
+    padding: 0px;
 }
 
 h1 {
@@ -43,7 +50,8 @@ h6 {
 button {
     width: 100%;
     height: 30px;
-    background-color: white;
+    background-color: #828cfa;
+    color: white;
     border-color: #cccccc;
     margin: 10px 0px 2px 0px;
 }
@@ -107,6 +115,14 @@ button {
 #title-div {
     max-height: 200px;
     overflow-y: scroll;
+}
+
+#select-all-button{
+    width: 90px;
+    height: 25px;
+    border-color: black;
+    border-width: 1px;
+    margin: 0px;
 }
 
 .titles {
@@ -188,6 +204,9 @@ button {
 
 .inputsty {
     width: 100%;
+    height: 25px;
+    border-width: 1px;
+    border-radius: 2px;
 }
 
 .url-list {
@@ -215,6 +234,17 @@ button {
 
 .img-button:hover {
     cursor: pointer;
+}
+
+.attribute-inner-div {
+    height: 25px;
+    width: 100%;
+    display: flex;
+}
+
+label,input {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 /* Safari */
