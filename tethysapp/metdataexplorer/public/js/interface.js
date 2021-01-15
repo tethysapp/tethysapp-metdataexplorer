@@ -1,3 +1,22 @@
+//Get url database info
+$("#go-input-button").click(function () {
+    containerAttributes = false;
+    get_files($("#url-input").val());
+});
+
+$('.url-list-label').click(function () {
+    let thredds = $(this).parents().closest('.url-list').data('thredds');
+    containerAttributes = thredds;
+    if (thredds['type'] == 'file') {
+        let url_array = thredds['url'].split(',');
+        opendapURL = url_array['0'].slice(4);
+        wmsURL = url_array['1'].slice(4);
+        subsetURL = url_array['2'].slice(4);
+    } else {
+        get_files(thredds['url']);
+    }
+});
+
 //Buttons for groups and metadata div
 $('#file-metadata-button').click(function () {
     $('#var-metadata-div').css('display', 'none');
@@ -75,9 +94,6 @@ $("#upload-shp").click(function () {
     $("#add-thredds-model").modal("hide");
     $("#uploadshp-modal").modal("show");
 });
-$("#url-input").change(function () {
-    get_files($("#url-input").val());
-});
 $("#variable-input").change(function () {
     update_wmslayer();
     getDimensions();
@@ -87,19 +103,6 @@ $("#wmslayer-bounds").change(update_wmslayer);
 $("#opacity-slider").change(function () {
     dataLayerObj.setOpacity($("#opacity-slider").val());
 });
-
-$('.url-list-label').click(function () {
-    let thredds = $(this).parents().closest('.url-list').data('thredds');
-    if (thredds['type'] == 'file') {
-        let url_array = thredds['url'].split(',');
-        opendapURL = url_array['0'].slice(4);
-        wmsURL = url_array['1'].slice(4);
-        subsetURL = url_array['2'].slice(4);
-    } else {
-        get_files(thredds['url']);
-    }
-});
-
 
 //////////////////////////Form Interface///////////////////////
 $('#add-attribute-button').click(function () {

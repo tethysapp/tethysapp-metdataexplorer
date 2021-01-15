@@ -6,7 +6,7 @@ let URLpath = [];
 let subsetURL = "";
 let wmsURL = "";
 let opendapURL = "";
-let containerAttributes = {};
+let containerAttributes = false;
 //timeseries.js
 let chartdata = {};
 //databases.js
@@ -27,14 +27,14 @@ function update_filepath() {
         $("#layer-display-container").css("display", "inline");
         $("#filetree-div").css("display", "none");
         $("#file-info-div").css("display", "flex");
+        opendapURL = $(this).attr("data-opendap-url");
+        subsetURL = $(this).attr("data-subset-url");
         wmsURL = $(this).attr("data-wms-url");
         if (wmsURL.indexOf("http://") != -1) {
             console.log("Http endpoint found, changing to proxy URL");
             wmsURL = `${URL_threddsProxy}?main_url=${encodeURIComponent(wmsURL)}`;
             console.log(wmsURL);
         }
-        opendapURL = $(this).attr("data-opendap-url");
-        subsetURL = $(this).attr("data-subset-url");
         get_metadata();
     }
 }
