@@ -31,9 +31,9 @@ class metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.controllers.home'
             ),
             UrlMap(
-                name='buildDataTree',
-                url='metdataexplorer/buildDataTree/',
-                controller='metdataexplorer.controllers.build_data_tree'
+                name='getFilesAndFolders',
+                url='metdataexplorer/getFilesAndFolders/',
+                controller='metdataexplorer.controllers.get_files_and_folders'
             ),
             UrlMap(
                 name='uploadShapefile',
@@ -51,14 +51,14 @@ class metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.timeseries.get_box_values'
             ),
             UrlMap(
-                name='metadata',
-                url='metdataexplorer/metadata/',
-                controller='metdataexplorer.controllers.metadata'
+                name='getVariablesAndFileMetadata',
+                url='metdataexplorer/getVariablesAndFileMetadata/',
+                controller='metdataexplorer.controllers.get_variables_and_file_metadata'
             ),
             UrlMap(
-                name='getDimensions',
-                url='metdataexplorer/getDimensions/',
-                controller='metdataexplorer.controllers.get_dimensions'
+                name='getDimensionsAndVariableMetadata',
+                url='metdataexplorer/getDimensionsAndVariableMetadata/',
+                controller='metdataexplorer.controllers.get_dimensions_and_variable_metadata'
             ),
             UrlMap(
                 name='deleteContainer',

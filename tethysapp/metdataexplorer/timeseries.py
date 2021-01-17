@@ -7,8 +7,8 @@ import netCDF4 as nc
 import numpy as np
 import pandas as pd
 
-#############################Modified geomatics package##############################
-def mean_of_timeseries(path: str, variable: str, time_dim: str):
+
+def mean_of_timeseries(path, variable, time_dim):
     results = {}
     numlist = []
     time_list = []
@@ -33,7 +33,6 @@ def mean_of_timeseries(path: str, variable: str, time_dim: str):
     df = pd.DataFrame(data=results)
     return df
 
-######################################################################################
 
 def get_box_values(request):
     time = request.GET['time']

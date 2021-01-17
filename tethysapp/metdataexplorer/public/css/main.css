@@ -19,6 +19,22 @@ b {
     padding: 0px;
 }
 
+#metadata-div b {
+    padding-left: 30px;
+}
+
+#metadata-div p {
+    padding-left: 40px;
+}
+
+#var-metadata-div b {
+    padding-left: 30px;
+}
+
+#var-metadata-div p {
+    padding-left: 40px;
+}
+
 h1 {
     color: white;
     font-size: 15pt;

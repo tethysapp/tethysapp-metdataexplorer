@@ -39,7 +39,7 @@ $('#get-data-button').click(getDataBounds);
 
 drawnItems.on('click', function (e) {
   var coord = e.layer.getLatLngs();
-  get_timeseries(coord);
+  getTimeseries(coord);
 });
 
 shpLayer.on('click', function (e) {

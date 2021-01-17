@@ -38,7 +38,6 @@ function createDBArray() {
         timeDimensions: $('#dimensions').val(),
         units: $('#units').val(),
     };
-    console.log(JSON.stringify(databaseInfo))
     $.ajax({
         url: URL_updateDB,
         dataType: 'json',
@@ -61,6 +60,7 @@ function deleteDB () {
     if ($(this).attr('class') == 'delete-url img-button') {
         var all = false;
         let json = $(this).parents().closest('.url-list').attr('data-thredds');
+        console.log(json);
         let thredds_array = JSON.parse(json);
         var dbInfo = {
             'all': all,
@@ -77,7 +77,6 @@ function deleteDB () {
     let con = confirm('Are you sure you want to delete ' + dbInfo['title'] + '? This action cannot be undone.')
     if (con == true) {
         if (dbInfo['all']) {
-            console.log('HI')
             $(this).parents().closest('span').children().closest('.group-container').empty();
         } else {
             $(this).parents().closest('.url-list').remove();
@@ -92,90 +91,9 @@ function deleteDB () {
     }
 }
 
-/*function deleteAll() {
-    let con = confirm('Are you sure you want to delete all groups? This action cannot be undone.')
-    if (con == true) {
-        $.ajax({
-            url: URL_deleteAll,
-            dataType: 'json',
-            contentType: "application/json",
-            method: 'GET',
-            success: function (result) {
-                $('#groups').empty();
-            }
-        })
-    }
-}
-
-function deleteGroup() {
-    let group = $(this).parents('span').attr('data-name');
-    let id = $(this).parents('span').attr('id');
-    let con = confirm('Are you sure you want to delete ' + group + '? This action cannot be undone.')
-    if (con == true) {
-        $.ajax({
-        url: URL_deleteGroup,
-        data: {
-        'group': group,
-        },
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'GET',
-        success: function (result) {
-            $('#' + id + '').remove();
-        }
-    })
-    }
-}
-
-function groupInfo (){
-    let group = $(this).parents('span').attr('data-name');
-    $.ajax({
-        url: URL_groupInfo,
-        data: {
-        'group': group,
-        },
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'GET',
-        success: function (result) {
-            var group = result['group'];
-            $('#database-info-name').empty().append('<p>' + group.name + '</p>');
-            $('#database-info-description').empty().append('<p>' + group.description + '</p>');
-            $('#database-info-model').modal('show')
-        }
-    })
-}
-
-function threddsInfo (){
-    let name = $(this).parents().closest('.url-list').attr('data-name');
-    let group = $(this).parents('span').attr('data-name');
-    $.ajax({
-        url: URL_threddsInfo,
-        data: {
-            'name': name,
-            'group': group,
-        },
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'GET',
-        success: function (result) {
-            var array = result['array'];
-            $('#url-info-name').empty().append(array.name);
-            $('#url-info-url').empty().append('<p>' + array.url + '</p>');
-            $('#url-info-description').empty().append('<p>' + array.description + '</p>');
-            $('#url-info-model').modal('show');
-        }
-    })
-}*/
-
 $('#info-box-exit').click(function () {
     urlInfoBox = false;
 })
 $('#add-group').click(function () {
     $('#add-group-model').modal('show')
 });
-
-//$('.info-group').click(groupInfo);
-//$('.info-url').click(threddsInfo);
-//$('#delete-all-group').click(deleteAll);
-//$('#add-group-submit').click(saveGroup);

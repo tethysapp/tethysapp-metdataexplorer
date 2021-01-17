@@ -1,39 +1,55 @@
 //Get url database info
 $("#go-input-button").click(function () {
+    $("#loading-model").modal("show");
     containerAttributes = false;
-    get_files($("#url-input").val());
+    getFoldersAndFiles($("#url-input").val());
 });
 
 $('.url-list-label').click(function () {
-    let thredds = $(this).parents().closest('.url-list').data('thredds');
-    containerAttributes = thredds;
-    if (thredds['type'] == 'file') {
-        let url_array = thredds['url'].split(',');
+    $("#loading-model").modal("show");
+    containerAttributes = $(this).parents().closest('.url-list').data('thredds');
+    $('#metadata-div').empty().append(`<p>${containerAttributes['description'].replace('/n', '<br>')}</p>`);
+    if (containerAttributes['type'] == 'file') {
+        let url_array = containerAttributes['url'].split(',');
         opendapURL = url_array['0'].slice(4);
         wmsURL = url_array['1'].slice(4);
         subsetURL = url_array['2'].slice(4);
+        addContainerAttributesToUserInputItems();
+        updateWMSLayer();
     } else {
-        get_files(thredds['url']);
+        getFoldersAndFiles(containerAttributes['url']);
     }
 });
+
+function addContainerAttributesToUserInputItems() {
+    if (containerAttributes['color'] !== '') {
+        $('#wmslayer-bounds').val(containerAttributes['color']);
+    }
+    addVariables(containerAttributes['attributes'].split(','));
+    addDimensions([containerAttributes['time']]);
+    $('#filetree-div').css('display', 'none');
+    $('#file-info-div').css('display', 'flex');
+    $('#layer-display-container').css('display', 'inline');
+}
 
 //Buttons for groups and metadata div
 $('#file-metadata-button').click(function () {
     $('#var-metadata-div').css('display', 'none');
     $('#metadata-div').css('display', 'block');
     $('#file-metadata-button').css('background-color', '#1600F0');
-    $('#var-metadata-button').css('background-color', 'rgba(130, 141, 205, 1)');
+    $('#var-metadata-button').css('background-color', '#828dcd');
 });
 $('#var-metadata-button').click(function () {
     $('#metadata-div').css('display', 'none');
     $('#var-metadata-div').css('display', 'block');
     $('#var-metadata-button').css('background-color', '#1600F0');
-    $('#file-metadata-button').css('background-color', 'rgba(130, 141, 205, 1)');
+    $('#file-metadata-button').css('background-color', '#828dcd');
 });
 
 $('#demo-group-button').click(function () {
     $('#demo-group-button').attr('data-clicked', 'true');
     $('#user-group-button').attr('data-clicked', 'false');
+    $('#upload-to-which-group').empty().append('Upload to: Demo Group');
     $('#demo-group-button').css('background-color', '#1600F0');
     $('#user-group-button').css('background-color', '#828cfa');
     $('#demo-group-container').css('display', 'block');
@@ -43,6 +59,7 @@ $('#demo-group-button').click(function () {
 $('#user-group-button').click(function () {
     $('#demo-group-button').attr('data-clicked', 'false');
     $('#user-group-button').attr('data-clicked', 'true');
+    $('#upload-to-which-group').empty().append('Upload to: User Group');
     $('#user-group-button').css('background-color', '#1600F0');
     $('#demo-group-button').css('background-color', '#828cfa');
     $('#user-group-container').css('display', 'block');
@@ -53,7 +70,7 @@ $("#up-file").click(function () {
     if (URLpath.length !== 1) {
         let newURL = URLpath[URLpath.length - 2];
         $("#url-input").val(newURL);
-        get_files(newURL);
+        getFoldersAndFiles(newURL);
         URLpath.pop();
     }
 })
@@ -63,6 +80,8 @@ $('#add-url').click(function () {
         alert('Please enter a url to a Thredds Data Server.')
         return
     } else {
+        $("#loading-model").modal("show");
+        containerAttributes = false;
         $('#main-body').css('display', 'none');
         $('#db-forms').css('display', 'block');
         $('#name-in-form').append($('#url-input').val());
@@ -87,6 +106,7 @@ $('#add-url').click(function () {
             $('#description-input').append(description);
         }
         urlInfoBox = true;
+        $("#loading-model").modal("hide");
     }
 });
 
@@ -95,11 +115,11 @@ $("#upload-shp").click(function () {
     $("#uploadshp-modal").modal("show");
 });
 $("#variable-input").change(function () {
-    update_wmslayer();
-    getDimensions();
+    updateWMSLayer();
+    getDimensionsAndVariableMetadata();
 });
-$("#wmslayer-style").change(update_wmslayer);
-$("#wmslayer-bounds").change(update_wmslayer);
+$("#wmslayer-style").change(updateWMSLayer);
+$("#wmslayer-bounds").change(updateWMSLayer);
 $("#opacity-slider").change(function () {
     dataLayerObj.setOpacity($("#opacity-slider").val());
 });

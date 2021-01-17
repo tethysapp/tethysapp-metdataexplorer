@@ -15,14 +15,14 @@ let urlInfoBox = false;
 //Included with draw.js: drawnItems, shpLayer
 //Included with map.js: mapObj, insetMapObj, basemapObj, layerControlObj
 
-function update_filepath() {
+function updateFilepath() {
+    $("#loading-model").modal("show");
     if ($(this).attr("class") == "folder") {
         let newURL = $(this).attr("data-url");
         $("#url-input").val(newURL);
-        get_files(newURL);
+        getFoldersAndFiles(newURL);
     } else if ($(this).attr("class") == "file") {
         $('#name-in-form').attr('data-type', 'file');
-        console.log($(this).text().slice($(this).text().indexOf('') + 1))
         $("#url-input").val($(this).text().slice($(this).text().indexOf('') + 2));
         $("#layer-display-container").css("display", "inline");
         $("#filetree-div").css("display", "none");
@@ -35,56 +35,109 @@ function update_filepath() {
             wmsURL = `${URL_threddsProxy}?main_url=${encodeURIComponent(wmsURL)}`;
             console.log(wmsURL);
         }
-        get_metadata();
+        let dimensionsAndVariableMetadata = false;
+        if (containerAttributes === false) {
+            let variablesAndFileMetadata = getVariablesAndFileMetadata();
+            addVariables(variablesAndFileMetadata[0]);
+            addFileMetadata(variablesAndFileMetadata[1]);
+            let dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
+            addVariableMetadata(dimensionsAndVariableMetadata[1]);
+            addDimensions(dimensionsAndVariableMetadata[0]);
+            updateWMSLayer();
+        } else {
+            if (containerAttributes['attributes'] == '' || containerAttributes['description'] == '' ||
+                containerAttributes['time'] == '') {
+                let variablesAndFileMetadata = getVariablesAndFileMetadata();
+                if (containerAttributes['attributes'] == '') {
+                    addVariables(variablesAndFileMetadata[0]);
+                } else {
+                    addVariables(containerAttributes['attributes'].split(','));
+                }
+                if (containerAttributes['time'] == '') {
+                    dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
+                    addDimensions(dimensionsAndVariableMetadata[0]);
+                } else {
+                    addDimensions([containerAttributes['time']]);
+                }
+                if (containerAttributes['description'] == '') {
+                    addFileMetadata(variablesAndFileMetadata[1]);
+                }
+            } else {
+                addContainerAttributesToUserInputItems();
+            }
+            if (dimensionsAndVariableMetadata === false) {
+                dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
+            }
+            addVariableMetadata(dimensionsAndVariableMetadata[1]);
+        }
     }
+    $("#loading-model").modal("hide");
 }
 
-function get_metadata() {
-    $("#loading-model").modal("show");
+function addVariables(variables) {
+    let html = "";
+    for (let i = 0; i < variables.length; i++) {
+        html += `<option>${variables[i]}</option>`;
+    }
+    $("#variable-input").empty().append(html);
+}
+
+function addDimensions(dimensions) {
+    let html = "";
+    for (var i = 0; i < dimensions.length; i++) {
+        html += `<option>${dimensions[i]}</option>`;
+    }
+    $("#time").empty().append(html);
+    $("#time option:contains('time')").attr('selected', 'selected');
+}
+
+function addVariableMetadata(variableMetadata) {
+    console.log(variableMetadata)
+    $("#var-metadata-div").empty().append(variableMetadata);
+}
+
+function addFileMetadata(fileMetadata) {
+    $('#metadata-div').attr('data-description', fileMetadata);
+    $('#metadata-div').empty().append(fileMetadata);
+    $('#file-metadata-button').css("background-color", "#1600F0");
+}
+
+function updateWMSLayer() {
+    if (firstlayeradded == true) {
+        layerControlObj.removeLayer(dataLayerObj);
+        mapObj.removeLayer(dataLayerObj);
+    }
+    dataLayerObj = data_layer();
+    dataLayerObj.setOpacity($("#opacity-slider").val());
+    layerControlObj.addOverlay(dataLayerObj, "netcdf Layer");
+}
+
+/////////////////////Retrieve file data//////////////////////////////
+function getVariablesAndFileMetadata() {
+    //$("#loading-model").modal("show");
+    let variables = {};
+    let fileMetadata = '';
     $.ajax({
-        url: URL_metadata,
+        url: URL_getVariablesAndFileMetadata,
         data: {opendapURL: opendapURL},
         dataType: "json",
         contentType: "application/json",
         method: "GET",
+        async: false,
         success: function (result) {
-            let variablesSorted = result["variables_sorted"];
-            if (variablesSorted == false) {
-                $("#loading-model").modal("hide");
-                alert("Invalid file");
-            } else {
-                let attrs = result["attrs"];
-                print_metadata(variablesSorted, attrs);
-                getDimensions();
-                update_wmslayer();
-                $("#loading-model").modal("hide");
-            }
+            variables = result["variables_sorted"];
+            fileMetadata = result["file_metadata"];
         }
     })
+    return [variables, fileMetadata];
 }
 
-function print_metadata(variablesSorted, attrs) {
-    let html = "";
-    let html2 = "";
-    let description = '';
-    for (let i = 0; i < variablesSorted.length; i++) {
-        html += `<option>${variablesSorted[i]}</option>`;
-    }
-    $("#variable-input").empty().append(html);
-    for (let att in attrs) {
-        html2 += `<b style="padding-left: 40px">${att}:<b/><p style="padding-left: 40px">${attrs[att]}</p>`;
-        description += `${att}: ${attrs[att]}
-        `;
-    }
-    $('#metadata-div').attr('data-description', description);
-    $('#metadata-div').empty().append(html2);
-    $('#file-metadata-button').css("background-color", "#1600F0");
-}
-
-function getDimensions() {
+function getDimensionsAndVariableMetadata() {
+    var dimensions = [];
+    var variableMetadata = {};
     let variable = $("#variable-input").val();
     $.ajax({
-        url: URL_getDimensions,
+        url: URL_getDimensionsAndVariableMetadata,
         data: {
             variable: variable,
             opendapURL: opendapURL
@@ -92,37 +145,19 @@ function getDimensions() {
         dataType: "json",
         contentType: "application/json",
         method: "GET",
+        async: false,
         success: function (result) {
-            let dims = result["dims"];
-            let variables = result["variables"];
-            if (variables == false) {
-                alert("Invalid THREDDS URL");
-            } else {
-                let html = "";
-                for (var i = 0; i < dims.length; i++) {
-                    html += `<option>${dims[i]}</option>`;
-                }
-                $("#time").empty().append(html);
-                $("#time option:nth-child(3)").attr("selected", "selected");
-                $("#lat").empty().append(html);
-                $("#lat option:nth-child(1)").attr("selected", "selected");
-                $("#lng").empty().append(html);
-                $("#lng option:nth-child(2)").attr("selected", "selected");
-
-                var html3 = `<b style="padding-left: 40px">${variable}:<b/>`;
-                for (var attr in variables[variable]) {
-                    html3 += `<p style="padding-left: 40px">${attr}: ${variables[variable][attr]}</p>`;
-                }
-                $("#var-metadata-div").empty().append(html3);
-            }
+            dimensions = result["dimensions"];
+            variableMetadata = result["variable_metadata"];
         }
     })
+    return [dimensions, variableMetadata];
 }
 
-function get_files(url) {
+function getFoldersAndFiles(url) {
     $('#name-in-form').attr('data-type', 'folder');
     $.ajax({
-        url: URL_buildDataTree,
+        url: URL_getFilesAndFolders,
         data: {'url': url},
         dataType: "json",
         contentType: "application/json",
@@ -141,12 +176,12 @@ function get_files(url) {
                     html += `<div data-wms-url="${dataTree["files"][file]["WMS"]}" 
                             data-subset-url="${dataTree["files"][file]["NetcdfSubset"]}" 
                             data-opendap-url="${dataTree["files"][file]["OPENDAP"]}" 
-                            class="file" onclick="update_filepath.call(this)">
+                            class="file" onclick="updateFilepath.call(this)">
                             <p class="far" style="display: inline-block">&#xf1c5; ${file}</p></div>`;
                 }
                 for (var folder in dataTree["folders"]) {
                     html += `<div data-url="${dataTree["folders"][folder]}" class="folder" 
-                             onclick="update_filepath.call(this)">
+                             onclick="updateFilepath.call(this)">
                              <p class="fas" style="display: inline-block">&#xf07b; ${folder}</p></div>`;
                 }
                 $("#filetree-div").empty().append(html);
@@ -155,16 +190,8 @@ function get_files(url) {
                     URLpath.push(correctURL);
                 }
             }
+            $("#loading-model").modal("hide");
         }
     })
 }
 
-function update_wmslayer() {
-    if (firstlayeradded == true) {
-        layerControlObj.removeLayer(dataLayerObj);
-        mapObj.removeLayer(dataLayerObj);
-    }
-    dataLayerObj = data_layer();
-    dataLayerObj.setOpacity($("#opacity-slider").val());
-    layerControlObj.addOverlay(dataLayerObj, "netcdf Layer");
-}

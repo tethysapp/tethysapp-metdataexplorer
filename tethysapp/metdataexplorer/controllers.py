@@ -27,7 +27,7 @@ def home(request):
     return render(request, 'metdataexplorer/home.html', context)
 
 
-def build_data_tree(request):
+def get_files_and_folders(request):
     url = request.GET['url']
     data_tree = {}
     folders_dict = {}
@@ -54,10 +54,10 @@ def build_data_tree(request):
     return JsonResponse({'dataTree': data_tree, 'correct_url': correct_url})
 
 
-def metadata(request):
+def get_variables_and_file_metadata(request):
     url = request.GET['opendapURL']
-    str_attrs = {}
     variables = []
+    file_metadata = ''
 
     try:
         ds = netCDF4.Dataset(url)
@@ -65,22 +65,21 @@ def metadata(request):
         exception = False
         return JsonResponse({'variables_sorted': exception})
 
-    for attr in ds.__dict__:
-        str_attrs[str(attr)] = str(ds.__dict__[attr])
+    for metadata_string in ds.__dict__:
+        file_metadata += '<b>' + str(metadata_string) + '</b><br><p>' + str(ds.__dict__[metadata_string]) + '</p>'
 
-    for var in ds.variables:
-        variables.append(var)
+    for variable in ds.variables:
+        variables.append(variable)
 
     variables_sorted = sorted(variables)
-    return JsonResponse({'variables_sorted': variables_sorted, 'attrs': str_attrs})
+    return JsonResponse({'variables_sorted': variables_sorted, 'file_metadata': file_metadata})
 
 
-def get_dimensions(request):
+def get_dimensions_and_variable_metadata(request):
     url = request.GET['opendapURL']
     variable = request.GET['variable']
-    variables = {}
-    var_attr = {}
     dimensions = []
+    variable_metadata = ''
 
     try:
         ds = netCDF4.Dataset(url)
@@ -88,16 +87,14 @@ def get_dimensions(request):
         exception = False
         return JsonResponse({'variables': exception})
 
-    for dim in ds[variable].dimensions:
-        dimensions.append(dim)
+    for dimension in ds[variable].dimensions:
+        dimensions.append(dimension)
 
-    for attr in ds[variable].__dict__:
-        var_attr[str(attr)] = str(ds[variable].__dict__[attr])
-
-    variables[variable] = var_attr
+    for metadata_string in ds[variable].__dict__:
+        variable_metadata += '<b>' + str(metadata_string) + '</b><br><p>' + str(ds[variable].__dict__[metadata_string]) + '</p>'
 
     dimensions.sort()
-    return JsonResponse({'variables': variables, 'dims': dimensions})
+    return JsonResponse({'dimensions': dimensions, 'variable_metadata': variable_metadata})
 
 
 def thredds_proxy(request):
