@@ -1,14 +1,19 @@
 //Get url database info
 $("#go-input-button").click(function () {
     $("#loading-model").modal("show");
+    $('#metadata-div').empty();
+    $('#var-metadata-div').empty();
     containerAttributes = false;
     getFoldersAndFiles($("#url-input").val());
 });
 
 $('.url-list-label').click(function () {
     $("#loading-model").modal("show");
+    $('#metadata-div').empty();
+    $('#var-metadata-div').empty();
     containerAttributes = $(this).parents().closest('.url-list').data('thredds');
     $('#metadata-div').empty().append(`<p>${containerAttributes['description'].replace('/n', '<br>')}</p>`);
+    console.log(containerAttributes);
     if (containerAttributes['type'] == 'file') {
         let url_array = containerAttributes['url'].split(',');
         opendapURL = url_array['0'].slice(4);
@@ -16,20 +21,45 @@ $('.url-list-label').click(function () {
         subsetURL = url_array['2'].slice(4);
         addContainerAttributesToUserInputItems();
         updateWMSLayer();
+        $("#loading-model").modal("hide");
     } else {
         getFoldersAndFiles(containerAttributes['url']);
     }
 });
 
 function addContainerAttributesToUserInputItems() {
-    if (containerAttributes['color'] !== '') {
-        $('#wmslayer-bounds').val(containerAttributes['color']);
+    let dimensionsAndVariableMetadata = false;
+    if (containerAttributes['attributes'] == '' || containerAttributes['description'] == '' ||
+        containerAttributes['time'] == '') {
+        let variablesAndFileMetadata = getVariablesAndFileMetadata();
+        if (containerAttributes['attributes'] == '') {
+            addVariables(variablesAndFileMetadata[0]);
+        } else {
+            addVariables(containerAttributes['attributes'].split(','));
+        }
+        if (containerAttributes['time'] == '') {
+            dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
+            addDimensions(dimensionsAndVariableMetadata[0]);
+        } else {
+            addDimensions([containerAttributes['time']]);
+        }
+        if (containerAttributes['description'] == '') {
+            addFileMetadata(variablesAndFileMetadata[1]);
+        }
+    } else {
+        if (containerAttributes['color'] !== '') {
+            $('#wmslayer-bounds').val(containerAttributes['color']);
+        }
+        addVariables(containerAttributes['attributes'].split(','));
+        addDimensions([containerAttributes['time']]);
+        $('#filetree-div').css('display', 'none');
+        $('#file-info-div').css('display', 'flex');
+        $('#layer-display-container').css('display', 'inline');
     }
-    addVariables(containerAttributes['attributes'].split(','));
-    addDimensions([containerAttributes['time']]);
-    $('#filetree-div').css('display', 'none');
-    $('#file-info-div').css('display', 'flex');
-    $('#layer-display-container').css('display', 'inline');
+    if (dimensionsAndVariableMetadata === false) {
+        dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
+    }
+    addVariableMetadata(dimensionsAndVariableMetadata[1]);
 }
 
 //Buttons for groups and metadata div
@@ -96,10 +126,10 @@ $('#add-url').click(function () {
                 timeDim.push($(this).val());
             });
             for (let variable in variables) {
-              addAttribute(variables[variable]);
+                addAttribute(variables[variable]);
             }
-            for(let time in timeDim) {
-              html += `<option>${timeDim[time]}</option>`;
+            for (let time in timeDim) {
+                html += `<option>${timeDim[time]}</option>`;
             }
             let description = $("#metadata-div").attr('data-description');
             $('#dimensions').append(html);
@@ -115,8 +145,10 @@ $("#upload-shp").click(function () {
     $("#uploadshp-modal").modal("show");
 });
 $("#variable-input").change(function () {
+    let dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
+    addVariableMetadata(dimensionsAndVariableMetadata[1]);
+    addDimensions(dimensionsAndVariableMetadata[0]);
     updateWMSLayer();
-    getDimensionsAndVariableMetadata();
 });
 $("#wmslayer-style").change(updateWMSLayer);
 $("#wmslayer-bounds").change(updateWMSLayer);
@@ -130,25 +162,33 @@ $('#add-attribute-button').click(function () {
     $('#add-attribute').val('');
 });
 
+$('#add-dimension-button').click(function () {
+    let dimension = $('#add-dimension').val();
+    $('#dimensions').append(`<option selected="selected">${dimension}</option>`);
+    $('#add-dimension').val('');
+})
+
 $('#add-submit').click(createDBArray);
 
 $('#add-cancel').click(function () {
     clearForm();
+    $('.delete-url').attr('data-editing', 'false');
     $('#main-body').css('display', 'block');
     $('#db-forms').css('display', 'none');
+    editing = false;
     urlInfoBox = false;
 });
 
 $('#select-all-button').click(function () {
     if ($('#select-all-button').data('select') === 'true') {
-        $('#select-all-button').data('select','false')
+        $('#select-all-button').data('select', 'false')
         $('.attr-checkbox').each(function () {
-            $(this).attr( "checked", true );
+            $(this).attr("checked", true);
         });
     } else {
-        $('#select-all-button').data('select','true')
+        $('#select-all-button').data('select', 'true')
         $('.attr-checkbox').each(function () {
-            $(this).attr( "checked", false );
+            $(this).attr("checked", false);
         });
     }
 });

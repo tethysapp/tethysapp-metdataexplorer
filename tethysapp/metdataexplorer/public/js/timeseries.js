@@ -2,14 +2,15 @@ function getTimeseries(coord) {
   if (subsetURL == '') {
     alert('Please select a data layer.');
   } else {
-    //$('#loading-model').modal('show');
+    $('#loading-model').modal('show');
     var maxlat = coord[0][2].lat;
     var maxlng = coord[0][2].lng;
     var minlat = coord[0][0].lat;
     var minlng = coord[0][0].lng;
     var vars = $('#variable-input').val();
     var time = $('#time').val();
-    var subsetUrlFull = subsetURL + '?var=' + vars + '&north=' + maxlat + '&west=' + minlng + '&east=' + maxlng + '&south=' + minlat + '&disableProjSubset=on&horizStride=1&temporal=all';
+    var subsetUrlFull = `${subsetURL}?var=${vars}&north=${maxlat}&west=${minlng}&east=${maxlng}&south=${minlat}
+                         &disableProjSubset=on&horizStride=1&temporal=all`;
     $.ajax({
       url: URL_getBoxValues,
       data: {
@@ -23,11 +24,11 @@ function getTimeseries(coord) {
       success: function (result) {
         var data = result['data'];
         if (data == false) {
-          //$('#loading-model').modal('hide');
+          $('#loading-model').modal('hide');
           alert('Invalid dimensions');
         } else {
           drawGraph(data);
-          //$('#loading-model').modal('hide');
+          $('#loading-model').modal('hide');
           $('#timeseries-model').modal('show');
         }
       },

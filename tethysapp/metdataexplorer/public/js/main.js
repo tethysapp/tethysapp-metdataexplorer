@@ -10,8 +10,10 @@ let containerAttributes = false;
 //timeseries.js
 let chartdata = {};
 //databases.js
+let editing = false;
 let geojsonName = 'No spatial reference';
 let urlInfoBox = false;
+let editDatabase = false;
 //Included with draw.js: drawnItems, shpLayer
 //Included with map.js: mapObj, insetMapObj, basemapObj, layerControlObj
 
@@ -35,7 +37,6 @@ function updateFilepath() {
             wmsURL = `${URL_threddsProxy}?main_url=${encodeURIComponent(wmsURL)}`;
             console.log(wmsURL);
         }
-        let dimensionsAndVariableMetadata = false;
         if (containerAttributes === false) {
             let variablesAndFileMetadata = getVariablesAndFileMetadata();
             addVariables(variablesAndFileMetadata[0]);
@@ -45,30 +46,7 @@ function updateFilepath() {
             addDimensions(dimensionsAndVariableMetadata[0]);
             updateWMSLayer();
         } else {
-            if (containerAttributes['attributes'] == '' || containerAttributes['description'] == '' ||
-                containerAttributes['time'] == '') {
-                let variablesAndFileMetadata = getVariablesAndFileMetadata();
-                if (containerAttributes['attributes'] == '') {
-                    addVariables(variablesAndFileMetadata[0]);
-                } else {
-                    addVariables(containerAttributes['attributes'].split(','));
-                }
-                if (containerAttributes['time'] == '') {
-                    dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
-                    addDimensions(dimensionsAndVariableMetadata[0]);
-                } else {
-                    addDimensions([containerAttributes['time']]);
-                }
-                if (containerAttributes['description'] == '') {
-                    addFileMetadata(variablesAndFileMetadata[1]);
-                }
-            } else {
-                addContainerAttributesToUserInputItems();
-            }
-            if (dimensionsAndVariableMetadata === false) {
-                dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
-            }
-            addVariableMetadata(dimensionsAndVariableMetadata[1]);
+            addContainerAttributesToUserInputItems();
         }
     }
     $("#loading-model").modal("hide");

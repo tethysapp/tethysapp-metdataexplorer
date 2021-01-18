@@ -49,7 +49,7 @@ shpLayer.on('click', function (e) {
     1:{'lat': coords['_northEast']['lat'], 'lng': coords['_southWest']['lng']},
     2:{'lat': coords['_northEast']['lat'], 'lng': coords['_northEast']['lng']},
     3:{'lat': coords['_southWest']['lat'], 'lng': coords['_northEast']['lng']}}};
-  get_timeseries(coord);
+  getTimeseries(coord);
 });
 
 mapObj.on(L.Draw.Event.CREATED, function (e) {
@@ -66,7 +66,7 @@ mapObj.on(L.Draw.Event.CREATED, function (e) {
   } else {
     drawnItems.addLayer(e.layer);
     let coord = e.layer.getLatLngs();
-    get_timeseries(coord);
+    getTimeseries(coord);
   }
 });
 

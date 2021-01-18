@@ -6,10 +6,16 @@ function addAttribute(attribute) {
 }
 
 function createDBArray() {
-    if ($('#name-in-form').attr('data-type') == 'file') {
-        var url = `opd:${opendapURL},wms:${wmsURL},sub:${subsetURL}`;
+    if (editing === true) {
+        $('.delete-url[data-editing="true"]').trigger( "click" );
+        var url = containerAttributes['url'];
+        console.log(url)
     } else {
-        var url = $('#url-input').val();
+        if ($('#name-in-form').attr('data-type') == 'file') {
+            var url = `opd:${opendapURL},wms:${wmsURL},sub:${subsetURL}`;
+        } else {
+            var url = $('#url-input').val();
+        }
     }
     let attr = [];
     $('.attr-checkbox').each(function () {
@@ -29,7 +35,7 @@ function createDBArray() {
         name: $('#name-in-form').text(),
         group: group,
         title: $('#title-input').val(),
-        URLS: url,
+        url: url,
         tags: $('#tags-input').val(),
         spatial: $('#spatial-extent-label').text(),
         colorRange: $('#color-range-input').val(),
@@ -52,6 +58,8 @@ function createDBArray() {
             $('#cloned').find('.url-list-label').append(`<h4>${$('#title-input').val()}</h4>`);
             $('#cloned').removeAttr('id');
             clearForm();
+            containerAttributes = false;
+            editing = false;
         }
     })
 }
@@ -59,9 +67,7 @@ function createDBArray() {
 function deleteDB () {
     if ($(this).attr('class') == 'delete-url img-button') {
         var all = false;
-        let json = $(this).parents().closest('.url-list').attr('data-thredds');
-        console.log(json);
-        let thredds_array = JSON.parse(json);
+        let thredds_array = $(this).parents().closest('.url-list').data('thredds');
         var dbInfo = {
             'all': all,
             'title': thredds_array['title'],
@@ -74,7 +80,11 @@ function deleteDB () {
             'title': 'all servers',
         }
     }
-    let con = confirm('Are you sure you want to delete ' + dbInfo['title'] + '? This action cannot be undone.')
+    if (editing === false) {
+        var con = confirm('Are you sure you want to delete ' + dbInfo['title'] + '? This action cannot be undone.');
+    } else {
+        var con = true;
+    }
     if (con == true) {
         if (dbInfo['all']) {
             $(this).parents().closest('span').children().closest('.group-container').empty();
@@ -91,9 +101,50 @@ function deleteDB () {
     }
 }
 
+function editDB () {
+    $("#loading-model").modal("show");
+    editing = true;
+    clearForm();
+    $('.delete-url').attr('data-editing', 'false');
+    $(this).siblings('.delete-url').attr('data-editing', 'true');
+    containerAttributes = $(this).parents().closest('.url-list').data('thredds');
+    $('#name-in-form').data('type', containerAttributes['type']);
+    $('#name-in-form').text(containerAttributes['name']);
+    $('#title-input').val(containerAttributes['title']);
+    $('#tags-input').text(containerAttributes['spatial']);
+    $('#spatial-extent-label').val(containerAttributes['title']);
+    $('#color-range-input').val(containerAttributes['color']);
+    $('#description-input').val(containerAttributes['description']);
+    $('#dimensions').empty().append(`<option>${containerAttributes['time']}</option>`);
+    $('#units').val(containerAttributes['units']);
+    let attributes = containerAttributes['attributes'].split(',');
+    for (let attribute in attributes) {
+        addAttribute(attributes[attribute]);
+    }
+    $('#main-body').css('display', 'none');
+    $('#db-forms').css('display', 'block');
+    urlInfoBox = true;
+    $("#loading-model").modal("hide");
+}
+
 $('#info-box-exit').click(function () {
     urlInfoBox = false;
 })
-$('#add-group').click(function () {
+/*$('#add-group').click(function () {
     $('#add-group-model').modal('show')
-});
+});*/
+
+function infoDB() {
+    if ($(this).attr('class') == 'info-url img-button') {
+        containerAttributes = $(this).parents().closest('.url-list').data('thredds');
+        $('#info-title').append(containerAttributes['title']);
+        $('#info-url').append(containerAttributes['url']);
+        $('#info-tags').append(containerAttributes['tags']);
+        $('#info-units').append(containerAttributes['units']);
+        $('#info-description').append(containerAttributes['description']);
+        $('#url-info-model').modal("show");
+        containerAttributes = false;
+    } else {
+        console.log('group Info')
+    }
+}

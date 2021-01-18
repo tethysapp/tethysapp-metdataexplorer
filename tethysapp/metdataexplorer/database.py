@@ -15,7 +15,7 @@ def update_database(request):
         group=database_info['group'],
         title=database_info['title'],
         tags=database_info['tags'],
-        url=database_info['URLS'],
+        url=database_info['url'],
         spatial=database_info['spatial'],
         color=database_info['colorRange'],
         description=database_info['description'],
