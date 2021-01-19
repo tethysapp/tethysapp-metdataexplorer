@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 
-from .model import Thredds, Groups
+from .model import Thredds
 from .app import metdataexplorer as app
 
 

@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 import json
-import requests
 import os
 import urllib
 import netCDF4 as nc

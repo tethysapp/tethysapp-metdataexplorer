@@ -10,12 +10,13 @@ requirements:
     channels:
       - conda-forge
     packages:
-      - geopandas
-      - pandas
       - requests
       - siphon
       - netCDF4
       - numpy
+      - geopandas
+      - pandas
       - geojson
+      - json
   pip:
 post:
