@@ -4,6 +4,7 @@ $("#go-input-button").click(function () {
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
     containerAttributes = false;
+    removeWMSLayer();
     getFoldersAndFiles($("#url-input").val());
 });
 
@@ -23,6 +24,7 @@ $('.url-list-label').click(function () {
         updateWMSLayer();
         $("#loading-model").modal("hide");
     } else {
+        removeWMSLayer();
         getFoldersAndFiles(containerAttributes['url']);
     }
 });

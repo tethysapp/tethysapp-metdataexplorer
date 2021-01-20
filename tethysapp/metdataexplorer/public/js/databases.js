@@ -41,7 +41,7 @@ function createDBArray() {
         colorRange: $('#color-range-input').val(),
         description: $('#description-input').val(),
         attributes: `${attr}`,
-        timeDimensions: $('#dimensions').val(),
+        time: $('#dimensions').val(),
         units: $('#units').val(),
     };
     $.ajax({

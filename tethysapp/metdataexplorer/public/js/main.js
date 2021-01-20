@@ -44,10 +44,10 @@ function updateFilepath() {
             let dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
             addVariableMetadata(dimensionsAndVariableMetadata[1]);
             addDimensions(dimensionsAndVariableMetadata[0]);
-            updateWMSLayer();
         } else {
             addContainerAttributesToUserInputItems();
         }
+        updateWMSLayer();
     }
     $("#loading-model").modal("hide");
 }
@@ -87,7 +87,14 @@ function updateWMSLayer() {
     }
     dataLayerObj = data_layer();
     dataLayerObj.setOpacity($("#opacity-slider").val());
-    layerControlObj.addOverlay(dataLayerObj, "netcdf Layer");
+    layerControlObj.addOverlay(dataLayerObj, "Data Layer");
+}
+
+function removeWMSLayer() {
+    layerControlObj.removeLayer(dataLayerObj);
+    mapObj.removeLayer(dataLayerObj);
+    firstlayeradded = false;
+    $("#layer-display-container").css("display", "none");
 }
 
 /////////////////////Retrieve file data//////////////////////////////
@@ -145,7 +152,6 @@ function getFoldersAndFiles(url) {
             if (dataTree == "Invalid URL") {
                 alert(dataTree);
             } else {
-                $("#layer-display-container").css("display", "none");
                 $("#filetree-div").css("display", "block");
                 $("#file-info-div").css("display", "none");
                 var correctURL = result["correct_url"];

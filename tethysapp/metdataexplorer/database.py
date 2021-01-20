@@ -20,7 +20,7 @@ def update_database(request):
         color=database_info['colorRange'],
         description=database_info['description'],
         attributes=database_info['attributes'],
-        time=database_info['timeDimensions'],
+        time=database_info['time'],
         units=database_info['units'],
     )
 
