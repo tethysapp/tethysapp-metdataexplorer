@@ -70,7 +70,6 @@ function addDimensions(dimensions) {
 }
 
 function addVariableMetadata(variableMetadata) {
-    console.log(variableMetadata)
     $("#var-metadata-div").empty().append(variableMetadata);
 }
 

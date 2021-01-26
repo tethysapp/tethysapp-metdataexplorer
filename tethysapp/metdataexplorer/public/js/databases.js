@@ -9,7 +9,6 @@ function createDBArray() {
     if (editing === true) {
         $('.delete-url[data-editing="true"]').trigger( "click" );
         var url = containerAttributes['url'];
-        console.log(url)
     } else {
         if ($('#name-in-form').attr('data-type') == 'file') {
             var url = `opd:${opendapURL},wms:${wmsURL},sub:${subsetURL}`;
@@ -38,7 +37,7 @@ function createDBArray() {
         url: url,
         tags: $('#tags-input').val(),
         spatial: $('#spatial-extent-label').text(),
-        colorRange: $('#color-range-input').val(),
+        color: $('#color-range-input').val(),
         description: $('#description-input').val(),
         attributes: `${attr}`,
         time: $('#dimensions').val(),
@@ -108,7 +107,7 @@ function editDB () {
     $('.delete-url').attr('data-editing', 'false');
     $(this).siblings('.delete-url').attr('data-editing', 'true');
     containerAttributes = $(this).parents().closest('.url-list').data('thredds');
-    $('#name-in-form').data('type', containerAttributes['type']);
+    $('#name-in-form').attr('data-type', containerAttributes['type']);
     $('#name-in-form').text(containerAttributes['name']);
     $('#title-input').val(containerAttributes['title']);
     $('#tags-input').text(containerAttributes['spatial']);
@@ -130,21 +129,30 @@ function editDB () {
 $('#info-box-exit').click(function () {
     urlInfoBox = false;
 })
-/*$('#add-group').click(function () {
-    $('#add-group-model').modal('show')
-});*/
 
 function infoDB() {
     if ($(this).attr('class') == 'info-url img-button') {
         containerAttributes = $(this).parents().closest('.url-list').data('thredds');
-        $('#info-title').append(containerAttributes['title']);
-        $('#info-url').append(containerAttributes['url']);
-        $('#info-tags').append(containerAttributes['tags']);
-        $('#info-units').append(containerAttributes['units']);
-        $('#info-description').append(containerAttributes['description']);
-        $('#url-info-model').modal("show");
+        if (containerAttributes['type'] == 'file') {
+            let urls = containerAttributes['url'].split(',');
+            let html = `<b>URL Access Points:</b><br><p>Opendap: ${urls[0].slice(4)}<br>WMS: ${urls[1].slice(4)}
+                        <br>Subset: ${urls[2].slice(4)}</p><b>Tags:</b><br><p>${containerAttributes['tags']}</p>
+                        <b>Units:</b><br><p>${containerAttributes['units']}</p>
+                        <b>Spatial:</b><br><p>${containerAttributes['spatial']}</p>
+                        <b>Description:</b><br><p>${containerAttributes['description']}</p>`
+            $('#info-title').text(containerAttributes['title']);
+            $('#main-container-info').empty().append(html);
+            $('#url-info-model').modal("show");
+        } else {
+            let html = `<b>URL:</b><br><p>${containerAttributes['url']}</p>
+                        <b>Tags:</b><br><p>${containerAttributes['tags']}</p>
+                        <b>Units:</b><br><p>${containerAttributes['units']}</p>
+                        <b>Spatial:</b><br><p>${containerAttributes['spatial']}</p>
+                        <b>Description:</b><br><p>${containerAttributes['description']}</p>`
+            $('#info-title').text(containerAttributes['title']);
+            $('#main-container-info').empty().append(html);
+            $('#url-info-model').modal("show");
+        }
         containerAttributes = false;
-    } else {
-        console.log('group Info')
     }
 }

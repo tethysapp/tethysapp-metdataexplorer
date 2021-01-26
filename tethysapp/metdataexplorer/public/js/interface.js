@@ -4,7 +4,9 @@ $("#go-input-button").click(function () {
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
     containerAttributes = false;
-    removeWMSLayer();
+    if (firstlayeradded == true) {
+        removeWMSLayer();
+    }
     getFoldersAndFiles($("#url-input").val());
 });
 
@@ -14,7 +16,9 @@ $('.url-list-label').click(function () {
     $('#var-metadata-div').empty();
     containerAttributes = $(this).parents().closest('.url-list').data('thredds');
     $('#metadata-div').empty().append(`<p>${containerAttributes['description'].replace('/n', '<br>')}</p>`);
-    console.log(containerAttributes);
+    if (containerAttributes['spatial'] !== '') {
+        zoomToBounds(containerAttributes['spatial']);
+    }
     if (containerAttributes['type'] == 'file') {
         let url_array = containerAttributes['url'].split(',');
         opendapURL = url_array['0'].slice(4);
@@ -24,7 +28,9 @@ $('.url-list-label').click(function () {
         updateWMSLayer();
         $("#loading-model").modal("hide");
     } else {
-        removeWMSLayer();
+        if (firstlayeradded == true) {
+            removeWMSLayer();
+        }
         getFoldersAndFiles(containerAttributes['url']);
     }
 });
@@ -170,7 +176,19 @@ $('#add-dimension-button').click(function () {
     $('#add-dimension').val('');
 })
 
-$('#add-submit').click(createDBArray);
+$('#add-submit').click(function() {
+    if ($('#title-input').val() == '') {
+        alert('Please specify a name.');
+        return
+    } else if ($('#description-input').val() == '') {
+        alert('Please include a description.');
+        return
+    } else {
+        createDBArray();
+        editing = false;
+        urlInfoBox = false;
+    }
+});
 
 $('#add-cancel').click(function () {
     clearForm();

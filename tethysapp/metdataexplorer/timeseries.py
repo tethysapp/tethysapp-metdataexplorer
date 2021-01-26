@@ -34,17 +34,15 @@ def mean_of_timeseries(path, variable, time_dim):
 
 
 def get_box_values(request):
-    time = request.GET['time']
-    subset_url = request.GET['subsetURL']
-    var = request.GET['var']
+    url_dict = request.GET.dict()
     path_to_netcdf = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace', 'temp.nc')
     try:
-        urllib.request.urlretrieve(json.loads(subset_url), path_to_netcdf)
+        urllib.request.urlretrieve(url_dict['subsetURL'], path_to_netcdf)
     except OSError:
         data = json.dumps('Invalid file')
         return JsonResponse({'data': data})
     try:
-        data = mean_of_timeseries(path_to_netcdf, var, time)
+        data = mean_of_timeseries(path_to_netcdf, url_dict['var'], url_dict['time'])
         return JsonResponse({'data': data})
     except ValueError:
         data = False

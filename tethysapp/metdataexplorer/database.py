@@ -17,7 +17,7 @@ def update_database(request):
         tags=database_info['tags'],
         url=database_info['url'],
         spatial=database_info['spatial'],
-        color=database_info['colorRange'],
+        color=database_info['color'],
         description=database_info['description'],
         attributes=database_info['attributes'],
         time=database_info['time'],

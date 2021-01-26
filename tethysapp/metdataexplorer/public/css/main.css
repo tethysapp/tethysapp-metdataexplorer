@@ -137,12 +137,21 @@ button {
     overflow-y: scroll;
 }
 
-#select-all-button{
+#select-all-button {
     width: 90px;
     height: 25px;
     border-color: black;
     border-width: 1px;
     margin: 0px;
+}
+
+#main-container-info {
+    padding: 20px;
+    text-align: left;
+}
+
+#main-container-info h1 h2 p b {
+    color: black;
 }
 
 .titles {

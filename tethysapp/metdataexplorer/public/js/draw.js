@@ -55,6 +55,7 @@ shpLayer.on('click', function (e) {
 mapObj.on(L.Draw.Event.CREATED, function (e) {
   if (urlInfoBox == true) {
     let coord = e.layer.getLatLngs();
+    console.log(coord)
     let bounds = '((';
     for (let i = 0; i < 4; i++) {
       bounds += coord[0][i].lng.toFixed(2) + ' ' + coord[0][i].lat.toFixed(2) + ', ';

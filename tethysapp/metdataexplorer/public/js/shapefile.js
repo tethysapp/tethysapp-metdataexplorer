@@ -120,5 +120,11 @@ function uploadShapefile() {
     });
 }
 
+function zoomToBounds(bounds) {
+    let coords = bounds.slice(2,-2).split(',');
+    let corner1 = L.latLng(coords[0].split(' ')[1], coords[0].split(' ')[0]);
+    let corner2 = L.latLng(coords[2].split(' ')[2], coords[2].split(' ')[1]);
+    mapObj.flyToBounds(L.latLngBounds(corner1, corner2));
+}
 
 $('#uploadshp').click(uploadShapefile);
