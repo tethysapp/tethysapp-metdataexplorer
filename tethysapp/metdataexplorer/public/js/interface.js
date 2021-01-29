@@ -87,7 +87,9 @@ $('#var-metadata-button').click(function () {
 $('#demo-group-button').click(function () {
     $('#demo-group-button').attr('data-clicked', 'true');
     $('#user-group-button').attr('data-clicked', 'false');
-    $('#upload-to-which-group').empty().append('Upload to: Demo Group');
+    if ($('#upload-to-which-group').attr('data-admin') === 'True') {
+        $('#upload-to-which-group').empty().append('Upload to: Demo Group');
+    }
     $('#demo-group-button').css('background-color', '#1600F0');
     $('#user-group-button').css('background-color', '#828cfa');
     $('#demo-group-container').css('display', 'block');
@@ -97,7 +99,9 @@ $('#demo-group-button').click(function () {
 $('#user-group-button').click(function () {
     $('#demo-group-button').attr('data-clicked', 'false');
     $('#user-group-button').attr('data-clicked', 'true');
-    $('#upload-to-which-group').empty().append('Upload to: User Group');
+    if ($('#upload-to-which-group').attr('data-admin') === 'True') {
+        $('#upload-to-which-group').empty().append('Upload to: User Group');
+    }
     $('#user-group-button').css('background-color', '#1600F0');
     $('#demo-group-button').css('background-color', '#828cfa');
     $('#user-group-container').css('display', 'block');

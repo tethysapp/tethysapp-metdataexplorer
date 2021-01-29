@@ -30,9 +30,10 @@
             <h3>{{ group.name }}</h3>
           </div>
           <div style="width: 40%; padding-right: 15px">
-            <!--<img class="add-url img-button" data-name="{{ group.name }}" src="{% static 'metdataexplorer/images/addButton.png' %}" style="height: 20px; width: auto">-->
-            <img class="info-group img-button" src="{% static 'metdataexplorer/images/infoButton.png' %}" style="height: 20px; width: auto">
-            <img class="delete-all img-button" data-name="{{ group.name }}" onclick="deleteDB.call(this)" src="{% static 'metdataexplorer/images/trashButtonBlue.png' %}" style="height: 20px; width: auto">
+            {% if permission is True or group.name != "Demo Group" %}
+              <img class="info-group img-button" src="{% static 'metdataexplorer/images/infoButton.png' %}" style="height: 20px; width: auto">
+              <img class="delete-all img-button" data-name="{{ group.name }}" onclick="deleteDB.call(this)" src="{% static 'metdataexplorer/images/trashButtonBlue.png' %}" style="height: 20px; width: auto">
+            {% endif %}
           </div>
         </div>
         <div class="group-container" style="width: 96%; height: auto; background-color: white; margin: 0% 2% 0% 2%; padding: 2px">
@@ -47,10 +48,11 @@
               <h4>{{ thredd.title }}</h4>
             </div>
             <div style="width: 30%; padding-right: 5px">
+              {% if permission is True or group.name != "Demo Group" %}
               <img class="delete-url img-button" onclick="deleteDB.call(this)" data-editing='false' src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
-              <!--<img class="search-url img-button" src="{% static 'metdataexplorer/images/searchButtonGray.png' %}" style="height: 15px; width: auto;">-->
-              <img class="info-url img-button" onclick="infoDB.call(this)" src="{% static 'metdataexplorer/images/infoButtonGray.png' %}" style="height: 15px; width: auto;">
               <img class="edit-url img-button" onclick="editDB.call(this)" src="{% static 'metdataexplorer/images/editButton.png' %}" style="height: 15px; width: auto;">
+              {% endif %}
+              <img class="info-url img-button" onclick="infoDB.call(this)" src="{% static 'metdataexplorer/images/infoButtonGray.png' %}" style="height: 15px; width: auto;">
             </div>
           </div>
           {% endif %}
@@ -111,7 +113,13 @@
     <div style="display: flex; flex-direction: row;">
       <div style="width: 50%; padding: 15px 20px 20px 20px; flex-direction: column;">
         <div>
-          <div style="width: 100%; height: 20px;"><b id="upload-to-which-group">Upload to: Demo Group</b></div>
+          <div style="width: 100%; height: 20px;"><b id="upload-to-which-group" data-admin="{{  permission  }}">
+            {% if permission is True %}
+              Upload to: Demo Group
+            {% else %}
+              Upload to: User Group
+            {% endif %}
+          </b></div>
           <label for="title-input" style="float: left; padding-top: 10px;">Title (Required):</label>
           <input id="title-input" class="inputsty">
           <label for="tags-input" style="float: left">Tags:</label>

@@ -22,13 +22,19 @@ function createDBArray() {
             attr.push($(this).next('label').text());
         }
     })
-    if ($('#demo-group-button').attr('data-clicked') === 'true') {
-        var group = 'Demo Group';
-        var groupID = 'demo-group-container';
+    if ($('#upload-to-which-group').attr('data-admin') === 'True') {
+        if ($('#demo-group-button').attr('data-clicked') === 'true') {
+            var group = 'Demo Group';
+            var groupID = 'demo-group-container';
+        } else {
+            var group = 'User Group';
+            var groupID = 'user-group-container';
+        }
     } else {
         var group = 'User Group';
         var groupID = 'user-group-container';
     }
+
     let databaseInfo = {
         type: $('#name-in-form').attr('data-type'),
         name: $('#name-in-form').text(),

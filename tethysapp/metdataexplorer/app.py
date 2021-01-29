@@ -1,5 +1,7 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import PersistentStoreDatabaseSetting
+from tethys_sdk.permissions import Permission, PermissionGroup
+from tethys_sdk.app_settings import SpatialDatasetServiceSetting
 
 
 class metdataexplorer(TethysAppBase):
@@ -90,3 +92,36 @@ class metdataexplorer(TethysAppBase):
         )
 
         return ps_settings
+
+    def spatial_dataset_service_settings(self):
+        sds_settings = (
+            SpatialDatasetServiceSetting(
+                name='geoserver',
+                description='Specify a geoserver to load shapefiles into the Met Data Explorer.',
+                engine=SpatialDatasetServiceSetting.GEOSERVER,
+                required=False,
+            ),
+        )
+
+        return sds_settings
+
+    def permissions(self):
+        edit_demo_group = Permission(
+            name='edit_demo_group',
+            description='Allows the user to edit the demo group'
+        )
+
+        add_something = Permission(
+            name='add_something',
+            description='Allows the user to edit the demo group'
+        )
+
+        admin = PermissionGroup(
+            name='admin',
+            permissions=(edit_demo_group, add_something)
+        )
+
+        permissions = (admin,)
+
+        return permissions
+

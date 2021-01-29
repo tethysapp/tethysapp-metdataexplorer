@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
-from tethys_sdk.permissions import login_required
+from tethys_sdk.permissions import login_required, has_permission
 from siphon.catalog import TDSCatalog
 import requests
 import netCDF4
@@ -11,6 +11,7 @@ from .app import metdataexplorer as app
 
 @login_required()
 def home(request):
+    demo_group = has_permission(request, 'edit_demo_group')
 
     SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
     session = SessionMaker()
@@ -22,7 +23,8 @@ def home(request):
 
     context = {
         'groups': groups,
-        'thredds': thredds
+        'thredds': thredds,
+        'permission': demo_group,
     }
     return render(request, 'metdataexplorer/home.html', context)
 
