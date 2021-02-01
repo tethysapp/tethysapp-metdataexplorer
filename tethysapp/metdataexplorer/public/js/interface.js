@@ -1,17 +1,17 @@
 //Get url database info
-$("#go-input-button").click(function () {
-    $("#loading-model").modal("show");
+$('#go-input-button').click(function () {
+    $('#loading-model').modal('show');
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
     containerAttributes = false;
     if (firstlayeradded == true) {
         removeWMSLayer();
     }
-    getFoldersAndFiles($("#url-input").val());
+    getFoldersAndFiles($('#url-input').val());
 });
 
 $('.url-list-label').click(function () {
-    $("#loading-model").modal("show");
+    $('#loading-model').modal('show');
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
     containerAttributes = $(this).parents().closest('.url-list').data('thredds');
@@ -26,7 +26,7 @@ $('.url-list-label').click(function () {
         subsetURL = url_array['2'].slice(4);
         addContainerAttributesToUserInputItems();
         updateWMSLayer();
-        $("#loading-model").modal("hide");
+        $('#loading-model').modal('hide');
     } else {
         if (firstlayeradded == true) {
             removeWMSLayer();
@@ -108,10 +108,10 @@ $('#user-group-button').click(function () {
     $('#demo-group-container').css('display', 'none');
 })
 
-$("#up-file").click(function () {
+$('#up-file').click(function () {
     if (URLpath.length !== 1) {
         let newURL = URLpath[URLpath.length - 2];
-        $("#url-input").val(newURL);
+        $('#url-input').val(newURL);
         getFoldersAndFiles(newURL);
         URLpath.pop();
     }
@@ -122,7 +122,7 @@ $('#add-url').click(function () {
         alert('Please enter a url to a Thredds Data Server.')
         return
     } else {
-        $("#loading-model").modal("show");
+        $('#loading-model').modal('show');
         containerAttributes = false;
         $('#main-body').css('display', 'none');
         $('#db-forms').css('display', 'block');
@@ -130,11 +130,11 @@ $('#add-url').click(function () {
         if ($('#name-in-form').attr('data-type') === 'file') {
             let html = '';
             let variables = [];
-            $("#variable-input option").each(function () {
+            $('#variable-input option').each(function () {
                 variables.push($(this).val());
             });
             let timeDim = [];
-            $("#time option").each(function () {
+            $('#time option').each(function () {
                 timeDim.push($(this).val());
             });
             for (let variable in variables) {
@@ -143,29 +143,41 @@ $('#add-url').click(function () {
             for (let time in timeDim) {
                 html += `<option>${timeDim[time]}</option>`;
             }
-            let description = $("#metadata-div").attr('data-description');
+            let description = $('#metadata-div').attr('data-description');
             $('#dimensions').append(html);
             $('#description-input').append(description);
         }
         urlInfoBox = true;
-        $("#loading-model").modal("hide");
+        $('#loading-model').modal('hide');
     }
 });
 
-$("#upload-shp").click(function () {
-    $("#add-thredds-model").modal("hide");
-    $("#uploadshp-modal").modal("show");
+$('#upload-shp').click(function () {
+    $('#add-thredds-model').modal('hide');
+    $('#uploadshp-modal').modal('show');
 });
-$("#variable-input").change(function () {
+$('#variable-input').change(function () {
     let dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
     addVariableMetadata(dimensionsAndVariableMetadata[1]);
     addDimensions(dimensionsAndVariableMetadata[0]);
     updateWMSLayer();
 });
-$("#wmslayer-style").change(updateWMSLayer);
-$("#wmslayer-bounds").change(updateWMSLayer);
-$("#opacity-slider").change(function () {
-    dataLayerObj.setOpacity($("#opacity-slider").val());
+$('#wmslayer-style').change(updateWMSLayer);
+$('#wmslayer-bounds').change(updateWMSLayer);
+$('#opacity-slider').change(function () {
+    dataLayerObj.setOpacity($('#opacity-slider').val());
+});
+
+$('#configure-geoserver-button').click(function () {
+    $.ajax({
+        url: URL_listGeoserverLayers,
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'GET',
+        success: function (data) {
+            console.log(data);
+        }
+    })
 });
 
 //////////////////////////Form Interface///////////////////////
@@ -207,12 +219,12 @@ $('#select-all-button').click(function () {
     if ($('#select-all-button').data('select') === 'true') {
         $('#select-all-button').data('select', 'false')
         $('.attr-checkbox').each(function () {
-            $(this).attr("checked", true);
+            $(this).attr('checked', true);
         });
     } else {
         $('#select-all-button').data('select', 'true')
         $('.attr-checkbox').each(function () {
-            $(this).attr("checked", false);
+            $(this).attr('checked', false);
         });
     }
 });

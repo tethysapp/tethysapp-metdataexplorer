@@ -3,7 +3,7 @@ import geopandas
 import os
 import glob
 
-from .app import metdataexplorer as app
+from .geoserver import *
 
 
 def shp_to_geojson(file_path):
@@ -32,14 +32,18 @@ def upload_shapefile(request):
             for chunk in files[n].chunks():
                 dst.write(chunk)
 
-    geojson, filename = shp_to_geojson(shp_path)
+    filepath = glob.glob(os.path.join(shp_path, '*.shp'))[0]
+    filename = os.path.splitext(os.path.basename(filepath))[0]
+    path_to_shp = os.path.join(shp_path, filename)
+
+    geoserver_upload_shapefile(path_to_shp, filename)
 
     for file in glob.glob(os.path.join(shp_path, '*')):
         if os.path.splitext(os.path.basename(file))[0] == filename:
             os.remove(file)
 
-    return JsonResponse({'filenames': filename, 'geojson': geojson})
-
+    #return JsonResponse({'filenames': filename, 'geojson': geojson})
+    return JsonResponse({'path_to_shp': shp_path})
 
 
 def user_geojsons(request):

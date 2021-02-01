@@ -77,6 +77,12 @@ class metdataexplorer(TethysAppBase):
                 url='metdataexplorer/updateDB/',
                 controller='metdataexplorer.database.update_database'
             ),
+
+            UrlMap(
+                name='geoserverListLayers',
+                url='metdataexplorer/geoserver/',
+                controller='metdataexplorer.geoserver.list_geoserver_layers'
+            )
         )
 
         return url_maps
