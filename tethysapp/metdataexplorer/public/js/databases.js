@@ -42,7 +42,7 @@ function createDBArray() {
         title: $('#title-input').val(),
         url: url,
         tags: $('#tags-input').val(),
-        spatial: $('#spatial-extent-label').text(),
+        spatial: $('#spatial-input').val(),
         color: $('#color-range-input').val(),
         description: $('#description-input').val(),
         attributes: `${attr}`,
@@ -107,7 +107,7 @@ function deleteDB () {
 }
 
 function editDB () {
-    $("#loading-model").modal("show");
+    $("#loading-modal").modal("show");
     editing = true;
     clearForm();
     $('.delete-url').attr('data-editing', 'false');
@@ -117,7 +117,7 @@ function editDB () {
     $('#name-in-form').text(containerAttributes['name']);
     $('#title-input').val(containerAttributes['title']);
     $('#tags-input').text(containerAttributes['spatial']);
-    $('#spatial-extent-label').val(containerAttributes['title']);
+    $('#spatial-input').val(containerAttributes['title']);
     $('#color-range-input').val(containerAttributes['color']);
     $('#description-input').val(containerAttributes['description']);
     $('#dimensions').empty().append(`<option>${containerAttributes['time']}</option>`);
@@ -129,7 +129,7 @@ function editDB () {
     $('#main-body').css('display', 'none');
     $('#db-forms').css('display', 'block');
     urlInfoBox = true;
-    $("#loading-model").modal("hide");
+    $("#loading-modal").modal("hide");
 }
 
 $('#info-box-exit').click(function () {
@@ -148,7 +148,7 @@ function infoDB() {
                         <b>Description:</b><br><p>${containerAttributes['description']}</p>`
             $('#info-title').text(containerAttributes['title']);
             $('#main-container-info').empty().append(html);
-            $('#url-info-model').modal("show");
+            $('#url-info-modal').modal("show");
         } else {
             let html = `<b>URL:</b><br><p>${containerAttributes['url']}</p>
                         <b>Tags:</b><br><p>${containerAttributes['tags']}</p>
@@ -157,7 +157,7 @@ function infoDB() {
                         <b>Description:</b><br><p>${containerAttributes['description']}</p>`
             $('#info-title').text(containerAttributes['title']);
             $('#main-container-info').empty().append(html);
-            $('#url-info-model').modal("show");
+            $('#url-info-modal').modal("show");
         }
         containerAttributes = false;
     }

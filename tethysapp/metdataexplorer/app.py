@@ -81,7 +81,7 @@ class metdataexplorer(TethysAppBase):
             UrlMap(
                 name='geoserverListLayers',
                 url='metdataexplorer/geoserver/',
-                controller='metdataexplorer.geoserver.list_geoserver_layers'
+                controller='metdataexplorer.geoserver.list_geoserver_resources'
             )
         )
 
@@ -116,18 +116,9 @@ class metdataexplorer(TethysAppBase):
             name='edit_demo_group',
             description='Allows the user to edit the demo group'
         )
-
-        add_something = Permission(
-            name='add_something',
-            description='Allows the user to edit the demo group'
-        )
-
         admin = PermissionGroup(
             name='admin',
-            permissions=(edit_demo_group, add_something)
+            permissions=(edit_demo_group,)
         )
-
         permissions = (admin,)
-
         return permissions
-

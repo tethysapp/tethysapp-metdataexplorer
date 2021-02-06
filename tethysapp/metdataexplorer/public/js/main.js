@@ -18,7 +18,7 @@ let editDatabase = false;
 //Included with map.js: mapObj, insetMapObj, basemapObj, layerControlObj
 
 function updateFilepath() {
-    $("#loading-model").modal("show");
+    $("#loading-modal").modal("show");
     if ($(this).attr("class") == "folder") {
         let newURL = $(this).attr("data-url");
         $("#url-input").val(newURL);
@@ -49,7 +49,7 @@ function updateFilepath() {
         }
         updateWMSLayer();
     }
-    $("#loading-model").modal("hide");
+    $("#loading-modal").modal("hide");
 }
 
 function addVariables(variables) {
@@ -98,7 +98,7 @@ function removeWMSLayer() {
 
 /////////////////////Retrieve file data//////////////////////////////
 function getVariablesAndFileMetadata() {
-    //$("#loading-model").modal("show");
+    //$("#loading-modal").modal("show");
     let variables = {};
     let fileMetadata = '';
     $.ajax({
@@ -173,8 +173,24 @@ function getFoldersAndFiles(url) {
                     URLpath.push(correctURL);
                 }
             }
-            $("#loading-model").modal("hide");
+            $("#loading-modal").modal("hide");
         }
     })
 }
+
+function getGeoserverLayerList() {
+    var geoserverList = {};
+    $.ajax({
+        url: URL_listGeoserverLayers,
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'GET',
+        async: false,
+        success: function (result) {
+            geoserverList = result['result'];
+        }
+    })
+    return geoserverList;
+}
+
 

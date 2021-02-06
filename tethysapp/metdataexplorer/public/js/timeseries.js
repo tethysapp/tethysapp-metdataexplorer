@@ -2,7 +2,7 @@ function getTimeseries(coord) {
     if (subsetURL == '') {
         alert('Please select a data layer.');
     } else {
-        $('#loading-model').modal('show');
+        $('#loading-modal').modal('show');
         var maxlat = coord[0][2].lat;
         var maxlng = coord[0][2].lng;
         var minlat = coord[0][0].lat;
@@ -23,12 +23,12 @@ function getTimeseries(coord) {
             success: function (result) {
                 var data = result['data'];
                 if (data == false) {
-                    $('#loading-model').modal('hide');
+                    $('#loading-modal').modal('hide');
                     alert('Invalid dimensions');
                 } else {
                     drawGraph(data);
-                    $('#loading-model').modal('hide');
-                    $('#timeseries-model').modal('show');
+                    $('#loading-modal').modal('hide');
+                    $('#timeseries-modal').modal('show');
                 }
             },
         });

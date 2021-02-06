@@ -32,62 +32,42 @@ function getCookie(name) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//LOAD EXISTING USER LAYERS TO MAP
-/*function add_user_layers() {
-  $.ajax({
-    url: URL_user_geojsons,
-    dataType: 'json',
-    contentType: "application/json",
-    method: 'GET',
-    success: function (result) {
-      geojsons = result['geojson'];
-    },
-  });
-}*/
-
-
 //Create a geojson layer on the map using the shapefile the user uploaded
-function make_file_layer(geojson) {
+function makeGeojsonLayer(geojson) {
     if (shpfileAdded == true) {
         mapObj.removeLayer(shpLayer);
         shpLayer = new L.FeatureGroup().addTo(mapObj);
     }
-    let polygons = geojson;
+    //let polygons = geojson;
     let style = {
         "color": "#ffffff",
         "weight": 1,
         "opacity": 0.40,
     };
-    user_layer =  L.geoJSON(polygons, {
+/*    user_layer =  L.geoJSON(polygons, {
         style: style,
-        //onEachFeature: EachFeature,
-    });
+        onEachFeature: onEachFeature,
+    });*/
+    shpLayer = L.geoJson(geojson, {
+        style: style,
+        onEachFeature: onEachFeature
+    }).addTo(mapObj);
     shpfileAdded = true;
-    return user_layer.addTo(shpLayer);
+    //user_layer.addTo(shpLayer);
 }
 
-//Set the popup for each feature
-/*function EachFeature(feature, layer) {
-    layer.on('click', function(){
-        $('#shp-select > option').each(function() {
-            let id = $(this).val();
-            if (id != '') {
-                let prop = Object.keys(feature.properties);
-                let prop2 = $('#' + id + '').data('option_keys');
-                let name = $('#' + id + '').data('name');
-                if (String(prop) == String(prop2) | String(id) != String(name)) {
-                    $('#shp-select').val(name).change();
-                }
-            }
-        });
-/!*        layer.bindPopup('<div id="name-insert" style="text-align: center">'
-                        + '<h1>' + feature.properties[$('#properties').val()] + '</h1></div>'
-                        + '<br><button id="get-timeseries" style="width: 100%; height: 50px;'
-                        + 'background-color: aqua" onclick="timeseriesFromShp(`' + String(feature.properties[$('#properties').val()]) + '`)">'
-                        + 'Get Timeseries</button><div id="loading" class="loader"></div>');*!/
+function onEachFeature(feature, layer) {
+    layer.on({
+        click: clickShpLayer
     });
-}*/
+}
 
+function removeGeojsonLayer() {
+    if (shpfileAdded == true) {
+        mapObj.removeLayer(shpLayer);
+        shpfileAdded = false;
+    }
+}
 
 //ADD A USER SHAPEFILE TO THE MAP
 //Ajax call to send the shapefile to the client side
@@ -115,7 +95,6 @@ function uploadShapefile() {
             geojsonName = result['filenames'];
             geojsonFile = result['geojson'];
             $('#uploadshp-modal').modal('hide');
-            $('#add-thredds-model').modal('show');
         },
     });
 }

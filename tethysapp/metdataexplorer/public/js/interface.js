@@ -1,23 +1,29 @@
 //Get url database info
 $('#go-input-button').click(function () {
-    $('#loading-model').modal('show');
+    $('#loading-modal').modal('show');
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
     containerAttributes = false;
     if (firstlayeradded == true) {
         removeWMSLayer();
+        firstlayeradded == false;
+    }
+    if (shpfileAdded == true) {
+        removeGeojsonLayer();
+        shpfileAdded == false;
     }
     getFoldersAndFiles($('#url-input').val());
 });
 
 $('.url-list-label').click(function () {
-    $('#loading-model').modal('show');
+    $('#loading-modal').modal('show');
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
     containerAttributes = $(this).parents().closest('.url-list').data('thredds');
     $('#metadata-div').empty().append(`<p>${containerAttributes['description'].replace('/n', '<br>')}</p>`);
+    removeGeojsonLayer();
     if (containerAttributes['spatial'] !== '') {
-        zoomToBounds(containerAttributes['spatial']);
+        configureBounds(containerAttributes['spatial']);
     }
     if (containerAttributes['type'] == 'file') {
         let url_array = containerAttributes['url'].split(',');
@@ -26,7 +32,7 @@ $('.url-list-label').click(function () {
         subsetURL = url_array['2'].slice(4);
         addContainerAttributesToUserInputItems();
         updateWMSLayer();
-        $('#loading-model').modal('hide');
+        $('#loading-modal').modal('hide');
     } else {
         if (firstlayeradded == true) {
             removeWMSLayer();
@@ -122,7 +128,7 @@ $('#add-url').click(function () {
         alert('Please enter a url to a Thredds Data Server.')
         return
     } else {
-        $('#loading-model').modal('show');
+        $('#loading-modal').modal('show');
         containerAttributes = false;
         $('#main-body').css('display', 'none');
         $('#db-forms').css('display', 'block');
@@ -148,37 +154,44 @@ $('#add-url').click(function () {
             $('#description-input').append(description);
         }
         urlInfoBox = true;
-        $('#loading-model').modal('hide');
+        $('#loading-modal').modal('hide');
     }
 });
 
-$('#upload-shp').click(function () {
-    $('#add-thredds-model').modal('hide');
-    $('#uploadshp-modal').modal('show');
-});
 $('#variable-input').change(function () {
     let dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
     addVariableMetadata(dimensionsAndVariableMetadata[1]);
     addDimensions(dimensionsAndVariableMetadata[0]);
     updateWMSLayer();
 });
+
 $('#wmslayer-style').change(updateWMSLayer);
 $('#wmslayer-bounds').change(updateWMSLayer);
 $('#opacity-slider').change(function () {
     dataLayerObj.setOpacity($('#opacity-slider').val());
 });
 
-$('#configure-geoserver-button').click(function () {
-    $.ajax({
-        url: URL_listGeoserverLayers,
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'GET',
-        success: function (data) {
-            console.log(data);
+$('#link-geoserver').click(function () {
+    let geoserverLayer = getGeoserverLayerList();
+    let html = '';
+
+    for (let workspace in geoserverLayer) {
+        html += `<div style="width: 100%; height: auto;"><b style="padding-left: 0px;">${workspace}</b><br>`;
+        for (let store in geoserverLayer[workspace]) {
+            html += `<b style="padding-left: 20px">${store}</b><br>`;
+            for (let name in geoserverLayer[workspace][store]) {
+                html += `<div class="geoserver-layer-div" data-wfsURL="${geoserverLayer[workspace][store][name]}" ondblclick="setGeoserverWFS.call(this)"><b style="padding-left: 40px;">${name}</b></div>`;
+            }
         }
-    })
+    }
+    $('#link-geoserver-inner-content').empty().append(html);
+    $('#link-geoserver-modal').modal('show');
 });
+
+$('#configure-geoserver-button').click(function () {
+    let shp = mapObj.hasLayer(shpLayer);
+    console.log(shp)
+})
 
 //////////////////////////Form Interface///////////////////////
 $('#add-attribute-button').click(function () {
@@ -229,11 +242,28 @@ $('#select-all-button').click(function () {
     }
 });
 
+$('#configure-for-latest').click(function () {
+    $('#configure-for-latest-modal').modal('show');
+    console.log($('#name-in-form').text())
+    $('#latest-folder-url-input').val(URLpath[URLpath.length - 1]);
+    $('#latest-file-url-input').val($('#name-in-form').text());
+})
+
+function setGeoserverWFS() {
+    let wfs = $(this).attr('data-wfsURL');
+    if (wfs == false) {
+        alert('Please enable wfs service on selected layer.');
+    } else {
+        $('#spatial-input').val(wfs);
+        $('#link-geoserver-modal').modal('hide');
+    }
+}
+
 function clearForm() {
     $('#name-in-form').empty();
     $('#title-input').val('');
     $('#tags-input').val('');
-    $('#spatial-extent-label').empty();
+    $('#spatial-input').val('');
     $('#color-range-input').val('');
     $('#description-input').val('');
     $('#attributes').empty();

@@ -29,3 +29,34 @@ def list_geoserver_layers(request):
     if not result['success']:
         raise
     return JsonResponse({'result': result['result']})
+
+
+def list_geoserver_resources(request):
+    engine = app.get_spatial_dataset_service('geoserver', as_engine=True)
+    result = engine.list_resources(with_properties=True, debug=False)
+    workspaces = {}
+    if not result['success']:
+        raise
+
+    for shape in result['result']:
+        workspaces[shape['workspace']] = {}
+
+    for shape in result['result']:
+        workspaces[shape['workspace']][shape['store']] = {}
+
+    for shape in result['result']:
+        if 'wfs' in shape:
+            workspaces[shape['workspace']][shape['store']][shape['name']] = shape['wfs']['geojson']
+        else:
+            workspaces[shape['workspace']][shape['store']][shape['name']] = False
+
+    return JsonResponse({'result': workspaces})
+
+
+def list_geoserver_stores(request):
+    engine = app.get_spatial_dataset_service('geoserver', as_engine=True)
+    result = engine.list_stores(workspace=None, with_properties=True, debug=False)
+    print(result)
+    if not result['success']:
+        raise
+    return JsonResponse({'result': result['result']})
