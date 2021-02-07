@@ -44,19 +44,14 @@ function makeGeojsonLayer(geojson) {
         "weight": 1,
         "opacity": 0.40,
     };
-/*    user_layer =  L.geoJSON(polygons, {
-        style: style,
-        onEachFeature: onEachFeature,
-    });*/
     shpLayer = L.geoJson(geojson, {
         style: style,
-        onEachFeature: onEachFeature
+        onEachFeature: EachFeature,
     }).addTo(mapObj);
     shpfileAdded = true;
-    //user_layer.addTo(shpLayer);
 }
 
-function onEachFeature(feature, layer) {
+function EachFeature(feature, layer) {
     layer.on({
         click: clickShpLayer
     });

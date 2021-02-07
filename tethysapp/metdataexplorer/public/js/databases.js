@@ -10,10 +10,15 @@ function createDBArray() {
         $('.delete-url[data-editing="true"]').trigger( "click" );
         var url = containerAttributes['url'];
     } else {
-        if ($('#name-in-form').attr('data-type') == 'file') {
+        if ($('#latest-url-input').attr('data-url') !== 'false') {
+            var url = $('#latest-url-input').attr('data-url');
+            var timestamp = 'true';
+        } else if ($('#name-in-form').attr('data-type') == 'file') {
             var url = `opd:${opendapURL},wms:${wmsURL},sub:${subsetURL}`;
+            var timestamp = 'false';
         } else {
             var url = $('#url-input').val();
+            var timestamp = 'false';
         }
     }
     let attr = [];
@@ -48,6 +53,7 @@ function createDBArray() {
         attributes: `${attr}`,
         time: $('#dimensions').val(),
         units: $('#units').val(),
+        timestamp: timestamp,
     };
     $.ajax({
         url: URL_updateDB,
@@ -122,6 +128,7 @@ function editDB () {
     $('#description-input').val(containerAttributes['description']);
     $('#dimensions').empty().append(`<option>${containerAttributes['time']}</option>`);
     $('#units').val(containerAttributes['units']);
+    $('#latest-url-input').val(containerAttributes['timestamp']);
     let attributes = containerAttributes['attributes'].split(',');
     for (let attribute in attributes) {
         addAttribute(attributes[attribute]);

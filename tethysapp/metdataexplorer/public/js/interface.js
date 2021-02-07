@@ -16,6 +16,7 @@ $('#go-input-button').click(function () {
 });
 
 $('.url-list-label').click(function () {
+    //TODO loading symbol
     $('#loading-modal').modal('show');
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
@@ -26,10 +27,19 @@ $('.url-list-label').click(function () {
         configureBounds(containerAttributes['spatial']);
     }
     if (containerAttributes['type'] == 'file') {
-        let url_array = containerAttributes['url'].split(',');
-        opendapURL = url_array['0'].slice(4);
-        wmsURL = url_array['1'].slice(4);
-        subsetURL = url_array['2'].slice(4);
+        console.log(containerAttributes['timestamp'])
+        if (containerAttributes['timestamp'] == 'true') {
+            var url_array = getLatestFile(containerAttributes['url']);
+            opendapURL = url_array['latestFileURL']['OPENDAP'];
+            wmsURL = url_array['latestFileURL']['WMS'];
+            subsetURL = url_array['latestFileURL']['NetcdfSubset'];
+            containerAttributes['title'] = url_array['fileName'];
+        } else {
+            var url_array = containerAttributes['url'].split(',');
+            opendapURL = url_array['0'].slice(4);
+            wmsURL = url_array['1'].slice(4);
+            subsetURL = url_array['2'].slice(4);
+        }
         addContainerAttributesToUserInputItems();
         updateWMSLayer();
         $('#loading-modal').modal('hide');
@@ -244,10 +254,17 @@ $('#select-all-button').click(function () {
 
 $('#configure-for-latest').click(function () {
     $('#configure-for-latest-modal').modal('show');
-    console.log($('#name-in-form').text())
-    $('#latest-folder-url-input').val(URLpath[URLpath.length - 1]);
-    $('#latest-file-url-input').val($('#name-in-form').text());
+    if ($('#latest-url-input').attr('data-url') == 'false') {
+        $('#latest-url-input').val(`${URLpath[URLpath.length - 1].slice(0,-11)}${$('#name-in-form').text()}`);
+    } else {
+        $('#latest-url-input').val($('#latest-url-input').attr('data-url'));
+    }
 })
+
+$('#latest-url-confirm').click(function () {
+    $('#latest-url-input').attr('data-url', $('#latest-url-input').val());
+    $('#configure-for-latest-modal').modal('hide');
+});
 
 function setGeoserverWFS() {
     let wfs = $(this).attr('data-wfsURL');
@@ -269,4 +286,6 @@ function clearForm() {
     $('#attributes').empty();
     $('#dimensions').val('');
     $('#units').val('');
+    $('#latest-url-input').val('')
+    $('#latest-url-input').attr('data-url', 'false');
 }

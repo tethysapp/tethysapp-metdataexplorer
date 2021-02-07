@@ -22,6 +22,7 @@ def update_database(request):
         attributes=database_info['attributes'],
         time=database_info['time'],
         units=database_info['units'],
+        timestamp=database_info['timestamp'],
     )
 
     session.add(db)

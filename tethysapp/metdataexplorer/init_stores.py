@@ -39,6 +39,7 @@ def init_thredds_db(engine, first_time):
             attributes='Precipitation_rate_surface,Precipitation_rate_surface_Mixed_intervals_Average',
             time='time1',
             units='mm',
+            timestamp='false',
         )
         session.add(container_one)
         session.commit()

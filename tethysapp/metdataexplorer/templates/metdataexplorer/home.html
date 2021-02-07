@@ -43,7 +43,7 @@
            "group":"{{ thredd.group }}", "title":"{{ thredd.title }}", "tags":"{{ thredd.tags }}",
            "url":"{{ thredd.url }}", "spatial":"{{ thredd.spatial }}", "color":"{{ thredd.color }}",
            "description":"{{ thredd.description }}", "attributes":"{{ thredd.attributes }}",
-           "time":"{{ thredd.time }}", "units":"{{ thredd.units }}"}'>
+           "time":"{{ thredd.time }}", "units":"{{ thredd.units }}", "timestamp":"{{ thredd.timestamp }}"}'>
             <div class="url-list-label" style="width: 70%; overflow-x: scroll">
               <h4>{{ thredd.title }}</h4>
             </div>
@@ -305,10 +305,9 @@
         </div>
         <div style="width: 100%; height: 200px">
           <div style="width: 650px; height: 150px; display: flex; flex-direction: column; justify-content: left; margin: 25px">
-            <label for="latest-folder-url-input">Folder URL</label>
-            <input id="latest-folder-url-input" class="inputsty" style="width: 100%;">
-            <label for="latest-file-url-input">File Name</label>
-            <input id="latest-file-url-input" class="inputsty" style="width: 100%%;">
+            <label for="latest-url-input">Folder URL</label>
+            <input id="latest-url-input" class="inputsty" style="width: 100%;" data-url="false">
+            <button id="latest-url-confirm">Confirm</button>
           </div>
         </div>
       </div>
@@ -337,6 +336,7 @@
       let URL_getDimensionsAndVariableMetadata = "{% url 'metdataexplorer:getDimensionsAndVariableMetadata' %}";
       let URL_deleteContainer = "{% url 'metdataexplorer:deleteContainer' %}";
       let URL_updateDB = "{% url 'metdataexplorer:updateDB' %}";
+      let URL_getLatestFiles = "{% url 'metdataexplorer:getLatestFiles' %}";
 
       let URL_listGeoserverLayers = "{% url 'metdataexplorer:geoserverListLayers' %}"
   </script>

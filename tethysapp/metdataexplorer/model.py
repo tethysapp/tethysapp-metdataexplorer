@@ -20,8 +20,9 @@ class Thredds(Base):
     attributes = Column(String(20000))
     time = Column(String(100))
     units = Column(String(100))
+    timestamp = Column(String(2000))
 
-    def __init__(self, server_type, name, group, title, tags, url, spatial, description, color, attributes, time, units):
+    def __init__(self, server_type, name, group, title, tags, url, spatial, description, color, attributes, time, units, timestamp):
         self.server_type = server_type
         self.name = name
         self.group = group
@@ -34,6 +35,7 @@ class Thredds(Base):
         self.attributes = attributes
         self.time = time
         self.units = units
+        self.timestamp = timestamp
 
 
 class Groups(Base):

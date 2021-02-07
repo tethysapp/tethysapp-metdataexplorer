@@ -193,4 +193,22 @@ function getGeoserverLayerList() {
     return geoserverList;
 }
 
+function getLatestFile(url) {
+    var latestFileURL = '';
+    var fileName = '';
+    $.ajax({
+        url: URL_getLatestFiles,
+        data: {'url': url},
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'GET',
+        async: false,
+        success: function (result) {
+            latestFileURL = result['accessUrls'];
+            fileName = result['fileName'];
+        }
+    })
+    return {latestFileURL, fileName};
+}
+
 
