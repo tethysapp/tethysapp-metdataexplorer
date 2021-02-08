@@ -16,7 +16,6 @@ $('#go-input-button').click(function () {
 });
 
 $('.url-list-label').click(function () {
-    //TODO loading symbol
     $('#loading-modal').modal('show');
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
@@ -40,6 +39,7 @@ $('.url-list-label').click(function () {
             wmsURL = url_array['1'].slice(4);
             subsetURL = url_array['2'].slice(4);
         }
+        console.log(`opendatURL: ${opendapURL}, wmsURL: ${wmsURL}, subsetURL: ${subsetURL}`);
         addContainerAttributesToUserInputItems();
         updateWMSLayer();
         $('#loading-modal').modal('hide');
@@ -198,11 +198,6 @@ $('#link-geoserver').click(function () {
     $('#link-geoserver-modal').modal('show');
 });
 
-$('#configure-geoserver-button').click(function () {
-    let shp = mapObj.hasLayer(shpLayer);
-    console.log(shp)
-})
-
 //////////////////////////Form Interface///////////////////////
 $('#add-attribute-button').click(function () {
     addAttribute($('#add-attribute').val());
@@ -289,3 +284,30 @@ function clearForm() {
     $('#latest-url-input').val('')
     $('#latest-url-input').attr('data-url', 'false');
 }
+
+/////////////////////////////////Geoserver
+$('#crate-workspace-button').click(function () {
+    let workspace = $('#workspace').val();
+    let uri = $('#uri').val();
+    $.ajax({
+        url: URL_createGeoserverWorkspace,
+        data: {
+            workspaceName: workspace,
+            uri: uri,
+        },
+        dataType: "json",
+        contentType: "application/json",
+        method: "GET",
+        async: false,
+        success: function (result) {
+        }
+    })
+})
+
+$('#configure-geoserver-button').click(function () {
+    $('#geoserver-modal').modal('show');
+})
+
+$('#upload-shapefile-modal-button').click(function () {
+    $('#uploadshp-modal').modal('show');
+})

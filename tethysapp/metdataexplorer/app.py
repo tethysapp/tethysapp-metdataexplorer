@@ -1,6 +1,6 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import PersistentStoreDatabaseSetting
-from tethys_sdk.permissions import Permission, PermissionGroup
+#from tethys_sdk.permissions import Permission, PermissionGroup
 from tethys_sdk.app_settings import SpatialDatasetServiceSetting
 
 
@@ -81,6 +81,11 @@ class metdataexplorer(TethysAppBase):
                 name='geoserverListLayers',
                 url='metdataexplorer/geoserver/',
                 controller='metdataexplorer.geoserver.list_geoserver_resources'
+            ),
+            UrlMap(
+                name='createGeoserverWorkspace',
+                url='metdataexplorer/workspace/',
+                controller='metdataexplorer.geoserver.geoserver_create_workspace'
             ),
             UrlMap(
                 name='getLatestFiles',

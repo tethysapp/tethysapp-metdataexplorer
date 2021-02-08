@@ -165,7 +165,7 @@
         <input id="units" class="inputsty">
         <div style="display: flex; flex-direction: row">
           <button id="generate-api-key" style="width: 50%; margin-top: 20px; background-color: gray;">Generate API Key</button>
-          <button id="configure-for-latest" style="width: 50%; margin-top: 20px; background-color: gray;">Configure for Latest</button>
+          <button id="configure-for-latest" style="width: 50%; margin-top: 20px;">Configure for Latest</button>
         </div>
         <div style="display: flex; flex-direction: row">
           <button id="add-submit" style="width: 50%; margin-top: 20px;">Save</button>
@@ -268,8 +268,13 @@
         <div id="geoserver-outer-content" class="geoserver-outer">
           <div id="geoserver-inner-content" class="geoserver-inner"></div>
           <div>
+            <input id="workspace">
+            <input id="uri">
+            <button id="crate-workspace-button">Create Workspace</button>
+          </div>
+          <div>
             <button style="width: 200px; margin-right: 30px; float:right;">Close</button>
-            <button style="width: 200px; float: right">Upload Shapefile</button>
+            <button id="upload-shapefile-modal-button" style="width: 200px; float: right">Upload Shapefile</button>
           </div>
         </div>
       </div>
@@ -293,7 +298,7 @@
     </div>
   </div>
 
-    <!-- link geoserver -->
+    <!-- configure for latest -->
   <div class="modal fade" id="configure-for-latest-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
     <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
       <div class="modal-content">
@@ -338,7 +343,8 @@
       let URL_updateDB = "{% url 'metdataexplorer:updateDB' %}";
       let URL_getLatestFiles = "{% url 'metdataexplorer:getLatestFiles' %}";
 
-      let URL_listGeoserverLayers = "{% url 'metdataexplorer:geoserverListLayers' %}"
+      let URL_listGeoserverLayers = "{% url 'metdataexplorer:geoserverListLayers' %}";
+      let URL_createGeoserverWorkspace = "{% url 'metdataexplorer:createGeoserverWorkspace' %}";
   </script>
 
 {% endblock %}
