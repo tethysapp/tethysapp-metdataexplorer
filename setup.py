@@ -16,7 +16,7 @@ resource_files += find_resource_files('tethysapp/' + app_package + '/workspaces'
 
 setup(
     name=release_package,
-    version='0.1.4',
+    version='0.1.5',
     description='An app to view netCDF files hosted on a THREDDS Data Server',
     long_description='',
     keywords='netCDF',
