@@ -115,14 +115,14 @@ class metdataexplorer(TethysAppBase):
 
         return sds_settings
 
-    def permissions(self):
-        edit_demo_group = Permission(
-            name='edit_demo_group',
-            description='Allows the user to edit the demo group'
-        )
-        admin = PermissionGroup(
-            name='admin',
-            permissions=(edit_demo_group,)
-        )
-        permissions = (admin,)
-        return permissions
+    #def permissions(self):
+    #    edit_demo_group = Permission(
+    #        name='edit_demo_group',
+    #        description='Allows the user to edit the demo group'
+    #    )
+    #    admin = PermissionGroup(
+    #        name='admin',
+    #        permissions=(edit_demo_group,)
+    #    )
+    #    permissions = (admin,)
+    #    return permissions
