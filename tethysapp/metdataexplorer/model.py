@@ -9,32 +9,24 @@ class Thredds(Base):
 
     id = Column(Integer, primary_key=True)
     server_type = Column(String(100))
-    name = Column(String(2000))
     group = Column(String(100))
     title = Column(String(2000))
-    tags = Column(String(2000))
     url = Column(String(2000))
+    epsg = Column(String(100))
     spatial = Column(String(2000))
-    color = Column(String(100))
     description = Column(String(4000))
     attributes = Column(String(20000))
-    time = Column(String(100))
-    units = Column(String(100))
     timestamp = Column(String(2000))
 
-    def __init__(self, server_type, name, group, title, tags, url, spatial, description, color, attributes, time, units, timestamp):
+    def __init__(self, server_type, group, title, url, epsg, spatial, description, attributes, timestamp):
         self.server_type = server_type
-        self.name = name
         self.group = group
         self.title = title
-        self.tags = tags
         self.url = url
+        self.epsg = epsg
         self.spatial = spatial
         self.description = description
-        self.color = color
         self.attributes = attributes
-        self.time = time
-        self.units = units
         self.timestamp = timestamp
 
 

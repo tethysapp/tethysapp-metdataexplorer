@@ -35,6 +35,112 @@ function getTimeseries(coord) {
     }
 }
 
+function getFullArray() {
+    $('#loading-modal').modal('show');
+    $.ajax({
+        url: URL_getFullArray,
+        data: {
+            'containerAttributes': JSON.stringify(containerAttributes),
+        },
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'GET',
+        success: function (result) {
+            let data = result['result'];
+            let timeseries = {};
+            let htmlVariables = '';
+            let i = 1;
+            for (let key in data) {
+                timeseries[key] = JSON.parse(data[key])
+                if (i == 1) {
+                    htmlVariables += `<div class="timeseries-variable" data-variable="${key}" onclick="updateSelectedVariable.call(this)" data-selected="true" style="background-color: #4532fc;"><p style="color: white">${key}</p></div>`;
+                } else {
+                    htmlVariables += `<div class="timeseries-variable" data-variable="${key}" onclick="updateSelectedVariable.call(this)" data-selected="false"><p>${key}</p></div>`;
+                }
+                i += 1;
+            }
+            i = 1;
+            let htmlFeatures = '';
+            for (let feature in timeseries[Object.keys(timeseries)[0]]) {
+                if (feature !== 'datetime') {
+                    if (i == 1) {
+                        htmlFeatures += `<div class="timeseries-features" onclick="updateSelectedFeature.call(this)" data-feature="${feature}" data-selected="true" style="background-color: #4532fc;"><p style="color: white">${feature}</p></div>`;
+                    } else {
+                        htmlFeatures += `<div class="timeseries-features" onclick="updateSelectedFeature.call(this)" data-feature="${feature}" data-selected="false"><p>${feature}</p></div>`;
+                    }
+                    i += 1;
+                }
+            }
+            fullArrayTimeseries = timeseries;
+            $('#timeseries-variable-div').empty().append(htmlVariables);
+            $('#timeseries-feature-div').empty().append(htmlFeatures);
+            $('#full-array-modal').modal('show');
+            $('#loading-modal').modal('hide');
+            drawGraphTwo();
+        },
+    });
+}
+
+function updateSelectedVariable() {
+    console.log('clicked')
+    $('.timeseries-variable').each(function () {
+        $(this).attr('data-selected', 'false').css('background-color', 'white');
+        $(this).find('p').css('color', '#666');
+    })
+    $(this).attr('data-selected', 'true').css('color', 'white').css('background-color', '#4532fc');
+    $(this).find('p').css('color', 'white');
+    drawGraphTwo();
+}
+
+function updateSelectedFeature() {
+    $('.timeseries-features').each(function () {
+        $(this).attr('data-selected', 'false').css('background-color', 'white');
+        $(this).find('p').css('color', '#666');
+    })
+    $(this).attr('data-selected', 'true').css('color', 'white').css('background-color', '#4532fc');
+    $(this).find('p').css('color', 'white');
+    drawGraphTwo();
+}
+
+function drawGraphTwo() {
+    let timeseriesVariable = false;
+    let timeseriesFeature = false;
+    $('.timeseries-variable').each(function () {
+        if ($(this).attr('data-selected') == 'true') {
+            timeseriesVariable = $(this).attr('data-variable');
+        }
+    })
+    $('.timeseries-features').each(function () {
+        if ($(this).attr('data-selected') == 'true') {
+            timeseriesFeature = $(this).attr('data-feature');
+        }
+    })
+    let series = {};
+    series['timeseries'] = fullArrayTimeseries[timeseriesVariable]['datetime'];
+    series['mean'] = fullArrayTimeseries[timeseriesVariable][timeseriesFeature];
+    let x = [];
+    let y = [];
+    for (let i = 0; i < Object.keys(series['timeseries']).length; i++) {
+        x.push(series['timeseries'][i]);
+        y.push(series['mean'][i]);
+    }
+    let variable = $('#variable-input').val();
+    let layout = {
+        title: 'Mean of ' + variable,
+        xaxis: {title: 'Time', type: 'datetime'},
+        yaxis: {title: 'Amount'}
+    };
+    let values = {
+        x: x,
+        y: y,
+        mode: 'lines+markers',
+        type: 'scatter'
+    };
+    Plotly.newPlot('chart-two', [values], layout);
+    let chart = $("#chart-two");
+    Plotly.Plots.resize(chart[0]);
+}
+
 function drawGraph(data) {
     var series = $.parseJSON(data);
     let x = [];
@@ -57,7 +163,6 @@ function drawGraph(data) {
     };
     Plotly.newPlot('chart', [values], layout);
     let chart = $("#chart");
-    chart.css('height', 500);
     Plotly.Plots.resize(chart[0]);
 }
 

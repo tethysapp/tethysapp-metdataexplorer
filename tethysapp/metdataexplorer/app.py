@@ -43,6 +43,11 @@ class metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.shapefile.upload_shapefile'
             ),
             UrlMap(
+                name='uploadShapefileToGeoserver',
+                url='metdataexplorer/uploadShapefileToGeoserver/',
+                controller='metdataexplorer.shapefile.upload_shapefile_to_geoserver'
+            ),
+            UrlMap(
                 name='userGeojson',
                 url='metdataexplorer/userGeojsons/',
                 controller='metdataexplorer.shapefile.user_geojsons'
@@ -58,9 +63,9 @@ class metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.controllers.get_variables_and_file_metadata'
             ),
             UrlMap(
-                name='getDimensionsAndVariableMetadata',
-                url='metdataexplorer/getDimensionsAndVariableMetadata/',
-                controller='metdataexplorer.controllers.get_dimensions_and_variable_metadata'
+                name='getVariableMetadata',
+                url='metdataexplorer/getVariableMetadata/',
+                controller='metdataexplorer.controllers.get_variable_metadata'
             ),
             UrlMap(
                 name='deleteContainer',
@@ -90,7 +95,12 @@ class metdataexplorer(TethysAppBase):
             UrlMap(
                 name='getLatestFiles',
                 url='metdataexplorer/latest/',
-                controller='metdataexplorer.timestamp.iterate_files'
+                controller='metdataexplorer.timestamp.url_to_iterate_files'
+            ),
+            UrlMap(
+                name='getFullArray',
+                url='metdataexplorer/getFullArray/',
+                controller='metdataexplorer.grids.get_full_array'
             ),
         )
 

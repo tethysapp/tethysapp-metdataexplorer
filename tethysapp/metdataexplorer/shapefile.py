@@ -27,8 +27,8 @@ def upload_shapefile(request):
     shp_path = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces')
 
     # write the new files to the directory
-    for n, file in enumerate(files):
-        with open(os.path.join(shp_path, file.name), 'wb') as dst:
+    for n, shp_file in enumerate(files):
+        with open(os.path.join(shp_path, shp_file.name), 'wb') as dst:
             for chunk in files[n].chunks():
                 dst.write(chunk)
 
@@ -36,14 +36,27 @@ def upload_shapefile(request):
     filename = os.path.splitext(os.path.basename(filepath))[0]
     path_to_shp = os.path.join(shp_path, filename)
 
-    geoserver_upload_shapefile(path_to_shp, filename)
+    return JsonResponse({'path_to_shp': path_to_shp, 'filename': filename})
 
-    for file in glob.glob(os.path.join(shp_path, '*')):
-        if os.path.splitext(os.path.basename(file))[0] == filename:
-            os.remove(file)
 
-    #return JsonResponse({'filenames': filename, 'geojson': geojson})
-    return JsonResponse({'path_to_shp': shp_path})
+def upload_shapefile_to_geoserver(request):
+    workspace = request.GET['workspace']
+    store_name = request.GET['storeName']
+    path_to_shp = request.GET['pathToShp']
+    filename = request.GET['filename']
+    print(workspace)
+    print(filename)
+    print(store_name)
+    print(path_to_shp)
+    result = geoserver_upload_shapefile(path_to_shp, store_name, workspace)
+
+    if not result:
+        raise
+
+    for shp_file in glob.glob(os.path.join(path_to_shp, '*')):
+        if os.path.splitext(os.path.basename(shp_file))[0] == filename:
+            os.remove(shp_file)
+    return JsonResponse({'success': result})
 
 
 def user_geojsons(request):

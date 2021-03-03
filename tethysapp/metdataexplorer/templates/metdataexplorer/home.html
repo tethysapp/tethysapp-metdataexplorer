@@ -39,11 +39,7 @@
         <div class="group-container" style="width: 96%; height: auto; background-color: white; margin: 0% 2% 0% 2%; padding: 2px">
           {% for thredd in thredds %}
           {% if thredd.group == group.name %}
-          <div class="url-list" data-thredds='{"type":"{{ thredd.server_type }}", "name":"{{ thredd.name }}",
-           "group":"{{ thredd.group }}", "title":"{{ thredd.title }}", "tags":"{{ thredd.tags }}",
-           "url":"{{ thredd.url }}", "spatial":"{{ thredd.spatial }}", "color":"{{ thredd.color }}",
-           "description":"{{ thredd.description }}", "attributes":"{{ thredd.attributes }}",
-           "time":"{{ thredd.time }}", "units":"{{ thredd.units }}", "timestamp":"{{ thredd.timestamp }}"}'>
+          <div class="url-list" data-thredds='{"type":"{{ thredd.server_type }}","group":"{{ thredd.group }}","title":"{{ thredd.title }}","url":"{{ thredd.url }}","epsg":"{{ thredd.epsg }}","spatial":"{{ thredd.spatial }}","description":"{{ thredd.description|escapejs }}","attributes":{{ thredd.attributes }},"timestamp":"{{ thredd.timestamp }}"}'>
             <div class="url-list-label" style="width: 70%; overflow-x: scroll">
               <h4>{{ thredd.title }}</h4>
             </div>
@@ -65,6 +61,9 @@
 {% block app_content %}
   <div id="main-body">
     <div id="map">
+      <div class="btn-group" style="z-index: 401; margin: 10px; position: absolute; left: 0; bottom: 80px;">
+        <button id="get-full-array-button" disabled style="background-color: #595959">Get Full Array</button>
+      </div>
       <div id="get-data-button" class="btn-group" style="z-index: 401; margin: 10px; position: absolute; left: 0; bottom: 40px;">
         <button>Get Data Bounds</button>
       </div>
@@ -122,25 +121,22 @@
           </b></div>
           <label for="title-input" style="float: left; padding-top: 10px;">Title (Required):</label>
           <input id="title-input" class="inputsty">
-          <label for="tags-input" style="float: left">Tags:</label>
-          <input id="tags-input" class="inputsty">
-        </div>
-<!--        <div style="height: auto; width: 100%; min-height: 20px;">
-          <b style="padding-top: 20px;">Spatial Extents: </b>
-          <p id="spatial-extent-label" style="float: left; font-size: 11pt; color: #333; padding: 25px;"></p>
-        </div>-->
-        <!--<div style="display: block">-->
-        <div style="height: auto; width: 100%; display: flex">
-          <button id="link-geoserver" style="width: 50%; margin-top: 30px;">Geoserver</button>
-          <button id="draw-on-map-button" style="width: 50%; margin-top: 30px;">Draw on Map</button>
+          <label for="epsg-input" style="float: left;">EPSG Code:</label>
+          <input id="epsg-input" class="inputsty">
+          <b style="float: left; font-size: 11pt; color: #333; padding-top: 20px;">Path to Latest:</b><br>
+          <div style="display: flex; flex-direction: row; width: 100%; height: 30px; padding: 5px 0px 2px 0px">
+            <input id="latest-input" class="inputsty">
+            <button id="configure-for-latest" data-select="true">Get URL</button>
+          </div>
         </div>
         <div>
           <label for="spatial-input" style="float: left;">Spatial Extents: </label>
           <input id="spatial-input" class="inputsty">
         </div>
-        <!--</div>-->
-        <label for="color-range-input" style="float: left">Default Color Range:</label>
-        <input id="color-range-input" class="inputsty" placeholder="0,25">
+        <div style="height: auto; width: 100%; display: flex">
+          <button id="link-geoserver" style="width: 50%; margin-top: 30px;">Geoserver</button>
+          <button id="draw-on-map-button" style="width: 50%; margin-top: 30px;">Draw on Map</button>
+        </div>
         <div>
           <label for="description-input" style="float: left;">Description (Required):</label>
           <textarea id="description-input" style="width: 100%; height: 200px"></textarea>
@@ -153,19 +149,18 @@
           <img id="add-attribute-button" class="img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 25px; width:auto; margin: 0px">
           <button id="select-all-button" data-select="true">Select All</button>
         </div>
-        <div id="attributes" style="width: 100%; height: 240px; border-style: solid; border-color:#000; border-width: 1px; border-radius: 3px; overflow-y: scroll; overflow-x: scroll">
+        <div id="attributes" style="width: 100%; height: 446px; border-style: solid; border-color:#000; border-width: 1px; border-radius: 3px; overflow-y: scroll; overflow-x: scroll">
         </div>
-        <label for="dimensions" style="float: left">Time Dimension</label>
-        <div style="display: flex; flex-direction: row; width: 100%; height: 25px;">
-          <input id="add-dimension" class="inputsty">
-          <img id="add-dimension-button" class="img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 25px; width:auto; margin: 0px">
-        </div>
-        <select id="dimensions" class="inputsty" style="height: 27px"></select>
-        <label for="units" style="float: left">Units:</label>
-        <input id="units" class="inputsty">
-        <div style="display: flex; flex-direction: row">
-          <button id="generate-api-key" style="width: 50%; margin-top: 20px; background-color: gray;">Generate API Key</button>
-          <button id="configure-for-latest" style="width: 50%; margin-top: 20px;">Configure for Latest</button>
+        <div style="display: flex; flex-direction: row; width: 100%; height: 20px; justify-content: space-between;">
+          <select id="default-option-select" style="width: 30%">
+            <option>Time</option>
+            <option>Lat</option>
+            <option>Lon</option>
+            <option>Color Range</option>
+            <option>Units</option>
+          </select>
+          <input id="default-option-input" style="width: 100%">
+          <img id="add-default-button" class="img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 20px; width:auto; margin: 0px">
         </div>
         <div style="display: flex; flex-direction: row">
           <button id="add-submit" style="width: 50%; margin-top: 20px;">Save</button>
@@ -233,8 +228,34 @@
           <button type="button" style="width: 30%; float: left" id="download-csv">Download CSV</button>
           <button type="button" style="width: 10%" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
         </div>
-        <div id="point_plot" style="width: 80%; height: 80%;"></div>
-        <div id="chart"></div>
+        <div id="chart" style="width: 700px; height: 500px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- full array timeseries -->
+  <div class="modal fade" id="full-array-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" style="width: 30%; float: left" id="download-csv-two">Download CSV</button>
+          <button type="button" style="width: 10%" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
+        </div>
+        <div style="display:flex; flex-direction: row; justify-content: space-between; width: 550px">
+          <div id="chart-two" style="width: 550px; height: 500px;"></div>
+          <div id="timeseries-navbar" style="display:flex; flex-direction: column;">
+            <div style="border-left-style: solid; border-left-color: #333333; border-left-width: 1pt;">
+              <b>Variables</b>
+            </div>
+            <div id="timeseries-variable-div">
+            </div>
+            <div style="border-left-style: solid; border-left-color: #333333; border-left-width: 1pt;">
+              <b>Features</b>
+            </div>
+            <div id="timeseries-feature-div">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -265,16 +286,22 @@
             <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
           </div>
         </div>
-        <div id="geoserver-outer-content" class="geoserver-outer">
-          <div id="geoserver-inner-content" class="geoserver-inner"></div>
-          <div>
-            <input id="workspace">
-            <input id="uri">
-            <button id="crate-workspace-button">Create Workspace</button>
-          </div>
-          <div>
-            <button style="width: 200px; margin-right: 30px; float:right;">Close</button>
-            <button id="upload-shapefile-modal-button" style="width: 200px; float: right">Upload Shapefile</button>
+        <div id="geoserver-outer-content" class="geoserver-outer" style="display:flex; justify-content: center; height: 250px">
+          <div style="display: flex; flex-direction: row; width: 100%; justify-self: center">
+            <div style="width: 46%; display: flex; flex-direction: column; margin:2%">
+              <label for="workspace">Workspace Name</label>
+              <input id="workspace" class="inputsty">
+              <label for="uri">Workspace URI</label>
+              <input id="uri" class="inputsty">
+              <button id="crate-workspace-button">Create Workspace</button>
+            </div>
+            <div style="width: 46%; display: flex; flex-direction: column; margin:2%">
+              <label for="which-workspace">Workspace</label>
+              <input id="which-workspace" class="inputsty">
+              <label for="store-name">Store Name</label>
+              <input id="store-name" class="inputsty">
+              <button id="upload-shapefile-modal-button">Upload Shapefile</button>
+            </div>
           </div>
         </div>
       </div>
@@ -319,6 +346,38 @@
     </div>
   </div>
 
+<!--  &lt;!&ndash; geoserver &ndash;&gt;
+  <div class="modal fade" id="api-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
+            <div style="width: 95%; display:flex; justify-content: center;"><h1 style="font-size: 23pt; color: black; ">API</h1></div>
+            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
+          </div>
+        </div>
+        <div id="api-outer-content" class="geoserver-outer" style="display:flex; justify-content: center; height: auto">
+          <div id="api-variable-container" style="display: flex; flex-direction: column; margin: 10px">
+            <div style="width: 90%; display: flex; flex-direction: row; margin: 2px 5% 2px 5%;">
+              <div style="width: 30%;">
+                <b>File CRS:</b>
+                <input id="data-crs-input" class="inputsty" style="width: 100px; height: 20px">
+              </div>
+              <div style="width: 30%; margin-left: 45px;">
+                <b>Shape CRS:</b>
+                <input id="shp-crs-input" class="inputsty" style="width: 100px; height: 20px">
+              </div>
+            </div>
+            <div id="insert-api-attr" style="width: 90%; display: flex; flex-direction: column; margin: 2px 5% 2px 5%;"></div>
+            <div style="width: 90%; display: block; margin: 2px 5% 2px 5%;">
+              <button id="api-key-close-button" style="width: 25%; float: right">Generate Key</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
   <!-- loading -->
   <div class="modal fade" id="loading-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
     <div class="loader"></div>
@@ -338,13 +397,17 @@
       let URL_uploadShapefile = "{% url 'metdataexplorer:uploadShapefile' %}";
       let URL_getBoxValues = "{% url 'metdataexplorer:getBoxValues' %}";
       let URL_getVariablesAndFileMetadata = "{% url 'metdataexplorer:getVariablesAndFileMetadata' %}";
-      let URL_getDimensionsAndVariableMetadata = "{% url 'metdataexplorer:getDimensionsAndVariableMetadata' %}";
+      let URL_getVariableMetadata = "{% url 'metdataexplorer:getVariableMetadata' %}";
       let URL_deleteContainer = "{% url 'metdataexplorer:deleteContainer' %}";
       let URL_updateDB = "{% url 'metdataexplorer:updateDB' %}";
       let URL_getLatestFiles = "{% url 'metdataexplorer:getLatestFiles' %}";
+      let URL_getFullArray = "{% url 'metdataexplorer:getFullArray' %}";
 
       let URL_listGeoserverLayers = "{% url 'metdataexplorer:geoserverListLayers' %}";
       let URL_createGeoserverWorkspace = "{% url 'metdataexplorer:createGeoserverWorkspace' %}";
+      let URL_uploadShapefileToGeoserver = "{% url 'metdataexplorer:uploadShapefileToGeoserver' %}";
+      let pathToFileImage = "{% static 'metdataexplorer/images/fileImage.png' %}";
+      let pathToFolderImage = "{% static 'metdataexplorer/images/folderImage.png' %}";
   </script>
 
 {% endblock %}

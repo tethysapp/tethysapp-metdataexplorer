@@ -73,23 +73,39 @@ function uploadShapefile() {
         alert('The files you selected were rejected. Upload exactly 4 files ending in shp, shx, prj and dbf.');
         return
     }
-
     let data = new FormData();
     Object.keys(files).forEach(function (file) {
         data.append('files', files[file]);
     });
-
     $.ajax({
         url: URL_uploadShapefile,
         type: 'POST',
         data: data,
         dataType: 'json',
-        processData: false,
-        contentType: false,
+        //processData: false,
+        //contentType: false,
         success: function (result) {
-            geojsonName = result['filenames'];
-            geojsonFile = result['geojson'];
-            $('#uploadshp-modal').modal('hide');
+            let pathToShp = result["path_to_shp"];
+            let filename = result["filename"];
+            console.log(pathToShp)
+            console.log(filename)
+            $.ajax({
+                url: URL_uploadShapefileToGeoserver,
+                data: {
+                    pathToShp: pathToShp,
+                    filename: filename,
+                    workspace: $('#which-workspace').val(),
+                    storeName: $('#store-name').val(),
+                },
+                dataType: "json",
+                contentType: "application/json",
+                method: "GET",
+                async: false,
+                success: function (result) {
+                    console.log(result['result']);
+                    $('#uploadshp-modal').modal('hide');
+                },
+            });
         },
     });
 }

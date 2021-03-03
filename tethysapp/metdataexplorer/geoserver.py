@@ -11,11 +11,10 @@ def geoserver_create_workspace(request):
     return JsonResponse({'result': 'success'})
 
 
-def geoserver_upload_shapefile(path_to_shp, filename):
+def geoserver_upload_shapefile(path_to_shp, filename, workspace):
     engine = app.get_spatial_dataset_service('geoserver', as_engine=True)
-    result = engine.create_shapefile_resource(store_id='metdataexplorer:' + filename, shapefile_base=path_to_shp, overwrite=True)
-    if not result['success']:
-        raise
+    result = engine.create_shapefile_resource(store_id=workspace + ':' + filename, shapefile_base=path_to_shp, overwrite=True)
+    return result['success']
 
 
 def delete_geoserver_layer(layer_id):

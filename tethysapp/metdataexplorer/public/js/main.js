@@ -11,9 +11,8 @@ let containerAttributes = false;
 let chartdata = {};
 //databases.js
 let editing = false;
-let geojsonName = 'No spatial reference';
 let urlInfoBox = false;
-let editDatabase = false;
+let fullArrayTimeseries = {};
 //Included with draw.js: drawnItems, shpLayer
 //Included with map.js: mapObj, insetMapObj, basemapObj, layerControlObj
 
@@ -25,7 +24,7 @@ function updateFilepath() {
         getFoldersAndFiles(newURL);
     } else if ($(this).attr("class") == "file") {
         $('#name-in-form').attr('data-type', 'file');
-        $("#url-input").val($(this).text().slice($(this).text().indexOf('') + 2));
+        $("#url-input").val($(this).text().trim());
         $("#layer-display-container").css("display", "inline");
         $("#filetree-div").css("display", "none");
         $("#file-info-div").css("display", "flex");
@@ -41,9 +40,9 @@ function updateFilepath() {
             let variablesAndFileMetadata = getVariablesAndFileMetadata();
             addVariables(variablesAndFileMetadata[0]);
             addFileMetadata(variablesAndFileMetadata[1]);
-            let dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
-            addVariableMetadata(dimensionsAndVariableMetadata[1]);
-            addDimensions(dimensionsAndVariableMetadata[0]);
+            let variableMetadataArray = variableMetadata();
+            addVariableMetadata(variableMetadataArray);
+            //addDimensions(dimensionsAndVariableMetadata[0]);
         } else {
             addContainerAttributesToUserInputItems();
         }
@@ -53,16 +52,21 @@ function updateFilepath() {
 }
 
 function addVariables(variables) {
+    console.log(variables)
+    let keys = Object.keys(variables);
+    keys.sort();
     let html = "";
-    for (let i = 0; i < variables.length; i++) {
-        html += `<option>${variables[i]}</option>`;
+    for (let i = 0; i < keys.length; i++) {
+        html += `<option data-dimensions="${variables[keys[i]]['dimensions']}" data-units="${variables[keys[i]]['units']}" data-color="${variables[keys[i]]['color']}">${keys[i]}</option>`;
     }
     $("#variable-input").empty().append(html);
+    addDimensions($("#variable-input option:selected").attr('data-dimensions'));
 }
 
 function addDimensions(dimensions) {
+    dimensions = dimensions.split(',');
     let html = "";
-    for (var i = 0; i < dimensions.length; i++) {
+    for (let i = 0; i < dimensions.length; i++) {
         html += `<option>${dimensions[i]}</option>`;
     }
     $("#time").empty().append(html);
@@ -116,12 +120,11 @@ function getVariablesAndFileMetadata() {
     return [variables, fileMetadata];
 }
 
-function getDimensionsAndVariableMetadata() {
-    var dimensions = [];
+function variableMetadata() {
     var variableMetadata = {};
     let variable = $("#variable-input").val();
     $.ajax({
-        url: URL_getDimensionsAndVariableMetadata,
+        url: URL_getVariableMetadata,
         data: {
             variable: variable,
             opendapURL: opendapURL
@@ -131,11 +134,10 @@ function getDimensionsAndVariableMetadata() {
         method: "GET",
         async: false,
         success: function (result) {
-            dimensions = result["dimensions"];
             variableMetadata = result["variable_metadata"];
         }
     })
-    return [dimensions, variableMetadata];
+    return [variableMetadata];
 }
 
 function getFoldersAndFiles(url) {
@@ -160,12 +162,14 @@ function getFoldersAndFiles(url) {
                             data-subset-url="${dataTree["files"][file]["NetcdfSubset"]}" 
                             data-opendap-url="${dataTree["files"][file]["OPENDAP"]}" 
                             class="file" onclick="updateFilepath.call(this)">
-                            <p class="far" style="display: inline-block">&#xf1c5; ${file}</p></div>`;
+                            <img src="${pathToFileImage}" style="height: 20px; margin: 5px 10px 5px 10px">
+                            <p style="padding: 5px 5px 5px 0px">${file}</p></div>`;
                 }
                 for (var folder in dataTree["folders"]) {
                     html += `<div data-url="${dataTree["folders"][folder]}" class="folder" 
                              onclick="updateFilepath.call(this)">
-                             <p class="fas" style="display: inline-block">&#xf07b; ${folder}</p></div>`;
+                             <img src="${pathToFolderImage}" style="height: 15px; margin: 5px 10px 5px 10px">
+                             <p style="padding: 5px 5px 5px 0px">${folder}</p></div>`;
                 }
                 $("#filetree-div").empty().append(html);
                 $("#url-input").val(correctURL);

@@ -20,26 +20,28 @@ $('.url-list-label').click(function () {
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
     containerAttributes = $(this).parents().closest('.url-list').data('thredds');
-    $('#metadata-div').empty().append(`<p>${containerAttributes['description'].replace('/n', '<br>')}</p>`);
+    $('#metadata-div').empty().append(`<p>${containerAttributes['description'].replace(/\u000A/g, '<br>')}</p>`);
     removeGeojsonLayer();
+    if (containerAttributes['spatial'].substr(0,4) == 'http' && containerAttributes['type'] == 'file') {
+        $('#get-full-array-button').prop('disabled', false).css('background-color', '#828cfa');
+    } else {
+        $('#get-full-array-button').prop('disabled', true).css('background-color', '#595959');
+    }
     if (containerAttributes['spatial'] !== '') {
         configureBounds(containerAttributes['spatial']);
     }
     if (containerAttributes['type'] == 'file') {
-        console.log(containerAttributes['timestamp'])
         if (containerAttributes['timestamp'] == 'true') {
             var url_array = getLatestFile(containerAttributes['url']);
             opendapURL = url_array['latestFileURL']['OPENDAP'];
             wmsURL = url_array['latestFileURL']['WMS'];
             subsetURL = url_array['latestFileURL']['NetcdfSubset'];
-            containerAttributes['title'] = url_array['fileName'];
         } else {
             var url_array = containerAttributes['url'].split(',');
             opendapURL = url_array['0'].slice(4);
             wmsURL = url_array['1'].slice(4);
             subsetURL = url_array['2'].slice(4);
         }
-        console.log(`opendatURL: ${opendapURL}, wmsURL: ${wmsURL}, subsetURL: ${subsetURL}`);
         addContainerAttributesToUserInputItems();
         updateWMSLayer();
         $('#loading-modal').modal('hide');
@@ -52,38 +54,33 @@ $('.url-list-label').click(function () {
 });
 
 function addContainerAttributesToUserInputItems() {
-    let dimensionsAndVariableMetadata = false;
-    if (containerAttributes['attributes'] == '' || containerAttributes['description'] == '' ||
-        containerAttributes['time'] == '') {
+    let variableMetadataString = false;
+    if (containerAttributes['attributes'] == '' || containerAttributes['description'] == '') {
         let variablesAndFileMetadata = getVariablesAndFileMetadata();
         if (containerAttributes['attributes'] == '') {
             addVariables(variablesAndFileMetadata[0]);
         } else {
-            addVariables(containerAttributes['attributes'].split(','));
-        }
-        if (containerAttributes['time'] == '') {
-            dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
-            addDimensions(dimensionsAndVariableMetadata[0]);
-        } else {
-            addDimensions([containerAttributes['time']]);
+            addVariables(containerAttributes['attributes']);
         }
         if (containerAttributes['description'] == '') {
             addFileMetadata(variablesAndFileMetadata[1]);
         }
     } else {
-        if (containerAttributes['color'] !== '') {
-            $('#wmslayer-bounds').val(containerAttributes['color']);
-        }
-        addVariables(containerAttributes['attributes'].split(','));
-        addDimensions([containerAttributes['time']]);
+        addVariables(containerAttributes['attributes']);
         $('#filetree-div').css('display', 'none');
         $('#file-info-div').css('display', 'flex');
         $('#layer-display-container').css('display', 'inline');
+        console.log($('#variable-input option:selected').attr('data-color'))
+        if($('#variable-input option:selected').attr('data-color') !== 'false') {
+            $('#wmslayer-bounds').val($('#variable-input option:selected').attr('data-color'));
+        } else {
+            $('#wmslayer-bounds').val('0,25');
+        }
     }
-    if (dimensionsAndVariableMetadata === false) {
-        dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
+    if (variableMetadataString === false) {
+        variableMetadataString = variableMetadata();
     }
-    addVariableMetadata(dimensionsAndVariableMetadata[1]);
+    addVariableMetadata(variableMetadataString);
 }
 
 //Buttons for groups and metadata div
@@ -145,19 +142,14 @@ $('#add-url').click(function () {
         $('#name-in-form').append($('#url-input').val());
         if ($('#name-in-form').attr('data-type') === 'file') {
             let html = '';
-            let variables = [];
+            let variables = {};
             $('#variable-input option').each(function () {
-                variables.push($(this).val());
-            });
-            let timeDim = [];
-            $('#time option').each(function () {
-                timeDim.push($(this).val());
+                variables[$(this).val()] = $(this).attr('data-dimensions');
             });
             for (let variable in variables) {
-                addAttribute(variables[variable]);
-            }
-            for (let time in timeDim) {
-                html += `<option>${timeDim[time]}</option>`;
+                let dimensionString = variables[variable];
+                console.log(dimensionString)
+                addAttribute(variable, dimensionString, '', '');
             }
             let description = $('#metadata-div').attr('data-description');
             $('#dimensions').append(html);
@@ -169,9 +161,12 @@ $('#add-url').click(function () {
 });
 
 $('#variable-input').change(function () {
-    let dimensionsAndVariableMetadata = getDimensionsAndVariableMetadata();
-    addVariableMetadata(dimensionsAndVariableMetadata[1]);
-    addDimensions(dimensionsAndVariableMetadata[0]);
+    let variableMetadataArray = variableMetadata();
+    addVariableMetadata(variableMetadataArray);
+    addDimensions($('#variable-input option:selected').attr('data-dimensions'));
+    if($('#variable-input option:selected').attr('data-color') !== false) {
+        $('#wmslayer-bounds').val($('#variable-input option:selected').attr('data-color'));
+    }
     updateWMSLayer();
 });
 
@@ -198,9 +193,11 @@ $('#link-geoserver').click(function () {
     $('#link-geoserver-modal').modal('show');
 });
 
+$('#get-full-array-button').click(getFullArray);
+
 //////////////////////////Form Interface///////////////////////
 $('#add-attribute-button').click(function () {
-    addAttribute($('#add-attribute').val());
+    addAttribute($('#add-attribute').val(), false, '', '');
     $('#add-attribute').val('');
 });
 
@@ -219,7 +216,6 @@ $('#add-submit').click(function() {
         return
     } else {
         createDBArray();
-        editing = false;
         urlInfoBox = false;
     }
 });
@@ -234,18 +230,50 @@ $('#add-cancel').click(function () {
 });
 
 $('#select-all-button').click(function () {
-    if ($('#select-all-button').data('select') === 'true') {
-        $('#select-all-button').data('select', 'false')
+    if ($('#select-all-button').attr('data-select') === 'true') {
+        $('#select-all-button').attr('data-select', 'false');
         $('.attr-checkbox').each(function () {
-            $(this).attr('checked', true);
+            $(this).prop('checked', false);
         });
     } else {
-        $('#select-all-button').data('select', 'true')
+        $('#select-all-button').attr('data-select', 'true');
         $('.attr-checkbox').each(function () {
-            $(this).attr('checked', false);
+            $(this).prop('checked', true);
         });
     }
 });
+
+$('#add-default-button').click(function (){
+    let inputValue = $('#default-option-input').val();
+    let selectValue = $('#default-option-select').val();
+    if (selectValue == 'Time') {
+        $('.time-dim-select option').each(function () {
+            if ($(this).val().includes(inputValue)) {
+                $(this).prop('selected','selected');
+            }
+        })
+    } else if (selectValue == 'Lat') {
+        $('.lat-dim-select option').each(function () {
+            if ($(this).val().includes(inputValue)) {
+                $(this).prop('selected','selected');
+            }
+        })
+    } else if (selectValue == 'Lon') {
+        $('.lon-dim-select option').each(function () {
+            if ($(this).val().includes(inputValue)) {
+                $(this).prop('selected','selected');
+            }
+        })
+    } else if (selectValue == 'Color Range') {
+        $('.var-color-select').each(function () {
+            $('.var-color-select').val(inputValue);
+        })
+    } else if (selectValue == 'Units') {
+        $('.var-unit-select').each(function () {
+            $('.var-unit-select').val(inputValue);
+        })
+    }
+})
 
 $('#configure-for-latest').click(function () {
     $('#configure-for-latest-modal').modal('show');
@@ -259,7 +287,35 @@ $('#configure-for-latest').click(function () {
 $('#latest-url-confirm').click(function () {
     $('#latest-url-input').attr('data-url', $('#latest-url-input').val());
     $('#configure-for-latest-modal').modal('hide');
-});
+})
+
+$('#generate-api-key').click(function () {
+    if ($('#name-in-form').attr('data-type') == 'file') {
+        let attr = [];
+        $('.attr-checkbox').each(function () {
+            if (this.checked) {
+                attr.push($(this).next('label').text());
+            }
+        })
+        for (let attribute in attr) {
+            let html = `<div><b style="justify-self: right">${attr[attribute]}</b></div><div class="api-dimension-container">`;
+            for (let i = 0; i < 3; i++) {
+                let whichDim = 'Time';
+                if (i == 1){
+                    whichDim = 'Latitude';
+                } else if (i==2) {
+                    whichDim = 'Longitude';
+                }
+                html += `<span><b>${whichDim}:&nbsp;</b><input class="api-dimension-input"></span>`;
+            }
+            html += `</div>`;
+            $('#insert-api-attr').append(html);
+        }
+        $('#api-modal').modal('show');
+    } else {
+        alert('Please select a file.');
+    }
+})
 
 function setGeoserverWFS() {
     let wfs = $(this).attr('data-wfsURL');
@@ -274,21 +330,21 @@ function setGeoserverWFS() {
 function clearForm() {
     $('#name-in-form').empty();
     $('#title-input').val('');
-    $('#tags-input').val('');
+    $('#epsg-input').val('');
+    $('#latest-input').val('');
+    $('#configure-for-latest').attr('data-select', 'false');
+    $('#latest-url-input').attr('data-url', 'false');
+    $('#latest-url-input').val('')
     $('#spatial-input').val('');
-    $('#color-range-input').val('');
     $('#description-input').val('');
     $('#attributes').empty();
-    $('#dimensions').val('');
-    $('#units').val('');
-    $('#latest-url-input').val('')
-    $('#latest-url-input').attr('data-url', 'false');
 }
 
 /////////////////////////////////Geoserver
 $('#crate-workspace-button').click(function () {
     let workspace = $('#workspace').val();
     let uri = $('#uri').val();
+    $('#geoserver-modal').modal('hide');
     $.ajax({
         url: URL_createGeoserverWorkspace,
         data: {
@@ -309,5 +365,10 @@ $('#configure-geoserver-button').click(function () {
 })
 
 $('#upload-shapefile-modal-button').click(function () {
-    $('#uploadshp-modal').modal('show');
+    if ($('#which-workspace').val() == '' || $('#store-name').val() == '') {
+        alert('Please specify a workspace and a store.')
+    } else {
+        $('#geoserver-modal').modal('hide');
+        $('#uploadshp-modal').modal('show');
+    }
 })

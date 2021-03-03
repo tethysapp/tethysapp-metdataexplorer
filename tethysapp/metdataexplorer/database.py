@@ -1,27 +1,24 @@
 from django.http import JsonResponse
+import json
 
 from .model import Thredds
 from .app import metdataexplorer as app
 
 
 def update_database(request):
-    database_info = request.GET.dict()
+    database_info = json.loads(request.GET["data"])
     SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
     session = SessionMaker()
-
+    print(database_info)
     db = Thredds(
         server_type=database_info['type'],
-        name=database_info['name'],
         group=database_info['group'],
         title=database_info['title'],
-        tags=database_info['tags'],
         url=database_info['url'],
+        epsg=database_info['epsg'],
         spatial=database_info['spatial'],
-        color=database_info['color'],
         description=database_info['description'],
-        attributes=database_info['attributes'],
-        time=database_info['time'],
-        units=database_info['units'],
+        attributes=json.dumps(database_info['attributes']),
         timestamp=database_info['timestamp'],
     )
 
@@ -36,6 +33,7 @@ def update_database(request):
 
 def delete_container(request):
     array = request.GET.dict()
+    print(array)
 
     SessionMaker = app.get_persistent_store_database('thredds_db', as_sessionmaker=True)
     session = SessionMaker()

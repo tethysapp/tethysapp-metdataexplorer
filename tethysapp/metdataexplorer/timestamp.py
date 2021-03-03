@@ -2,8 +2,14 @@ from django.http import JsonResponse
 from siphon.catalog import TDSCatalog
 
 
-def iterate_files(request):
+def url_to_iterate_files(request):
     url = request.GET['url']
+    access_urls, file_name = iterate_files(url)
+    return JsonResponse({'accessUrls': access_urls, 'fileName': file_name})
+
+
+def iterate_files(url):
+    print(url)
     path_list = format_filepath(url)
     iteration = 1
     new_url = path_list[iteration - 1]
@@ -21,7 +27,7 @@ def iterate_files(request):
         if next_file[:len(parts_of_string[0])] == parts_of_string[0] and next_file[- len(parts_of_string[1]):] == parts_of_string[1]:
             relevant_files.append(next_file)
     next_file = get_latest_file(path_list[iteration], relevant_files)
-    return JsonResponse({'accessUrls': catalog_files[next_file].access_urls, 'fileName': next_file})
+    return catalog_files[next_file].access_urls, next_file
 
 
 def get_latest_file(format_string, file_list):
