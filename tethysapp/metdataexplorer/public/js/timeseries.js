@@ -82,7 +82,6 @@ function getFullArray() {
 }
 
 function updateSelectedVariable() {
-    console.log('clicked')
     $('.timeseries-variable').each(function () {
         $(this).attr('data-selected', 'false').css('background-color', 'white');
         $(this).find('p').css('color', '#666');
@@ -143,13 +142,19 @@ function drawGraphTwo() {
 
 function drawGraph(data) {
     var series = $.parseJSON(data);
+    let variable = $('#variable-input').val();
+    fullArrayTimeseries = {};
+    fullArrayTimeseries[variable] = {
+        datetime: series['timeseries'],
+        mean: series['mean'],
+    }
+    console.log(series)
     let x = [];
     let y = [];
     for (var i = 0; i < Object.keys(series['timeseries']).length; i++) {
         x.push(series['timeseries'][i]);
         y.push(series['mean'][i]);
     }
-    let variable = $('#variable-input').val();
     let layout = {
         title: 'Mean of ' + variable,
         xaxis: {title: 'Time', type: 'datetime'},
@@ -169,24 +174,42 @@ function drawGraph(data) {
 // Add function to save chart to CSV
 
 function chartToCSV() {
-    function zip(arrays) {
-        return arrays[0].map(function (_, i) {
-            return arrays.map(function (array) {
-                return array[i]
-            })
-        });
+    function format(arrays, variable) {
+        let headers = ['datetime'];
+        let row = [];
+        let rows = '';
+        let csv = '';
+        for (let entry in arrays[variable]) {
+            if (entry !== 'datetime') {
+                if (entry.includes(',')) {
+                    entry = entry.split(',').join('","');
+                }
+                headers.push(entry);
+            }
+        }
+        for (let i = 0; i < Object.keys(arrays[variable]['datetime']).length; i++) {
+            for (let r = 0; r < headers.length; r++) {
+                row.push(arrays[variable][headers[r]][i]);
+            }
+            rows += row.join(',') + '\n';
+            row = [];
+        }
+        csv = headers.join(',') + '\n' + rows;
+        return [csv, variable]
     }
 
     if (chartdata === {}) {
         alert('There is no data in the chart. Please plot some data first.');
         return
     }
-    let data = zip([chartdata.x, chartdata.y]);
-    let csv = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
+    for (let variable in fullArrayTimeseries) {
+        var data = format(fullArrayTimeseries, variable);
+    }
+    let csv = "data:text/csv;charset=utf-8," + data[0];
     let link = document.createElement('a');
     link.setAttribute('href', encodeURI(csv));
     link.setAttribute('target', '_blank');
-    link.setAttribute('download', 'extracted_time_series.csv');
+    link.setAttribute('download', data[1] + '_timeseries.csv');
     document.body.appendChild(link);
     link.click();
     $("#a").remove()
@@ -194,3 +217,4 @@ function chartToCSV() {
 
 // WHEN YOU CLICK ON THE DOWNLOAD BUTTON- RUN THE DOWNLOAD CSV FUNCTION
 $("#download-csv").click(chartToCSV);
+$("#download-csv-two").click(chartToCSV);

@@ -9,6 +9,7 @@ import pandas
 import math
 import geopandas as gpd
 import netCDF4 as nc
+from geojson import dump
 
 from .timestamp import iterate_files
 
@@ -16,6 +17,7 @@ from .timestamp import iterate_files
 def get_full_array(request):
     attribute_array = json.loads(request.GET['containerAttributes'])
     data = organize_array(attribute_array)
+    print(data)
     return JsonResponse({'result': data})
 
 
@@ -40,32 +42,47 @@ def organize_array(attribute_array):
         dims = attribute_array['attributes'][variable]['dimensions'].split(',')
         dim_order = (dims[0], dims[1], dims[2])
         stats_value = 'mean'
-        timeseries = get_timeseries_at_geojson(files, variable, dim_order, geojson_geometry, geojson_path, stats_value)
+        timeseries = get_timeseries_at_geojson([files], variable, dim_order, geojson_geometry, geojson_path, stats_value)
         data[variable] = timeseries
+
+    os.remove(geojson_path)
+    os.remove(files)
     return data
 
 
-def get_geojson_and_data(netcdf_subset_url, gfs_url, var, epsg):
-    geojson_path = os.path.join(tempfile.gettempdir(), 'dr.json')
-    data = requests.Request('GET', gfs_url).url
-    geojson_geometry = gpd.read_file(data)
+def get_geojson_and_data(netcdf_subset_url, spatial, var, epsg):
+    print(spatial)
+    print(type(spatial))
+    geojson_path = os.path.join(tempfile.gettempdir(), 'temp.json')
+    if type(spatial) == dict:
+        spatial['properties']['id'] = 'Shape'
+        data = os.path.join(tempfile.gettempdir(), 'new_geo_temp.json')
+        with open(data, 'w') as f:
+            dump(spatial, f)
+        geojson_geometry = gpd.read_file(data)
+        os.remove(data)
+        print(geojson_geometry)
+    elif spatial[:4] == 'http':
+        data = requests.Request('GET', spatial).url
+        geojson_geometry = gpd.read_file(data)
+    else:
+        data = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace', spatial + '.geojson')
+        geojson_geometry = gpd.read_file(data)
 
-    if (len(epsg) > 4):
-        shift_lat = int(epsg.split(',')[2][2:])
-        shift_lon = int(epsg.split(',')[1][2:])
-        print(shift_lat)
-        print(shift_lon)
-        geojson_geometry['geometry'] = geojson_geometry.translate(xoff=shift_lon, yoff=shift_lat)
-
-    west = math.floor(min(geojson_geometry['geometry'].bounds['minx']))
-    south = math.floor(min(geojson_geometry['geometry'].bounds['miny']))
-    east = math.ceil(max(geojson_geometry['geometry'].bounds['maxx']))
-    north = math.ceil(max(geojson_geometry['geometry'].bounds['maxy']))
+    west = math.floor(min(geojson_geometry['geometry'].bounds['minx']) - 10)
+    south = math.floor(min(geojson_geometry['geometry'].bounds['miny']) - 10)
+    east = math.ceil(max(geojson_geometry['geometry'].bounds['maxx']) + 10)
+    north = math.ceil(max(geojson_geometry['geometry'].bounds['maxy']) + 10)
     subset_url = netcdf_subset_url + '?' + var + 'north=' + str(north) + '&west=' + str(west) + '&east=' + str(east) + '&south=' + str(south) + '&disableProjSubset=on&horizStride=1&temporal=all'
     path_to_netcdf = os.path.join(tempfile.gettempdir(), 'temp.nc')
     urllib.request.urlretrieve(subset_url, path_to_netcdf)
-    files = [path_to_netcdf]
-    return files, geojson_geometry, geojson_path
+
+    if len(epsg) > 4 and not str(epsg) == 'false':
+        shift_lat = int(epsg.split(',')[2][2:])
+        shift_lon = int(epsg.split(',')[1][2:])
+        geojson_geometry['geometry'] = geojson_geometry.translate(xoff=shift_lon, yoff=shift_lat)
+
+    return path_to_netcdf, geojson_geometry, geojson_path
 
 
 def get_timeseries_at_geojson(files, var, dim_order, geojson_geometry, geojson_path, stats_value):
@@ -91,8 +108,6 @@ def get_timeseries_at_geojson(files, var, dim_order, geojson_geometry, geojson_p
     for ti in times:
         t = nc.num2date(ti, units)
         time_list.append(str(t))
-    print(time_list)
     data_frame['datetime'] = time_list
     ################################################################
-    print(data_frame.name)
     return data_frame

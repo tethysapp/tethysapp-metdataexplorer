@@ -20,14 +20,15 @@ $('.url-list-label').click(function () {
     $('#metadata-div').empty();
     $('#var-metadata-div').empty();
     containerAttributes = $(this).parents().closest('.url-list').data('thredds');
+    console.log(containerAttributes);
     $('#metadata-div').empty().append(`<p>${containerAttributes['description'].replace(/\u000A/g, '<br>')}</p>`);
     removeGeojsonLayer();
-    if (containerAttributes['spatial'].substr(0,4) == 'http' && containerAttributes['type'] == 'file') {
+    if (containerAttributes['spatial'] !== false && containerAttributes['type'] == 'file') {
         $('#get-full-array-button').prop('disabled', false).css('background-color', '#828cfa');
     } else {
         $('#get-full-array-button').prop('disabled', true).css('background-color', '#595959');
     }
-    if (containerAttributes['spatial'] !== '') {
+    if (containerAttributes['spatial'] !== false) {
         configureBounds(containerAttributes['spatial']);
     }
     if (containerAttributes['type'] == 'file') {
@@ -190,10 +191,25 @@ $('#link-geoserver').click(function () {
         }
     }
     $('#link-geoserver-inner-content').empty().append(html);
+    $('#add-shape-resource-modal').modal('hide');
     $('#link-geoserver-modal').modal('show');
 });
 
 $('#get-full-array-button').click(getFullArray);
+
+$('#hide-lower-content').click(function () {
+    if($('#hide-lower-content').attr('data-hidden') == 'true') {
+        $('#hide-lower-content').css('transform', 'rotate(0deg)');
+        $('#lower-content').animate({height: "30%"});
+        $('#map').animate({height: "70%"});
+        $('#hide-lower-content').attr('data-hidden', 'false');
+    } else {
+        $('#hide-lower-content').css('transform', 'rotate(180deg)');
+        $('#lower-content').animate({height: "0%"})
+        $('#map').animate({height: "100%"});
+        $('#hide-lower-content').attr('data-hidden', 'true');
+    }
+});
 
 //////////////////////////Form Interface///////////////////////
 $('#add-attribute-button').click(function () {
@@ -289,7 +305,37 @@ $('#latest-url-confirm').click(function () {
     $('#configure-for-latest-modal').modal('hide');
 })
 
-$('#generate-api-key').click(function () {
+$('#add-shape-resource-button').click(function (){
+    $('#add-shape-resource-modal').modal('show');
+})
+
+function setGeoserverWFS() {
+    let wfs = $(this).attr('data-wfsURL');
+    if (wfs == false) {
+        alert('Please enable wfs service on selected layer.');
+    } else {
+        $('#spatial-input').val(wfs);
+        spatial_shape = wfs;
+        $('#link-geoserver-modal').modal('hide');
+        console.log(spatial_shape)
+    }
+}
+
+function clearForm() {
+    $('#name-in-form').empty();
+    $('#title-input').val('');
+    $('#epsg-input').val('');
+    $('#latest-input').val('');
+    $('#configure-for-latest').attr('data-select', 'false');
+    $('#latest-url-input').attr('data-url', 'false');
+    $('#latest-url-input').val('')
+    $('#spatial-input').val('');
+    spatial_shape = {};
+    $('#description-input').val('');
+    $('#attributes').empty();
+}
+
+/*$('#generate-api-key').click(function () {
     if ($('#name-in-form').attr('data-type') == 'file') {
         let attr = [];
         $('.attr-checkbox').each(function () {
@@ -315,33 +361,10 @@ $('#generate-api-key').click(function () {
     } else {
         alert('Please select a file.');
     }
-})
-
-function setGeoserverWFS() {
-    let wfs = $(this).attr('data-wfsURL');
-    if (wfs == false) {
-        alert('Please enable wfs service on selected layer.');
-    } else {
-        $('#spatial-input').val(wfs);
-        $('#link-geoserver-modal').modal('hide');
-    }
-}
-
-function clearForm() {
-    $('#name-in-form').empty();
-    $('#title-input').val('');
-    $('#epsg-input').val('');
-    $('#latest-input').val('');
-    $('#configure-for-latest').attr('data-select', 'false');
-    $('#latest-url-input').attr('data-url', 'false');
-    $('#latest-url-input').val('')
-    $('#spatial-input').val('');
-    $('#description-input').val('');
-    $('#attributes').empty();
-}
+})*/
 
 /////////////////////////////////Geoserver
-$('#crate-workspace-button').click(function () {
+/*$('#crate-workspace-button').click(function () {
     let workspace = $('#workspace').val();
     let uri = $('#uri').val();
     $('#geoserver-modal').modal('hide');
@@ -358,17 +381,22 @@ $('#crate-workspace-button').click(function () {
         success: function (result) {
         }
     })
-})
+})*/
 
-$('#configure-geoserver-button').click(function () {
-    $('#geoserver-modal').modal('show');
-})
-
-$('#upload-shapefile-modal-button').click(function () {
+/*$('#upload-shapefile-modal-button').click(function () {
     if ($('#which-workspace').val() == '' || $('#store-name').val() == '') {
         alert('Please specify a workspace and a store.')
     } else {
         $('#geoserver-modal').modal('hide');
         $('#uploadshp-modal').modal('show');
     }
+})*/
+
+$('#configure-geoserver-button').click(function () {
+    $('#geoserver-modal').modal('show');
+})
+
+$('#upload-shape-resource').click(function () {
+    $('#add-shape-resource-modal').modal('hide');
+    $('#uploadshp-modal').modal('show');
 })

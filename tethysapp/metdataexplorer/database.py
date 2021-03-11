@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 import json
+import os
 
 from .model import Thredds
 from .app import metdataexplorer as app
@@ -16,7 +17,7 @@ def update_database(request):
         title=database_info['title'],
         url=database_info['url'],
         epsg=database_info['epsg'],
-        spatial=database_info['spatial'],
+        spatial=json.dumps(database_info['spatial']),
         description=database_info['description'],
         attributes=json.dumps(database_info['attributes']),
         timestamp=database_info['timestamp'],
@@ -46,6 +47,9 @@ def delete_container(request):
         session.delete(delete_url)
 
     session.commit()
+    print(array['spatial'])
+    if not array['spatial'] == 'false':
+        os.remove(os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace', array['spatial'] + '.geojson'))
     success = True
     return JsonResponse({'success': success})
 

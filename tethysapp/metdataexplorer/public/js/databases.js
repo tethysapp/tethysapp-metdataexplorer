@@ -116,13 +116,17 @@ function createDBArray() {
     } else {
         var epsg = $('#epsg-input').val();
     }
+    console.log(spatial_shape)
+    if (spatial_shape == '') {
+        spatial_shape = false;
+    }
     let databaseInfo = {
         type: $('#name-in-form').attr('data-type'),
         group: group,
         title: $('#title-input').val(),
         url: url,
         epsg: epsg,
-        spatial: $('#spatial-input').val(),
+        spatial: spatial_shape,
         description: $('#description-input').val(),
         attributes: attr,
         timestamp: timestamp,
@@ -147,11 +151,12 @@ function createDBArray() {
         }
     })
 }
-
+//ToDo fix delete all
 function deleteDB () {
     if ($(this).attr('class') == 'delete-url img-button') {
         var all = false;
-        let thredds_array = $(this).parents().closest('.url-list').data('thredds');
+        var thredds_array = $(this).parents().closest('.url-list').data('thredds');
+        console.log(thredds_array)
         var dbInfo = {
             'all': all,
             'title': thredds_array['title'],
@@ -162,7 +167,17 @@ function deleteDB () {
         var dbInfo = {
             'all': all,
             'title': 'all servers',
+            'group': 'all groups',
         }
+    }
+    if (typeof(thredds_array['spatial']) === 'string') {
+        if (thredds_array['spatial'].slice(0, 4) == 'http') {
+            dbInfo['spatial'] = false;
+        } else {
+            dbInfo['spatial'] = thredds_array['spatial'];
+        }
+    } else {
+        dbInfo['spatial'] = false;
     }
     if (editing === false) {
         var con = confirm('Are you sure you want to delete ' + dbInfo['title'] + '? This action cannot be undone.');
@@ -175,6 +190,7 @@ function deleteDB () {
         } else {
             $(this).parents().closest('.url-list').remove();
         }
+        console.log(dbInfo)
         $.ajax({
             url: URL_deleteContainer,
             data: dbInfo,
@@ -201,7 +217,10 @@ function editDB () {
     } else {
         $('#latest-url-input').val(containerAttributes['url']);
     }
-    $('#spatial-input').val(containerAttributes['spatial']);
+    if (containerAttributes['spatial'] !== false) {
+        $('#spatial-input').val(containerAttributes['spatial']);
+        spatial_shape = containerAttributes['spatial'];
+    }
     if (containerAttributes['epsg'] !== 'false') {
         $('#epsg-input').val(containerAttributes['epsg']);
     }
@@ -224,9 +243,15 @@ $('#info-box-exit').click(function () {
 function infoDB() {
     if ($(this).attr('class') == 'info-url img-button') {
         containerAttributes = $(this).parents().closest('.url-list').data('thredds');
+        let spatial = '';
+        if (containerAttributes['spatial'] == false){
+            spatial = 'None';
+        } else {
+            spatial = containerAttributes['spatial'];
+        }
         if (containerAttributes['timestamp'] == 'true') {
             let html = `<b>URL Formatted for Latest:</b><br><p>${containerAttributes['url']}</p>
-                        <b>Spatial:</b><br><p>${containerAttributes['spatial']}</p>
+                        <b>Spatial:</b><br><p>${spatial}</p>
                         <b>Description:</b><br><p>${containerAttributes['description']}</p>`
             $('#info-title').text(containerAttributes['title']);
             $('#main-container-info').empty().append(html);
@@ -236,14 +261,14 @@ function infoDB() {
             let html = `<b>Thredds URL:</b><br><p>${urls[3].slice(4)}</p>
                         <b>URL Access Points:</b><br><p>Opendap: ${urls[0].slice(4)}<br>WMS: ${urls[1].slice(4)}
                         <br>Subset: ${urls[2].slice(4)}</p>
-                        <b>Spatial:</b><br><p>${containerAttributes['spatial']}</p>
+                        <b>Spatial:</b><br><p>${spatial}</p>
                         <b>Description:</b><br><p>${containerAttributes['description']}</p>`
             $('#info-title').text(containerAttributes['title']);
             $('#main-container-info').empty().append(html);
             $('#url-info-modal').modal("show");
         } else {
             let html = `<b>URL:</b><br><p>${containerAttributes['url']}</p>
-                        <b>Spatial:</b><br><p>${containerAttributes['spatial']}</p>
+                        <b>Spatial:</b><br><p>${spatial}</p>
                         <b>Description:</b><br><p>${containerAttributes['description']}</p>`
             $('#info-title').text(containerAttributes['title']);
             $('#main-container-info').empty().append(html);

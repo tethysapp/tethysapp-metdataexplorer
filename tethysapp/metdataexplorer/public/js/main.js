@@ -13,6 +13,7 @@ let chartdata = {};
 let editing = false;
 let urlInfoBox = false;
 let fullArrayTimeseries = {};
+let spatial_shape = {};
 //Included with draw.js: drawnItems, shpLayer
 //Included with map.js: mapObj, insetMapObj, basemapObj, layerControlObj
 

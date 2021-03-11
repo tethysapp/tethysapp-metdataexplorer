@@ -102,6 +102,11 @@ class metdataexplorer(TethysAppBase):
                 url='metdataexplorer/getFullArray/',
                 controller='metdataexplorer.grids.get_full_array'
             ),
+            UrlMap(
+                name='getGeojson',
+                url='metdataexplorer/getGeojson/',
+                controller='metdataexplorer.shapefile.get_geojson'
+            )
         )
 
         return url_maps

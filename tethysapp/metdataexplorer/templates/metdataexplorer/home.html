@@ -39,7 +39,7 @@
         <div class="group-container" style="width: 96%; height: auto; background-color: white; margin: 0% 2% 0% 2%; padding: 2px">
           {% for thredd in thredds %}
           {% if thredd.group == group.name %}
-          <div class="url-list" data-thredds='{"type":"{{ thredd.server_type }}","group":"{{ thredd.group }}","title":"{{ thredd.title }}","url":"{{ thredd.url }}","epsg":"{{ thredd.epsg }}","spatial":"{{ thredd.spatial }}","description":"{{ thredd.description|escapejs }}","attributes":{{ thredd.attributes }},"timestamp":"{{ thredd.timestamp }}"}'>
+          <div class="url-list" data-thredds='{"type":"{{ thredd.server_type }}","group":"{{ thredd.group }}","title":"{{ thredd.title }}","url":"{{ thredd.url }}","epsg":"{{ thredd.epsg }}","spatial":{{ thredd.spatial }},"description":"{{ thredd.description|escapejs }}","attributes":{{ thredd.attributes }},"timestamp":"{{ thredd.timestamp }}"}'>
             <div class="url-list-label" style="width: 70%; overflow-x: scroll">
               <h4>{{ thredd.title }}</h4>
             </div>
@@ -133,9 +133,14 @@
           <label for="spatial-input" style="float: left;">Spatial Extents: </label>
           <input id="spatial-input" class="inputsty">
         </div>
-        <div style="height: auto; width: 100%; display: flex">
-          <button id="link-geoserver" style="width: 50%; margin-top: 30px;">Geoserver</button>
-          <button id="draw-on-map-button" style="width: 50%; margin-top: 30px;">Draw on Map</button>
+        <div style="height: auto; width: 100%; display: flex; flex-direction: row">
+            <button id="upload-shape-resource">Upload Shapefile</button>
+            <button id="draw-on-map-button">Draw on Map</button>
+            <!--<button>ESRI Living Atlas</button>-->
+            <button id="link-geoserver">Geoserver</button>
+          <!--<button id="add-shape-resource-button">Add Shapefile</button>-->
+          <!--<button id="link-geoserver" style="width: 50%; margin-top: 30px;">Geoserver</button>-->
+          <!--<button id="draw-on-map-button" style="width: 50%; margin-top: 30px;">Draw on Map</button>-->
         </div>
         <div>
           <label for="description-input" style="float: left;">Description (Required):</label>
@@ -149,7 +154,7 @@
           <img id="add-attribute-button" class="img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 25px; width:auto; margin: 0px">
           <button id="select-all-button" data-select="true">Select All</button>
         </div>
-        <div id="attributes" style="width: 100%; height: 446px; border-style: solid; border-color:#000; border-width: 1px; border-radius: 3px; overflow-y: scroll; overflow-x: scroll">
+        <div id="attributes" style="width: 100%; height: 430px; border-style: solid; border-color:#000; border-width: 1px; border-radius: 3px; overflow-y: scroll; overflow-x: scroll">
         </div>
         <div style="display: flex; flex-direction: row; width: 100%; height: 20px; justify-content: space-between;">
           <select id="default-option-select" style="width: 30%">
@@ -276,38 +281,6 @@
     </div>
   </div>
 
-  <!-- geoserver -->
-  <div class="modal fade" id="geoserver-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
-            <div style="width: 95%; display:flex; justify-content: center;"><h1 style="font-size: 23pt; color: black; ">Geoserver</h1></div>
-            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
-          </div>
-        </div>
-        <div id="geoserver-outer-content" class="geoserver-outer" style="display:flex; justify-content: center; height: 250px">
-          <div style="display: flex; flex-direction: row; width: 100%; justify-self: center">
-            <div style="width: 46%; display: flex; flex-direction: column; margin:2%">
-              <label for="workspace">Workspace Name</label>
-              <input id="workspace" class="inputsty">
-              <label for="uri">Workspace URI</label>
-              <input id="uri" class="inputsty">
-              <button id="crate-workspace-button">Create Workspace</button>
-            </div>
-            <div style="width: 46%; display: flex; flex-direction: column; margin:2%">
-              <label for="which-workspace">Workspace</label>
-              <input id="which-workspace" class="inputsty">
-              <label for="store-name">Store Name</label>
-              <input id="store-name" class="inputsty">
-              <button id="upload-shapefile-modal-button">Upload Shapefile</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- link geoserver -->
   <div class="modal fade" id="link-geoserver-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
     <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
@@ -346,46 +319,98 @@
     </div>
   </div>
 
-<!--  &lt;!&ndash; geoserver &ndash;&gt;
-  <div class="modal fade" id="api-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <!-- add shape resource -->
+  <div class="modal fade" id="add-shape-resource-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
     <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
       <div class="modal-content">
         <div class="modal-header">
           <div style="display: flex; align-items: center; justify-content: center; width: 100%">
-            <div style="width: 95%; display:flex; justify-content: center;"><h1 style="font-size: 23pt; color: black; ">API</h1></div>
-            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
+            <div style="width: 5%; float: right"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
           </div>
-        </div>
-        <div id="api-outer-content" class="geoserver-outer" style="display:flex; justify-content: center; height: auto">
-          <div id="api-variable-container" style="display: flex; flex-direction: column; margin: 10px">
-            <div style="width: 90%; display: flex; flex-direction: row; margin: 2px 5% 2px 5%;">
-              <div style="width: 30%;">
-                <b>File CRS:</b>
-                <input id="data-crs-input" class="inputsty" style="width: 100px; height: 20px">
-              </div>
-              <div style="width: 30%; margin-left: 45px;">
-                <b>Shape CRS:</b>
-                <input id="shp-crs-input" class="inputsty" style="width: 100px; height: 20px">
-              </div>
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%">
+<!--            <div style="display:flex; flex-direction: row;">
+              <button id="upload-shape-resource">Upload Shapefile</button>
+              <button id="draw-on-map-button">Draw on Map</button>
             </div>
-            <div id="insert-api-attr" style="width: 90%; display: flex; flex-direction: column; margin: 2px 5% 2px 5%;"></div>
-            <div style="width: 90%; display: block; margin: 2px 5% 2px 5%;">
-              <button id="api-key-close-button" style="width: 25%; float: right">Generate Key</button>
-            </div>
+            <div style="display:flex; flex-direction: row">
+              <button>ESRI Living Atlas</button>
+              <button id="link-geoserver">Add from Geoserver</button>
+            </div>-->
           </div>
         </div>
       </div>
     </div>
-  </div>-->
+  </div>
 
   <!-- loading -->
   <div class="modal fade" id="loading-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
     <div class="loader"></div>
   </div>
+
+<!--  &lt;!&ndash; geoserver &ndash;&gt;
+  <div class="modal fade" id="geoserver-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
+            <div style="width: 95%; display:flex; justify-content: center;"><h1 style="font-size: 23pt; color: black; ">Geoserver</h1></div>
+            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
+          </div>
+        </div>
+        <div id="geoserver-outer-content" class="geoserver-outer" style="display:flex; justify-content: center; height: 250px">
+          <div style="display: flex; flex-direction: row; width: 100%; justify-self: center">
+            <div style="width: 46%; display: flex; flex-direction: column; margin:2%">
+              <label for="workspace">Workspace Name</label>
+              <input id="workspace" class="inputsty">
+              <label for="uri">Workspace URI</label>
+              <input id="uri" class="inputsty">
+              <button id="crate-workspace-button">Create Workspace</button>
+            </div>
+            <div style="width: 46%; display: flex; flex-direction: column; margin:2%">
+              <label for="which-workspace">Workspace</label>
+              <input id="which-workspace" class="inputsty">
+              <label for="store-name">Store Name</label>
+              <input id="store-name" class="inputsty">
+              <button id="upload-shapefile-modal-button">Upload Shapefile</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    Upload Shapefile
+  <div class="modal fade" id="uploadshp-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="width: 26px"><span aria-hidden="true">X</span></button>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+        <div class="modal-text-container">
+          <h2>Upload a Shapefile</h2>
+          <br>
+          <div>
+            <input type="file" class="local-file-upload" id="shapefile-upload"
+                   style="display: inline-block" accept=".shp,.prj,.shx,.dbf," multiple>
+            <button id="uploadshp" style="width: 200px">Submit Shapefile</button>
+          </div>
+          <div>
+            <br>
+            <p>
+              Select four files with the endings '.shp', '.shx', '.prj', and '.dbf'.
+            </p>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>-->
 {% endblock %}
 
 {% block app_actions %}
-
+  <img class="info-group img-button" id="hide-lower-content" src="{% static 'metdataexplorer/images/upArrowTwo.png' %}" data-hidden="false" style="height: 30px; width: auto">
 {% endblock %}
 
 {% block scripts %}
@@ -402,10 +427,11 @@
       let URL_updateDB = "{% url 'metdataexplorer:updateDB' %}";
       let URL_getLatestFiles = "{% url 'metdataexplorer:getLatestFiles' %}";
       let URL_getFullArray = "{% url 'metdataexplorer:getFullArray' %}";
+      let URL_getGeojson = "{% url 'metdataexplorer:getGeojson' %}";
 
       let URL_listGeoserverLayers = "{% url 'metdataexplorer:geoserverListLayers' %}";
-      let URL_createGeoserverWorkspace = "{% url 'metdataexplorer:createGeoserverWorkspace' %}";
-      let URL_uploadShapefileToGeoserver = "{% url 'metdataexplorer:uploadShapefileToGeoserver' %}";
+      // let URL_createGeoserverWorkspace = "{% url 'metdataexplorer:createGeoserverWorkspace' %}";
+      // let URL_uploadShapefileToGeoserver = "{% url 'metdataexplorer:uploadShapefileToGeoserver' %}";
       let pathToFileImage = "{% static 'metdataexplorer/images/fileImage.png' %}";
       let pathToFolderImage = "{% static 'metdataexplorer/images/folderImage.png' %}";
   </script>

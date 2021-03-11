@@ -30,8 +30,9 @@ function getDataBounds() {
 function getThreddsBounds() {
     $('#main-body').css('display', 'block');
     $('#db-forms').css('display', 'none');
-    let rectangleDrawer = new L.Draw.Rectangle(mapObj);
-    rectangleDrawer.enable();
+    $('#add-shape-resource-modal').modal('hide');
+    let polygonDrawer = new L.Draw.Polygon(mapObj);
+    polygonDrawer.enable();
 }
 
 $('#draw-on-map-button').click(getThreddsBounds);
@@ -57,14 +58,15 @@ function clickShpLayer (e) {
 
 mapObj.on(L.Draw.Event.CREATED, function (e) {
     if (urlInfoBox == true) {
-        let coord = e.layer.getLatLngs();
+        let coord = e.layer.toGeoJSON();
         console.log(coord)
-        let bounds = '((';
+        /*let bounds = '((';
         for (let i = 0; i < 4; i++) {
             bounds += coord[0][i].lng.toFixed(2) + ' ' + coord[0][i].lat.toFixed(2) + ', ';
         }
-        bounds += coord[0][0].lng.toFixed(2) + ' ' + coord[0][0].lat.toFixed(2) + '))';
-        $('#spatial-input').val(bounds);
+        bounds += coord[0][0].lng.toFixed(2) + ' ' + coord[0][0].lat.toFixed(2) + '))';*/
+        $('#spatial-input').val(JSON.stringify(coord));
+        spatial_shape = coord;
         $('#main-body').css('display', 'none');
         $('#db-forms').css('display', 'block');
     } else {
@@ -75,13 +77,33 @@ mapObj.on(L.Draw.Event.CREATED, function (e) {
 });
 
 function configureBounds(bounds) {
-    if (bounds.slice(0, 4) == 'http') {
-        $.getJSON(bounds,function(data){
-            makeGeojsonLayer(data);
-            mapObj.flyToBounds(shpLayer.getBounds());
-        });
+    if (typeof(bounds) === 'string') {
+        if (bounds.slice(0, 4) == 'http') {
+            $.getJSON(bounds,function(data){
+                makeGeojsonLayer(data);
+                mapObj.flyToBounds(shpLayer.getBounds());
+            });
+        } else {
+            $.ajax({
+                url: URL_getGeojson,
+                data: {
+                    name: bounds,
+                },
+                dataType: "json",
+                contentType: "application/json",
+                method: "GET",
+                async: false,
+                success: function (result) {
+                    let geojson = result['geojson'];
+                    console.log(geojson)
+                    makeGeojsonLayer(geojson);
+                    mapObj.flyToBounds(shpLayer.getBounds());
+                },
+            });
+        }
     } else {
-        zoomToBounds(bounds);
+        makeGeojsonLayer(bounds);
+        mapObj.flyToBounds(shpLayer.getBounds());
     }
 }
 
