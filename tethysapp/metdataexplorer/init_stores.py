@@ -26,28 +26,28 @@ def init_thredds_db(engine, first_time):
         session.add(group_one)
         session.add(group_two)
 
-        container_one = Thredds(
+        #container_one = Thredds(
+        #   server_type='file',
+        #   group='Demo Group',
+        #   title='GFS One Degree File',
+        #   url='opd:https://thredds.ucar.edu/thredds/dodsC/grib/NCEP/GFS/Global_onedeg/Best,wms:https://thredds.ucar.edu/thredds/wms/grib/NCEP/GFS/Global_onedeg/Best,sub:https://thredds.ucar.edu/thredds/ncss/grib/NCEP/GFS/Global_onedeg/Best,ful:https://thredds.ucar.edu/thredds/grib/NCEP/GFS/Global_onedeg/Best',
+        #   epsg='4326,x:0,y:0',
+        #   spatial='"Utah_County_Boundaries"',
+        #   description='This is the GFS One Degree Forecast File.',
+        #   attributes='{"Precipitation_rate_surface":{"dimensions":"time,lat,lon","units":"mm","color":"0,0.001"}}',#,"Precipitation_rate_surface_Mixed_intervals_Average":{"dimensions":"time3,lat,lon","units":"mm","color":"0,0.001"}}',
+        #   timestamp='false',
+        #)
+        container_two = Thredds(
             server_type='file',
             group='Demo Group',
-            title='GFS One Degree File',
-            url='opd:https://thredds.ucar.edu/thredds/dodsC/grib/NCEP/GFS/Global_onedeg/Best,wms:https://thredds.ucar.edu/thredds/wms/grib/NCEP/GFS/Global_onedeg/Best,sub:https://thredds.ucar.edu/thredds/ncss/grib/NCEP/GFS/Global_onedeg/Best,ful:https://thredds.ucar.edu/thredds/grib/NCEP/GFS/Global_onedeg/Best',
-            epsg='4326,x:0,y:0',
-            spatial='"Utah_County_Boundaries"',
-            description='This is the GFS One Degree Forecast File.',
-            attributes='{"Precipitation_rate_surface":{"dimensions":"time,lat,lon","units":"mm","color":"0,0.001"}}',#,"Precipitation_rate_surface_Mixed_intervals_Average":{"dimensions":"time3,lat,lon","units":"mm","color":"0,0.001"}}',
+            title='GFS Quarter Degree File',
+            url='opd:https://thredds.ucar.edu/thredds/dodsC/grib/NCEP/GFS/Global_0p25deg/Best,wms:https://thredds.ucar.edu/thredds/wms/grib/NCEP/GFS/Global_0p25deg/Best,sub:https://thredds.ucar.edu/thredds/ncss/grib/NCEP/GFS/Global_0p25deg/Best,ful:https://thredds.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/Best',
+            epsg='4326,x:360,y:0',
+            spatial='"watersheds0"',
+            description='This is the GFS One Quarter Degree Forecast File.\n\nGeoreferance:\nLat: 0 to 360 degrees\nLon: -90 to 90 degrees',
+            attributes='{"Precipitation_rate_surface":{"dimensions":"time,lat,lon","units":"mm","color":"0,0.001"}}',
             timestamp='false',
         )
-#        container_two = Thredds(
-#            server_type='file',
-#            group='Demo Group',
-#            title='GFS Quarter Degree File',
-#            url='opd:https://thredds.ucar.edu/thredds/dodsC/grib/NCEP/GFS/Global_0p25deg/Best,wms:https://thredds.ucar.edu/thredds/wms/grib/NCEP/GFS/Global_0p25deg/Best,sub:https://thredds.ucar.edu/thredds/ncss/grib/NCEP/GFS/Global_0p25deg/Best,ful:https://thredds.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/Best',
-#            epsg='4326,x:360,y:0',
-#            spatial='"watersheds0"',
-#            description='This is the GFS One Quarter Degree Forecast File.\n\nGeoreferance:\nLat: 0 to 360 degrees\nLon: -90 to 90 degrees',
-#            attributes='{"Precipitation_rate_surface":{"dimensions":"time,lat,lon","units":"mm","color":"0,0.001"}}',
-#            timestamp='false',
-#        )
         container_three = Thredds(
             server_type='file',
             group='Demo Group',
@@ -59,8 +59,8 @@ def init_thredds_db(engine, first_time):
             attributes='{"PREC":{"dimensions":"time,lat,lon","units":"mm","color":"0,5"}}',
             timestamp='true',
         )
-        session.add(container_one)
-#        session.add(container_two)
+#        session.add(container_one)
+        session.add(container_two)
         session.add(container_three)
         session.commit()
         session.close()

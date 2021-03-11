@@ -69,10 +69,10 @@ def get_geojson_and_data(netcdf_subset_url, spatial, var, epsg):
         data = os.path.join(os.path.dirname(__file__), 'workspaces', 'app_workspace', spatial + '.geojson')
         geojson_geometry = gpd.read_file(data)
 
-    west = math.floor(min(geojson_geometry['geometry'].bounds['minx']) - 10)
-    south = math.floor(min(geojson_geometry['geometry'].bounds['miny']) - 10)
-    east = math.ceil(max(geojson_geometry['geometry'].bounds['maxx']) + 10)
-    north = math.ceil(max(geojson_geometry['geometry'].bounds['maxy']) + 10)
+    west = math.floor(min(geojson_geometry['geometry'].bounds['minx']) - 1)
+    south = math.floor(min(geojson_geometry['geometry'].bounds['miny']) - 1)
+    east = math.ceil(max(geojson_geometry['geometry'].bounds['maxx']) + 1)
+    north = math.ceil(max(geojson_geometry['geometry'].bounds['maxy']) + 1)
     subset_url = netcdf_subset_url + '?' + var + 'north=' + str(north) + '&west=' + str(west) + '&east=' + str(east) + '&south=' + str(south) + '&disableProjSubset=on&horizStride=1&temporal=all'
     path_to_netcdf = os.path.join(tempfile.gettempdir(), 'temp.nc')
     urllib.request.urlretrieve(subset_url, path_to_netcdf)
