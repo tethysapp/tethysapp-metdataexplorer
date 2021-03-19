@@ -43,6 +43,10 @@ function basemaps() {
 
 function data_layer() {
   try {
+    if (wmsURL.indexOf("http://") != -1) {
+      console.log("Http endpoint found, changing to proxy URL");
+      wmsURL = `${URL_threddsProxy}?main_url=${encodeURIComponent(wmsURL)}`;
+    }
     const layer = $('#variable-input').val();
     const range = $('#wmslayer-bounds').val();
     const style = $('#wmslayer-style').val();

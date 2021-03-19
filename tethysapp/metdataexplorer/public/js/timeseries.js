@@ -218,3 +218,5 @@ function chartToCSV() {
 // WHEN YOU CLICK ON THE DOWNLOAD BUTTON- RUN THE DOWNLOAD CSV FUNCTION
 $("#download-csv").click(chartToCSV);
 $("#download-csv-two").click(chartToCSV);
+
+//TODO fix add folder to catalog

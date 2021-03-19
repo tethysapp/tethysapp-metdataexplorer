@@ -165,7 +165,8 @@ $('#variable-input').change(function () {
     let variableMetadataArray = variableMetadata();
     addVariableMetadata(variableMetadataArray);
     addDimensions($('#variable-input option:selected').attr('data-dimensions'));
-    if($('#variable-input option:selected').attr('data-color') !== false) {
+    console.log($('#variable-input option:selected').attr('data-color'))
+    if($('#variable-input option:selected').attr('data-color') !== 'false') {
         $('#wmslayer-bounds').val($('#variable-input option:selected').attr('data-color'));
     }
     updateWMSLayer();
@@ -293,15 +294,20 @@ $('#add-default-button').click(function (){
 
 $('#configure-for-latest').click(function () {
     $('#configure-for-latest-modal').modal('show');
-    if ($('#latest-url-input').attr('data-url') == 'false') {
-        $('#latest-url-input').val(`${URLpath[URLpath.length - 1].slice(0,-11)}${$('#name-in-form').text()}`);
+    if (URLpath[URLpath.length - 1] == $('#name-in-form').text()) {
+        $('#latest-url-input').val($('#name-in-form').text());
     } else {
-        $('#latest-url-input').val($('#latest-url-input').attr('data-url'));
+        if ($('#latest-url-input').attr('data-url') == 'false') {
+            $('#latest-url-input').val(`${URLpath[URLpath.length - 1].slice(0,-11)}${$('#name-in-form').text()}`);
+        } else {
+            $('#latest-url-input').val($('#latest-url-input').attr('data-url'));
+        }
     }
 })
 
 $('#latest-url-confirm').click(function () {
     $('#latest-url-input').attr('data-url', $('#latest-url-input').val());
+    $('#latest-input').val($('#latest-url-input').val());
     $('#configure-for-latest-modal').modal('hide');
 })
 

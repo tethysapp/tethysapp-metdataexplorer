@@ -36,28 +36,28 @@
     </div>
   </div>
   <div id="layer-display-container" style="display:none;">
-    <div style="text-align: center;">
+    <div style="display: flex; justify-content: center; margin-top: 30px;">
       <b style="color: #333333">Layer View Options</b>
     </div>
-    <br>
     <div>
-      <b style="font-size: 10.5pt">Set Layer Opacity</b>
+      <b style="font-size: 10.5pt; margin-top: 10px">Set Layer Opacity</b>
       <input type="range" min="0" max="1" value="1" step="0.01" class="slider" id="opacity-slider">
     </div>
-    <br>
-
-    <label for="wmslayer-style" style="padding-right: 55px">Select Color Style</label>
-    <select id="wmslayer-style" style="width: 100%; margin: 5px 0px 20px 0px; padding: 5px">
-      <option value="boxfill/rainbow">RAINBOW</option>
-      <option value="boxfill/occam">OCCAM</option>
-      <option value="boxfill/alg">ALG</option>
-      <option value="boxfill/alg2">ALG2</option>
-      <option value="boxfill/ncview">NC VIEW</option>
-      <option value="boxfill/redblue">RED BLUE</option>
-    </select>
-    <br>
-    <label for="wmslayer-bounds" style="padding-right: 55px">Set Data Bounds</label>
-    <input id="wmslayer-bounds" style="width: 100%; margin: 5px 0px 20px 0px; padding: 5px" value="0,25">
+    <div>
+      <label for="wmslayer-style">Select Color Style</label>
+      <select id="wmslayer-style" style="width: 100%; padding: 5px">
+        <option value="boxfill/rainbow">RAINBOW</option>
+        <option value="boxfill/occam">OCCAM</option>
+        <option value="boxfill/alg">ALG</option>
+        <option value="boxfill/alg2">ALG2</option>
+        <option value="boxfill/ncview">NC VIEW</option>
+        <option value="boxfill/redblue">RED BLUE</option>
+      </select>
+    </div>
+    <div>
+      <label for="wmslayer-bounds" style="">Set Data Bounds</label>
+      <input id="wmslayer-bounds" style="width: 100%; margin-bottom: 20px; padding: 5px" value="0,25">
+    </div>
   </div>
   <!--<button id="configure-geoserver-button" style="position: absolute; left: 10px; bottom: 10px; width: 275px;">Configure Geoserver</button>-->
 {% endblock %}

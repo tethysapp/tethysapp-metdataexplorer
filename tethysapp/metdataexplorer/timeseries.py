@@ -39,7 +39,7 @@ def get_box_values(request):
     try:
         urllib.request.urlretrieve(url_dict['subsetURL'], path_to_netcdf)
     except OSError:
-        data = json.dumps('Invalid file')
+        data = False
         return JsonResponse({'data': data})
     try:
         data = mean_of_timeseries(path_to_netcdf, url_dict['var'], url_dict['time'])

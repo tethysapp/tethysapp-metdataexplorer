@@ -87,6 +87,7 @@ def get_geojson_and_data(netcdf_subset_url, spatial, var, epsg):
 
 def get_timeseries_at_geojson(files, var, dim_order, geojson_geometry, geojson_path, stats_value):
     series = grids.TimeSeries(files=files, var=var, dim_order=dim_order)
+    #series.interp_units = True
     data_frame = pandas.DataFrame()
     data_frame.name = var
     for index, row in geojson_geometry.iterrows():

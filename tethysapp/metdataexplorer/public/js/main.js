@@ -32,11 +32,6 @@ function updateFilepath() {
         opendapURL = $(this).attr("data-opendap-url");
         subsetURL = $(this).attr("data-subset-url");
         wmsURL = $(this).attr("data-wms-url");
-        if (wmsURL.indexOf("http://") != -1) {
-            console.log("Http endpoint found, changing to proxy URL");
-            wmsURL = `${URL_threddsProxy}?main_url=${encodeURIComponent(wmsURL)}`;
-            console.log(wmsURL);
-        }
         if (containerAttributes === false) {
             let variablesAndFileMetadata = getVariablesAndFileMetadata();
             addVariables(variablesAndFileMetadata[0]);
