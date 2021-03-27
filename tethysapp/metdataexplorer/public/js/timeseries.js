@@ -115,6 +115,8 @@ function drawGraphTwo() {
         }
     })
     let series = {};
+    console.log('timeseries')
+    console.log(fullArrayTimeseries[timeseriesVariable])
     series['timeseries'] = fullArrayTimeseries[timeseriesVariable]['datetime'];
     series['mean'] = fullArrayTimeseries[timeseriesVariable][timeseriesFeature];
     let x = [];

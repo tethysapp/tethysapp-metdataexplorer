@@ -336,7 +336,7 @@ function clearForm() {
     $('#latest-url-input').attr('data-url', 'false');
     $('#latest-url-input').val('')
     $('#spatial-input').val('');
-    spatial_shape = {};
+    spatial_shape = false;
     $('#description-input').val('');
     $('#attributes').empty();
 }

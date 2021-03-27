@@ -53,3 +53,4 @@ def delete_container(request):
     success = True
     return JsonResponse({'success': success})
 
+#TODO fix edit db timestamp -- database.py", line 23, in update_database, KeyError: 'timestamp'
