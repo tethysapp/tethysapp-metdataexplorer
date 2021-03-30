@@ -116,7 +116,6 @@ function createDBArray() {
     } else {
         var epsg = $('#epsg-input').val();
     }
-    console.log(spatial_shape)
     if (spatial_shape == false) {
         if ($('#spatial-input').val() == '') {
             spatial_shape = false;
@@ -124,7 +123,6 @@ function createDBArray() {
             spatial_shape = $('#spatial-input').val();
         }
     }
-    console.log(spatial_shape)
     let databaseInfo = {
         type: $('#name-in-form').attr('data-type'),
         group: group,
