@@ -43,7 +43,7 @@ def init_thredds_db(engine, first_time):
             title='GFS Quarter Degree File',
             url='opd:https://thredds.ucar.edu/thredds/dodsC/grib/NCEP/GFS/Global_0p25deg/Best,wms:https://thredds.ucar.edu/thredds/wms/grib/NCEP/GFS/Global_0p25deg/Best,sub:https://thredds.ucar.edu/thredds/ncss/grib/NCEP/GFS/Global_0p25deg/Best,ful:https://thredds.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/Best',
             epsg='4326,x:360,y:0',
-            spatial='"watersheds0"',
+            spatial='"https://geoserver.hydroshare.org/geoserver/HS-c8427d7a30f0440b9773d17b7369fb69/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=HS-c8427d7a30f0440b9773d17b7369fb69:watersheds&outputFormat=application/json"',
             description='This is the GFS One Quarter Degree Forecast File.\n\nGeoreferance:\nLat: 0 to 360 degrees\nLon: -90 to 90 degrees',
             attributes='{"Precipitation_rate_surface":{"dimensions":"time,lat,lon","units":"mm","color":"0,0.001"}}',
             timestamp='false',
