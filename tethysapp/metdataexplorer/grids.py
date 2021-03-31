@@ -13,7 +13,7 @@ from .timestamp import iterate_files
 def get_full_array(request):
     attribute_array = json.loads(request.GET['containerAttributes'])
     data = organize_array(attribute_array)
-    print(type(data))
+    #print(data)
     return JsonResponse({'result': data})
 
 
@@ -76,6 +76,7 @@ def get_geojson_and_data(spatial, epsg):
 
 
 def get_timeseries_at_geojson(files, var, dim_order, geojson_path, feature_label, stats):
+    #print('Getting TimeSeries')
     series = grids.TimeSeries(files=files, var=var, dim_order=dim_order)
     #series.interp_units = True
     timeseries_array = series.shape(vector=geojson_path, behavior='features', labelby=feature_label, statistics=stats)

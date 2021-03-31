@@ -1,5 +1,5 @@
 # This file should be committed to your app code.
-version: 0.1.9
+version: 0.1.10
 # This should match the app - package name in your setup.py
 name: metdataexplorer
 
@@ -17,6 +17,9 @@ requirements:
       - geopandas
       - pandas
       - geojson
+      - xarray
+      - pygrib
+      - cfgrib
   pip:
     - grids
 post:
