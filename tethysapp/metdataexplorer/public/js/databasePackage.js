@@ -235,7 +235,6 @@ deleteGroupsFromDatabaseAjax = function () {
         if (groups.titles.length <= 0) {
             notifyOfInfo("Please select a group to delete.");
         } else {
-            console.log(groups);
             $.ajax({
                 data: groups,
                 dataType: 'json',

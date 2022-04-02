@@ -83,7 +83,6 @@ createWMSLayer = function () {
 
         proxyWMSURL = `${appProxyURL}?main_url=${encodeURIComponent(wmsURL)}`;
 
-        console.log(additionalDimensionArray[Object.keys(additionalDimensionArray)[0]])
         wmsLayer = L.tileLayer.wms(proxyWMSURL, {
             BGCOLOR: "0x000000",
             colorscalerange: range,

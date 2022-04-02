@@ -100,7 +100,7 @@ formatHTML = function () {
                 if (mapObj.hasLayer(wmsTimeDimensionLayer)) {
                     wmsTimeDimensionLayer.setOpacity(opacity);
                 } else {
-                    console.log("Can't set opacity");
+                    notifyOfDanger("Can't set opacity");
                 }
             }
         

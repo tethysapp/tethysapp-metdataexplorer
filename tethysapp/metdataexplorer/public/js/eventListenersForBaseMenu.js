@@ -18,7 +18,6 @@ setBaseMenuEventListeners = function () {
 
             if (currentHash === 1 || currentHash === 2 || currentHash === 3 || currentHash === 4) {
                 let numbersToSlide = currentHash - slideToWhichToMove;
-                console.log(numbersToSlide);
                 [...Array(Math.abs(numbersToSlide))].forEach(number => {
                     if (numbersToSlide < 0) {
                         moveCarouselLeft();
@@ -189,7 +188,6 @@ setBaseMenuEventListeners = function () {
         const clickedElement = event.target;
         if (clickedElement.classList.contains("metadata-info") || clickedElement.parentElement?.classList.contains("metadata-info")) {
             const variable = clickedElement.closest(".metadata-info").value;
-            console.log(variable);
             const html = addFileMetadata(false, variable);
             $("#metadata_vars").empty().append(html);
             $("#modalMetaDataForVariable").modal("show");

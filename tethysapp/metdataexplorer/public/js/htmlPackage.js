@@ -61,7 +61,7 @@ addAllGroupsToNavigation = async function () {
         }
     } catch (error) {
         notifyOfDanger("An error occurred while loading the groups.");
-        console.log(error);
+        console.error(error);
     }
 };
 
@@ -405,7 +405,7 @@ htmlForFilesInNavigation = function (groupId, fileId) {
         }
     } catch (error) {
         notifyOfDanger("An error occurred while loading the files.");
-        console.log(error);
+        console.error(error);
     }
 };
 

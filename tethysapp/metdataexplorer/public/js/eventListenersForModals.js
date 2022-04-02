@@ -79,7 +79,7 @@ setModalEventListeners = function () {
     });
 
     document.getElementById("btn-link-authentication").addEventListener("click", async () => {
-        let html;
+        let html = "";
         ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials = {};
         showLoadingModal("modalAddFileToDatabase");
 
@@ -87,7 +87,6 @@ setModalEventListeners = function () {
             if (Object.keys(ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials).length > 0) {
                 Object.keys(ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials).forEach( uniqueId => {
                     html += formatRowForModalListAuthentication(uniqueId);
-                    console.log(html)
                 });
             }
             html += formatEndRowsForModalListAuthentication();
