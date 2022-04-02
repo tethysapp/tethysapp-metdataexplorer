@@ -1,426 +1,230 @@
-html, body, #app-content, #inner-app-content, #outer-container, #main-body, #dbforms {
-    margin: 0px;
-    padding: 0px;
+.loading-div{
+    width: 100%;
     height: 100%;
-}
-
-label {
-    padding-top: 20px;
-}
-
-p {
-     padding: 5px 0px 5px 30px;
-}
-
-b {
-    float: left;
-    font-size: 11pt;
-    color: #333;
-    padding: 0px;
-}
-
-#metadata-div b {
-    padding-left: 30px;
-}
-
-#metadata-div p {
-    padding-left: 40px;
-}
-
-#var-metadata-div b {
-    padding-left: 30px;
-}
-
-#var-metadata-div p {
-    padding-left: 40px;
-}
-
-h1 {
-    color: white;
-    font-size: 15pt;
-}
-
-h3 {
-    color: white;
-    font-size: 12pt;
-}
-
-h2 {
-    color: black;
-    font-size: 15pt;
-    padding: 0px;
-}
-
-h4 {
-    color: #333333;
-    font-size: 10pt;
-    padding-left: 5px;
-}
-
-h6 {
-    color: white;
-    font-size: 15pt;
-    padding: 0px;
-}
-
-#url-info-modal h2 p {
-    color: black;
-}
-
-button {
-    width: 100%;
-    height: 30px;
-    background-color: #828cfa;
-    color: white;
-    border-color: #cccccc;
-    margin: 10px 0px 2px 0px;
-}
-
-#map {
-    margin: 0px;
-    padding: 0px;
-    height: 70%;
-    width: 100%;
-}
-
-#inset-map-one #inset-map-two {
-    margin: 0px;
-    padding: 0px;
-    height: 300px;
-    width: 300px;
-}
-
-#lower-content {
-    height: 30%;
-    width: 100%;
-    overflow-y: auto;
-    background-color: rgba(22, 0, 240, 0.2);
-}
-
-#metadata {
-    margin: 0px;
-    padding: 0px;
-    height: 20%;
-    width: 100%;
-}
-
-#app-navigation-items {
-    height: 100%;
-}
-
-#inner-app-content {
-    padding: 0;
-    height: 100%;
-}
-
-#groups {
-    width: 100%;
-    height: auto;
-    padding-bottom: 5px;
-    background-color: #828bfa;
-    margin: 10px 0px 10px 0px;
-}
-
-#group-description-input {
-    width: 100%;
-    height: 200px;
-}
-
-#groups-title {
-    width: 100%;
-    background-color: #4532fc;
-    margin: 5px 0px 5px 0px;
-}
-
-#title-div {
-    max-height: 200px;
-    overflow-y: scroll;
-}
-
-#select-all-button {
-    width: 90px;
-    height: 25px;
-    border-color: black;
-    border-width: 1px;
-    margin: 0px;
-}
-
-#configure-for-latest {
-    width: 90px;
-    height: 25px;
-    border-color: black;
-    border-width: 1px;
-    margin: 0px;
-}
-
-#main-container-info {
-    padding: 20px;
-    text-align: left;
-    word-wrap: break-word;
-    height: auto;
-    max-height: 500px;
-    overflow-y: scroll;
-}
-
-.geoserver-outer {
-    width: 100%;
-    height: 500px;
     display: flex;
-    flex-direction: column;
-    align-content: center;
+    align-items: center;
     justify-content: center;
 }
 
-.geoserver-inner {
-    width: 660px;
-    height: 430px;
-    margin: 0px 30px 0px 30px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: black;
-    overflow-y: scroll;
-    overflow-x: scroll;
-    padding: 0px 30px 20px 30px;
+#app-navigation {
+    padding: 50px 0 0 0 !important;
+    margin: 0 !important;
 }
 
-#main-container-info h1 h2 p b {
-    color: black;
-    padding: 5px;
-}
-
-#timeseries-variable-div {
-    width: 150px;
-    height: auto;
-    max-height: 50%;
-    display: flex;
-    flex-direction: column;
-    overflow-y: scroll;
-    border-left-style: solid;
-    border-left-color: #333333;
-    border-left-width: 1pt;
-}
-
-#timeseries-feature-div {
-    width: 150px;
-    height: auto;
-    max-height: 400px;
-    display: flex;
-    flex-direction: column;
-    overflow-y: scroll;
-    border-left-style: solid;
-    border-left-color: #333333;
-    border-left-width: 1pt;
-}
-
-#timeseries-navbar p {
-    margin: 2px 5px 2px 10px;
+#app-navigation .nav {
     padding: 0;
+    margin: 0 0.4em;
 }
 
-#timeseries-navbar b {
-    margin: 2px 5px 2px 5px;
-}
-
-.timeseries-features {
-    flex-shrink: 0;
-    text-align: left;
-    border-bottom-color: #333333;
-    border-bottom-style: solid;
-    border-bottom-width: 1pt;
-}
-
-.timeseries-variable {
-    flex-shrink: 0;
-    text-align: left;
-    border-bottom-color: #333333;
-    border-bottom-style: solid;
-    border-bottom-width: 1pt;
-}
-
-.timeseries-features:hover {
-    background-color: #828bfa;
-}
-
-.timeseries-variable:hover {
-    background-color: #828bfa;
-}
-
-.timeseries-features p {
+#app-content-wrapper #app-content {
+    height: 100%;
     padding: 0;
     margin: 0;
-    overflow-x: scroll;
 }
 
-.titles {
+#inner-app-content {
+    width: 100%;
+    height: 100%;
+    padding: 50px 0 0 0;
+    margin: 0;
+}
+
+#main-window {
+    width: 100%;
+    height: 100%;
     display: flex;
-    background-color: #828bfa;
-    align-items: center;
-    justify-content: left;
-    width: 100%;
-    padding-left: 10px;
-    height: auto;
+    flex-direction: column;
 }
 
-.nav-button {
+#map {
     width: 100%;
-    height: 35px;
-    background-color: #4532fc;
+    height: 100%;
+    margin: 0;
+}
+
+#graphs {
+    width: 100%;
+    height: 0;
+    margin: 0;
+    background-color: #e0e0e0;
+}
+
+#graph-map-btn {
+    width: 10em;
+    height: 2.1em;
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    margin: 1em;
+    border-radius: 20%;
+}
+
+#graph-btn {
     color: white;
-    margin-top: 10px;
-}
-
-.inner-div {
-    width: 100%;
-    height: 60%;
-    overflow-y: scroll;
-}
-
-.file {
-    width: 100%;
-    height: auto;
-    overflow-y: hidden;
     display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-content: center;
-}
-
-.file:hover {
-    background-color: rgba(130, 140, 250, 1);
-}
-
-.folder {
-    width: 100%;
-    overflow-y: hidden;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-content: center;
-}
-
-.folder:hover {
-    background-color: rgba(130, 140, 250, 1);
-}
-
-.half-box {
-    width: 90%;
-    height: 86%;
-    margin: 2% 5% 0% 5%;
-    border-style: solid;
-    border-width: 1px;
-    background-color: white;
-}
-
-.modal-content {
-    text-align: center;
-}
-
-.data-button {
+    justify-content: center;
+    align-items: center;
     width: 50%;
-    height: 35px;
-    margin-top: 0px;
+    font-size: 12pt;
+    background: blue;
+    padding: .1em;
+    margin: 0;
+}
+
+#map-btn {
     color: white;
-    background-color: rgba(130, 140, 250, 1);
-}
-
-.loader {
-  margin: auto;
-  margin-top: 15%;
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
-}
-
-.inputsty {
-    width: 100%;
-    height: 25px;
-    border-width: 1px;
-    border-radius: 2px;
-}
-
-.url-list {
     display: flex;
-    width: 90%;
-    margin: 0% 5% 0% 5%;
-    height: auto;
+    justify-content: center;
     align-items: center;
-    background-color: #efefef;
-    border-color: #333333;
-    border-style: solid;
-    border-width: 1pt;
+    width: 50%;
+    font-size: 12pt;
+    background: #3939ec;
+    padding: .1em;
+    margin: 0;
 }
 
-.api-dimension-input {
-    width: 75px;
-    height: 20px;
+#slider-bar {
+    height: 100%;
+    width: 0.5em;
+    position: absolute;
+    left: calc(100% - 0.5em);
+    background: gray;
 }
 
-.api-dimension-container {
-    display:flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 90%;
-    margin: 2px 5% 2px 5%;
-}
-
-.url-list-label:hover {
-    background-color: rgba(130, 140, 250, 1);
-}
-
-.img-button {
-    height: 30px;
-    width: 32px;
-    margin: 2px 0px 2px 0px;
-    float: right;
-}
-
-.img-button:hover {
+#slider-bar:hover {
     cursor: pointer;
 }
 
-.attribute-inner-div {
-    height: 25px;
-    width: 100%;
-    display: flex;
+option[aria-disabled=true] {
+    opacity: .5;
 }
 
-.attr-div {
-    display: flex;
-    flex-direction: column;
-    padding: 5px 0px 5px 0px;
+label {
+    margin: 0 0.5em;
 }
 
-.attr-div b{
-    margin: 0px 10px 0px 20px;
+
+
+ul {
+    margin: 2.14em;
 }
 
-.geoserver-layer-div {
-    width: 100%;
-    height: 25px;
-    margin: 0px;
+td {
+    width: 100vw;
 }
 
-.geoserver-layer-div:hover {
-    background-color: #828bfa;
+tr:hover {
+    background-color: #f5f5f5;
 }
 
-label,input {
-    display: inline-block;
-    vertical-align: middle;
+.modal-body {
+    overflow: auto;
 }
 
-/* Safari */
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+.modal {
+  overflow-y:auto;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.chkbx-group, .attr-checkbox {
+    position: relative;
+    border-radius: 0.36em;
+    border: 0.14em solid;
+    background-color: #e6e6e6;
+    border-color: #e6e6e6;
+    padding: 0;
+    transform: scale(1.3);
 }
 
+.chkbx-group:checked, .attr-checkbox:checked {
+    background-color: #e6e6e6;
+    border-color: #e6e6e6;
+    top: 0.07em;
+    padding: 0;
+    position: relative;
+    transform: scale(1.3);
+}
+
+.chkbx-group:hover, .attr-checkbox:hover {
+    position: relative;
+    border-radius: 0.36em;
+    border: 0.14em solid #555;
+    background-color: #e6e6e6;
+    border-color: #e6e6e6;
+    padding: 0;
+    transform: scale(1.3);
+}
+
+.chkbx-group:checked:hover, .attr-checkbox:checked:hover {
+    background-color: #e6e6e6;
+    border-color: #e6e6e6;
+    top: 0.07em;
+    padding: 0;
+    position: relative;
+    transform: scale(1.3);
+}
+
+.loading-gif {
+    height: 50%;
+}
+
+.toggle.btn-xs {
+    margin-left: 1em;
+}
+
+.panel {
+    margin-bottom: 0;
+}
+
+/* check this */
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+    position: relative;
+    min-height: 0.07em;
+    width: 70%;
+    padding-right: 1%;
+}
+
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+    padding-left: 0;
+}
+
+.toggle.ios, .toggle-on.ios, .toggle-off.ios {
+    border-radius: 1.4em;
+}
+
+.toggle.ios .toggle-handle {
+    border-radius: 1.4em;
+}
+
+[data-notify="container"] {
+    width: 50%;
+}
+
+.hide-dimension {
+    display: none;
+}
+
+/* width classes */
+
+.width-5-em {
+    width: 5em;
+}
+
+.width-10-em {
+    width: 10em;
+}
+
+.width-20-em {
+    width: 20em;
+}
+
+.width-25-em {
+    width: 25em;
+}
+
+.width-33min-5em {
+    width: calc(33.33% - 5em);
+}
+
+.width-33percent {
+    width: 33.33%;
+}

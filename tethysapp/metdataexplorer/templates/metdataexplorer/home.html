@@ -1,435 +1,146 @@
 {% extends "metdataexplorer/base.html" %}
 {% load tethys_gizmos %}
-{% load static %}
-
-{% block header_buttons %}
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
-    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
-  </div>
-{% endblock %}
-
-{% block group_buttons %}
-  {% for group in groups %}
-    {% if group.name == "Demo Group" %}
-      <button id="demo-group-button" style="width: 50%; background-color: #1600F0; color: white;" data-clicked="true">Demo Group</button>
-    {% else %}
-      <button id="user-group-button" style="width: 50%; background-color: #828cfa; color: white" data-clicked="false">{{ group.name }}</button>
-    {% endif %}
-  {% endfor %}
-{% endblock %}
-
-{% block groups %}
-    {% for group in groups %}
-    {% if group.name == "Demo Group" %}
-      <span id="demo-group-container" data-name="{{ group.name }}" style="display: block;">
-    {% else %}
-      <span id="user-group-container" data-name="{{ group.name }}" style="display: none;">
-    {% endif %}
-        <div class="titles">
-          <div class="name" style="width: 60%;">
-            <h3>{{ group.name }}</h3>
-          </div>
-          <div style="width: 40%; padding-right: 15px">
-            {% if permission is True or group.name != "Demo Group" %}
-              <img class="info-group img-button" src="{% static 'metdataexplorer/images/infoButton.png' %}" style="height: 20px; width: auto">
-              <img class="delete-all img-button" data-name="{{ group.name }}" onclick="deleteDB.call(this)" src="{% static 'metdataexplorer/images/trashButtonBlue.png' %}" style="height: 20px; width: auto">
-            {% endif %}
-          </div>
-        </div>
-        <div class="group-container" style="width: 96%; height: auto; background-color: white; margin: 0% 2% 0% 2%; padding: 2px">
-          {% for thredd in thredds %}
-          {% if thredd.group == group.name %}
-          <div class="url-list" data-thredds='{"type":"{{ thredd.server_type }}","group":"{{ thredd.group }}","title":"{{ thredd.title }}","url":"{{ thredd.url }}","epsg":"{{ thredd.epsg }}","spatial":{{ thredd.spatial }},"description":"{{ thredd.description|escapejs }}","attributes":{{ thredd.attributes }},"timestamp":"{{ thredd.timestamp }}"}'>
-            <div class="url-list-label" style="width: 70%; overflow-x: scroll">
-              <h4>{{ thredd.title }}</h4>
-            </div>
-            <div style="width: 30%; padding-right: 5px">
-              {% if permission is True or group.name != "Demo Group" %}
-              <img class="delete-url img-button" onclick="deleteDB.call(this)" data-editing='false' src="{% static 'metdataexplorer/images/trashButtonGray.png' %}" style="height: 15px; width: auto;">
-              <img class="edit-url img-button" onclick="editDB.call(this)" src="{% static 'metdataexplorer/images/editButton.png' %}" style="height: 15px; width: auto;">
-              {% endif %}
-              <img class="info-url img-button" onclick="infoDB.call(this)" src="{% static 'metdataexplorer/images/infoButtonGray.png' %}" style="height: 15px; width: auto;">
-            </div>
-          </div>
-          {% endif %}
-          {% endfor %}
-        </div>
-      </span>
-    {% endfor %}
-{% endblock %}
 
 {% block app_content %}
-  <div id="main-body">
-    <div id="map">
-      <div class="btn-group" style="z-index: 401; margin: 10px; position: absolute; left: 0; bottom: 80px;">
-        <button id="get-full-array-button" disabled style="background-color: #595959">Get Full Array</button>
+<div id="main-window">
+  <div id="map"></div>
+  <div id="graphs">
+    <div id="carousel-box">
+      <div id="carousel-indicator-div">
+        <div id="indicator-1" class="single-indicator active" value="1"></div>
+        <div id="indicator-2" class="single-indicator" value="2"></div>
+        <div id="indicator-3" class="single-indicator" value="3"></div>
+        <div id="indicator-4" class="single-indicator" value="4"></div>
       </div>
-      <div id="get-data-button" class="btn-group" style="z-index: 401; margin: 10px; position: absolute; left: 0; bottom: 40px;">
-        <button>Get Data Bounds</button>
-      </div>
-    </div>
-    <div id="lower-content">
-      <div style="width: 50%; height: 100%; float: left;">
-        <div class="half-box">
-          <div style="display:flex; justify-content: center; width: 100%">
-            <img id="up-file" class="img-button" src="{% static 'metdataexplorer/images/upArrowButton.png' %}" style="height: 25px; width: auto; margin: 5px 0px 10px 0px;">
-            <input id="url-input" type="text" placeholder="Thredds URL" style="width: 80%; margin: 5px 0px 10px 0px; border-radius: 0px; border-width: 1px;">
-            <img id="go-input-button" class="img-button" src="{% static 'metdataexplorer/images/goButton.png' %}" style="height: 25px; width: auto; margin: 5px 0px 10px 0px;">
-            <img id="add-url" class="img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 25px; width: auto; margin: 5px 0px 10px 0px;">
-          </div>
-          <div id="filetree-div" class="inner-div">
-          </div>
-          <div id="file-info-div" style="display: none; flex-direction: column; padding: 0px 15px 0px 15px; overflow-y: scroll; height: 70%; width: 100%;">
-            <div>
-              <label for="variable-input" style="padding-right: 60px; padding-top:0">Variables:</label>
-              <select id="variable-input" style="width: 50%; margin: 20px 0px 5px 0px;"></select>
-            </div>
-            <div>
-              <label for="time" style="padding-right: 89px; padding-top:0">Time:</label>
-              <select id="time" style="width: 50%; margin: 5px 0px 5px 0px;"></select>
-            </div>
-          </div>
+      <div id="carousel-lower-div">
+        <div id="move-carousel-right" class="carousel-arrow">
+          <span class="glyphicon glyphicon-chevron-left carousel-arrow-btn"></span>
         </div>
-      </div>
-      <div style="width: 50%; height: 100%; float: right;">
-        <div class="half-box">
-          <button id="file-metadata-button" class="data-button" style="float: left;">File Metadata</button>
-          <button id="var-metadata-button" class="data-button" style="float: right;">Variable Metadata</button>
-          <div id="metadata-div" class="inner-div">
-          </div>
-          <div id="var-metadata-div" class="inner-div" style="display: none">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        <div class="carousel-inner">
+          <div id="carousel-container-1" class="carousel-item">
+            <div class="carousel-flex">
+              <div class="carousel-flex-column">
+                <h4>File Variables and Dimensions</h4>
+                <div class="selectpicker-group">
+                  <div class="selectpicker-prepend width-10-em">Variable:</div>
+                  <select id="variables-select" class="selectpicker" data-dropup-auto="false" data-live-search="true"
+                          data-style="btn-primary" data-width="calc(100% - 10em)" title="Select Variable">
+                  </select>
+                </div>
+                <div class="selectpicker-group">
+                  <div class="selectpicker-prepend width-10-em">Mask Data With:</div>
+                  <select id="select-drawing-option" class="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="calc(100% - 10em)">
+                    <option value="draw-on-map">Draw On Map</option>
+                    <option value="use-shapefile">Use A Shapefile</option>
+                  </select>
+                </div>
+                <div id="additional-dimensions-div"></div>
+                <div id="time-dimensions-div"></div>
+                <div id="x-dimension-div"></div>
+                <div id="y-dimension-div"></div>
+                <button type="button" id="plot-time-series-button" class="btn btn-success">
+                  <i class="far fa-chart-bar"></i>
+                  Plot Time Series
+                </button>
+              </div>
 
-<!--HTML for the add file form-->
-  <div id="db-forms" style="display: none; overflow-y: scroll">
-    <div style="width: 100%; height: auto; min-height: 20px">
-      <div style="margin: 15px 0px 0px 20px"><b>Save:&nbsp</b><b id="name-in-form" data-type="folder"></b></div>
-    </div>
-    <div style="display: flex; flex-direction: row;">
-      <div style="width: 50%; padding: 15px 20px 20px 20px; flex-direction: column;">
-        <div>
-          <div style="width: 100%; height: 20px;"><b id="upload-to-which-group" data-admin="{{  permission  }}">
-            {% if permission is True %}
-              Upload to: Demo Group
-            {% else %}
-              Upload to: User Group
-            {% endif %}
-          </b></div>
-          <label for="title-input" style="float: left; padding-top: 10px;">Title (Required):</label>
-          <input id="title-input" class="inputsty">
-          <label for="epsg-input" style="float: left;">EPSG Code:</label>
-          <input id="epsg-input" class="inputsty">
-          <b style="float: left; font-size: 11pt; color: #333; padding-top: 20px;">Path to Latest:</b><br>
-          <div style="display: flex; flex-direction: row; width: 100%; height: 30px; padding: 5px 0px 2px 0px">
-            <input id="latest-input" class="inputsty">
-            <button id="configure-for-latest" data-select="true">Get URL</button>
+              <div class="carousel-flex-column">
+                <h4>Display Settings</h4>
+                <div class="selectpicker-group">
+                  <div class="selectpicker-prepend width-20-em">Set Layer Opacity:</div>
+                  <input type="range" min="0" max="1" value="1" step="0.01" class="slider" id="opacity-slider">
+                  <div id="opacity-value" class="selectpicker-prepend width-5-em">100</div>
+                  <div class="selectpicker-prepend width-5-em">%</div>
+                  <div id="hide-data-layer-button" class="selectpicker-prepend width-25-em div-button">Hide Data Layer</div>
+                </div>
+                <div class="selectpicker-group">
+                  <div class="selectpicker-prepend width-20-em">Select Color Style:</div>
+                  <select id="wmslayer-style" class="selectpicker" data-style="btn-primary" data-width="calc(100% - 55em)">
+                    <option value="boxfill/rainbow">RAINBOW</option>
+                    <option value="boxfill/occam">OCCAM</option>
+                    <option value="boxfill/alg">ALG</option>
+                    <option value="boxfill/alg2">ALG2</option>
+                    <option value="boxfill/ncview">NC VIEW</option>
+                    <option value="boxfill/redblue">RED BLUE</option>
+                  </select>
+                  <div class="selectpicker-prepend width-10-em">Set Data Bounds:</div>
+                  <input id="wms-bound-min" value="0" class="wms-input width-10-em">
+                  <div class="selectpicker-prepend width-5-em">to</div>
+                  <input id="wms-bound-max" value="25" class="wms-input width-10-em">
+                </div>
+                <button type="button" id="update-display-settings" class="btn btn-success">
+                  Update Display Settings
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="carousel-container-2" class="carousel-item">
+            <div class="selectpicker-group">
+              <div id="clear-graph-button" class="selectpicker-prepend width-33percent div-button">Clear Graph</div>
+              <select id="graph-type-select" class="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="33.33%">
+                <option value="scatter"> Scatter</option>
+                <option value="box"> Whisker and Box</option>
+              </select>
+              <select id="download-data-select" class="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="33.33%" title="Download Data">
+                <option value="csv">CSV</option>
+                <option value="json">JSON</option>
+                <!--<option value="NetCDF">NetCDF</option>-->
+                <option value="html">HTML File With Web Map</option>
+                <option value="python">Python Notebook</option>
+              </select>
+            </div>
+            <div id="data-graph"></div>
+          </div>
+
+          <div id="carousel-container-3" class="carousel-item">
+            <div class="base-menu-metadata-divs">
+              <h3>File Metadata</h3>
+              <div class="file-metadata-outer-div">
+                  <div class="file-metadata-inner lighter"><b>Property</b></div>
+                  <div class="file-metadata-inner lighter"><b>Value</b></div>
+              </div>
+              <div id="file-metadata-div" class="scroll-y"></div>
+            </div>
+          </div>
+
+          <div id="carousel-container-4" class="carousel-item">
+            <div class="base-menu-metadata-divs">
+              <h3>Variables</h3>
+              <div class="file-metadata-outer-div">
+                <div class="file-metadata-inner lighter"><b>Name</b></div>
+                <div class="file-metadata-inner lighter" style="width: calc(50% - 10em)"><b>Dimensions</b></div>
+                <div class="file-metadata-inner lighter" style="width: 10em"><b>Metadata</b></div>
+              </div>
+              <div id="list-of-variables-div" class="scroll-y"></div>
+            </div>
           </div>
         </div>
-        <div>
-          <label for="spatial-input" style="float: left;">Spatial Extents: </label>
-          <input id="spatial-input" class="inputsty">
-        </div>
-        <div style="height: auto; width: 100%; display: flex; flex-direction: row">
-            <button id="upload-shape-resource">Upload Shapefile</button>
-            <button id="draw-on-map-button">Draw on Map</button>
-            <!--<button>ESRI Living Atlas</button>-->
-            <button id="link-geoserver">Geoserver</button>
-          <!--<button id="add-shape-resource-button">Add Shapefile</button>-->
-          <!--<button id="link-geoserver" style="width: 50%; margin-top: 30px;">Geoserver</button>-->
-          <!--<button id="draw-on-map-button" style="width: 50%; margin-top: 30px;">Draw on Map</button>-->
-        </div>
-        <div>
-          <label for="description-input" style="float: left;">Description (Required):</label>
-          <textarea id="description-input" style="width: 100%; height: 200px"></textarea>
-        </div>
-      </div>
-      <div style="width: 50%; padding: 20px; flex-direction: column;">
-        <b style="float: left; font-size: 11pt; color: #333; padding-top: 25px;">Variables:</b><br>
-        <div style="display: flex; flex-direction: row; width: 100%; height: 30px; padding: 5px 0px 2px 0px">
-          <input id="add-attribute" class="inputsty">
-          <img id="add-attribute-button" class="img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 25px; width:auto; margin: 0px">
-          <button id="select-all-button" data-select="true">Select All</button>
-        </div>
-        <div id="attributes" style="width: 100%; height: 430px; border-style: solid; border-color:#000; border-width: 1px; border-radius: 3px; overflow-y: scroll; overflow-x: scroll">
-        </div>
-        <div style="display: flex; flex-direction: row; width: 100%; height: 20px; justify-content: space-between;">
-          <select id="default-option-select" style="width: 30%">
-            <option>Time</option>
-            <option>Lat</option>
-            <option>Lon</option>
-            <option>Color Range</option>
-            <option>Units</option>
-          </select>
-          <input id="default-option-input" style="width: 100%">
-          <img id="add-default-button" class="img-button" src="{% static 'metdataexplorer/images/addButtonGrey.png' %}" style="height: 20px; width:auto; margin: 0px">
-        </div>
-        <div style="display: flex; flex-direction: row">
-          <button id="add-submit" style="width: 50%; margin-top: 20px;">Save</button>
-          <button id="add-cancel" style="width: 50%; margin-top: 20px;">Back to Map</button>
+        <div id="move-carousel-left" class="carousel-arrow">
+          <span class="glyphicon glyphicon-chevron-right carousel-arrow-btn"></span>
         </div>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}
 
 {# Use the after_app_content block for modals #}
 {% block after_app_content %}
-  <!-- Help Modal -->
-  <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
-    <div class="modal-dialog modal-xl" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="width: 26px"><span aria-hidden="true">X</span></button>
-        </div>
-        <div class="modal-body">
-          <iframe style="width: 100%; height: 550px" src="https://docs.google.com/document/d/e/2PACX-1vTBtvXucYygON02T1LiLjmBXyQ0jcms5wwQts4i4ap03kPlubgj7IYwQeLNnKt1dSynn7kbguFEF0qn/pub?embedded=true"></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Upload Shapefile -->
-  <div class="modal fade" id="uploadshp-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="width: 26px"><span aria-hidden="true">X</span></button>
-        </div>
-        <form action="" method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-        <div class="modal-text-container">
-          <h2>Upload a Shapefile</h2>
-          <br>
-          <div>
-            <input type="file" class="local-file-upload" id="shapefile-upload"
-                   style="display: inline-block" accept=".shp,.prj,.shx,.dbf," multiple>
-            <button id="uploadshp" style="width: 200px">Submit Shapefile</button>
-          </div>
-          <div>
-            <br>
-            <p>
-              Select four files with the endings '.shp', '.shx', '.prj', and '.dbf'.
-            </p>
-          </div>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Timeseries -->
-  <div class="modal fade" id="timeseries-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" style="width: 30%; float: left" id="download-csv">Download CSV</button>
-          <button type="button" style="width: 10%" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
-        </div>
-        <div id="chart" style="width: 700px; height: 500px"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- full array timeseries -->
-  <div class="modal fade" id="full-array-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" style="width: 30%; float: left" id="download-csv-two">Download CSV</button>
-          <button type="button" style="width: 10%" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button>
-        </div>
-        <div style="display:flex; flex-direction: row; justify-content: space-between; width: 550px">
-          <div id="chart-two" style="width: 550px; height: 500px;"></div>
-          <div id="timeseries-navbar" style="display:flex; flex-direction: column;">
-            <div style="border-left-style: solid; border-left-color: #333333; border-left-width: 1pt;">
-              <b>Variables</b>
-            </div>
-            <div id="timeseries-variable-div">
-            </div>
-            <div style="border-left-style: solid; border-left-color: #333333; border-left-width: 1pt;">
-              <b>Features</b>
-            </div>
-            <div id="timeseries-feature-div">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- container info -->
-  <div class="modal fade" id="url-info-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
-            <div style="width: 95%; display:flex; justify-content: center;"><h1 id="info-title" style="font-size: 23pt; color: black; "></h1></div>
-            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
-          </div>
-        </div>
-        <div id="main-container-info">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- link geoserver -->
-  <div class="modal fade" id="link-geoserver-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
-            <div style="width: 95%; display:flex; justify-content: center;"><h1 style="font-size: 23pt; color: black; ">Geoserver</h1></div>
-            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
-          </div>
-        </div>
-        <div id="link-geoserver-outer-content" class="geoserver-outer">
-          <div id="link-geoserver-inner-content" class="geoserver-inner"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <!-- configure for latest -->
-  <div class="modal fade" id="configure-for-latest-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
-            <div style="width: 95%; display:flex; justify-content: center;"><h1 style="font-size: 23pt; color: black; "></h1></div>
-            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
-          </div>
-        </div>
-        <div style="width: 100%; height: 200px">
-          <div style="width: 650px; height: 150px; display: flex; flex-direction: column; justify-content: left; margin: 25px">
-            <label for="latest-url-input">Folder URL</label>
-            <input id="latest-url-input" class="inputsty" style="width: 100%;" data-url="false">
-            <button id="latest-url-confirm">Confirm</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <!-- add shape resource -->
-  <div class="modal fade" id="add-shape-resource-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
-            <div style="width: 5%; float: right"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
-          </div>
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%">
-<!--            <div style="display:flex; flex-direction: row;">
-              <button id="upload-shape-resource">Upload Shapefile</button>
-              <button id="draw-on-map-button">Draw on Map</button>
-            </div>
-            <div style="display:flex; flex-direction: row">
-              <button>ESRI Living Atlas</button>
-              <button id="link-geoserver">Add from Geoserver</button>
-            </div>-->
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- loading -->
-  <div class="modal fade" id="loading-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="loader"></div>
-  </div>
-
-<!--  &lt;!&ndash; geoserver &ndash;&gt;
-  <div class="modal fade" id="geoserver-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%; height: auto">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div style="display: flex; align-items: center; justify-content: center; width: 100%">
-            <div style="width: 95%; display:flex; justify-content: center;"><h1 style="font-size: 23pt; color: black; ">Geoserver</h1></div>
-            <div style="width: 5%;"><button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">X</span></button></div>
-          </div>
-        </div>
-        <div id="geoserver-outer-content" class="geoserver-outer" style="display:flex; justify-content: center; height: 250px">
-          <div style="display: flex; flex-direction: row; width: 100%; justify-self: center">
-            <div style="width: 46%; display: flex; flex-direction: column; margin:2%">
-              <label for="workspace">Workspace Name</label>
-              <input id="workspace" class="inputsty">
-              <label for="uri">Workspace URI</label>
-              <input id="uri" class="inputsty">
-              <button id="crate-workspace-button">Create Workspace</button>
-            </div>
-            <div style="width: 46%; display: flex; flex-direction: column; margin:2%">
-              <label for="which-workspace">Workspace</label>
-              <input id="which-workspace" class="inputsty">
-              <label for="store-name">Store Name</label>
-              <input id="store-name" class="inputsty">
-              <button id="upload-shapefile-modal-button">Upload Shapefile</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    Upload Shapefile
-  <div class="modal fade" id="uploadshp-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 50%">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="width: 26px"><span aria-hidden="true">X</span></button>
-        </div>
-        <form action="" method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-        <div class="modal-text-container">
-          <h2>Upload a Shapefile</h2>
-          <br>
-          <div>
-            <input type="file" class="local-file-upload" id="shapefile-upload"
-                   style="display: inline-block" accept=".shp,.prj,.shx,.dbf," multiple>
-            <button id="uploadshp" style="width: 200px">Submit Shapefile</button>
-          </div>
-          <div>
-            <br>
-            <p>
-              Select four files with the endings '.shp', '.shx', '.prj', and '.dbf'.
-            </p>
-          </div>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>-->
-{% endblock %}
-
-{% block app_actions %}
-  <img class="info-group img-button" id="hide-lower-content" src="{% static 'metdataexplorer/images/upArrowTwo.png' %}" data-hidden="false" style="height: 30px; width: auto">
-{% endblock %}
-
-{% block scripts %}
-
-  {{ block.super }}
-  <script>
-      let URL_threddsProxy = "{% url 'metdataexplorer:threddsProxy' %}";
-      let URL_getFilesAndFolders = "{% url 'metdataexplorer:getFilesAndFolders' %}";
-      let URL_uploadShapefile = "{% url 'metdataexplorer:uploadShapefile' %}";
-      let URL_getBoxValues = "{% url 'metdataexplorer:getBoxValues' %}";
-      let URL_getVariablesAndFileMetadata = "{% url 'metdataexplorer:getVariablesAndFileMetadata' %}";
-      let URL_getVariableMetadata = "{% url 'metdataexplorer:getVariableMetadata' %}";
-      let URL_deleteContainer = "{% url 'metdataexplorer:deleteContainer' %}";
-      let URL_updateDB = "{% url 'metdataexplorer:updateDB' %}";
-      let URL_getLatestFiles = "{% url 'metdataexplorer:getLatestFiles' %}";
-      let URL_getFullArray = "{% url 'metdataexplorer:getFullArray' %}";
-      let URL_getGeojson = "{% url 'metdataexplorer:getGeojson' %}";
-
-      let URL_listGeoserverLayers = "{% url 'metdataexplorer:geoserverListLayers' %}";
-      // let URL_createGeoserverWorkspace = "{% url 'metdataexplorer:createGeoserverWorkspace' %}";
-      // let URL_uploadShapefileToGeoserver = "{% url 'metdataexplorer:uploadShapefileToGeoserver' %}";
-      let pathToFileImage = "{% static 'metdataexplorer/images/fileImage.png' %}";
-      let pathToFolderImage = "{% static 'metdataexplorer/images/folderImage.png' %}";
-  </script>
-
+  {% include "metdataexplorer/modals/modalAddFileToDatabase.html" %}
+  {% include "metdataexplorer/modals/modalAddGroupToDatabase.html" %}
+  {% include "metdataexplorer/modals/modalAddVariables.html" %}
+  {% include "metdataexplorer/modals/modalDeleteFileFromDatabase.html" %}
+  {% include "metdataexplorer/modals/modalDeleteGroupsFromDatabase.html" %}
+  {% include "metdataexplorer/modals/modalEditFileTitleAndDescription.html" %}
+  {% include "metdataexplorer/modals/modalEnterURLForWMFService.html" %}
+  {% include "metdataexplorer/modals/modalFilterFilesByVariable.html" %}
+  {% include "metdataexplorer/modals/modalFoldersAndFilesExplorer.html" %}
+  {% include "metdataexplorer/modals/modalHelp.html" %}
+  {% include "metdataexplorer/modals/modalInformationAboutGroup.html" %}
+  {% include "metdataexplorer/modals/modalListAuthentication.html" %}
+  {% include "metdataexplorer/modals/modalMetaDataForVariable.html" %}
+  {% include "metdataexplorer/modals/modalRemoveVariable.html" %}
+  {% include "metdataexplorer/modals/modalShapefileList.html" %}
+  {% include "metdataexplorer/modals/modalUploadAShapefile.html" %}
 {% endblock %}

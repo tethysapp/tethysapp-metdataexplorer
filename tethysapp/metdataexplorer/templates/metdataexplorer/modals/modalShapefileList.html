@@ -1,0 +1,38 @@
+{% load staticfiles %}
+
+<div id="modalShapefileList" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content myModal">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Select a Shapefile</h4>
+            </div>
+            <div id="loading-for-modalShapefileList" class="loading-div" style="display: none">
+                <img class="loading-gif" src="{% static 'metdataexplorer/images/loading.gif' %}"/>
+            </div>
+            <div id="modal-body-for-modalShapefileList" class="modal-body">
+                <table id="shapefile-table" class="table table-condensed">
+                  <thead>
+                    <tr>
+                      <th scope="col"></th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody id="shapefile-list"></tbody>
+                </table>
+                <div class="table-row">
+                    <div>
+                        <button id="shapefile-list-upload-shapefile-button" type="button" class="btn btn-primary table-button">Upload Shapefile</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="button-group">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" id="add-shapefile-to-map-button" class="btn btn-success">Use Shapefile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+{% load staticfiles %}
+
+<div id="modalUploadAShapefile" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content myModal">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Upload a Shapefile</h4>
+            </div>
+            <div id="loading-for-modalUploadAShapefile" class="loading-div" style="display: none">
+                <img class="loading-gif" src="{% static 'metdataexplorer/images/loading.gif' %}"/>
+            </div>
+            <div id="modal-body-for-modalUploadAShapefile" class="modal-body">
+              <form id="modalFormSHP" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+              <div class="modal-text-container">
+                <div class="flex-row">
+                  <div>
+                    <input type="file" class="btn local-file-upload" id="shapefile-upload"
+                         accept=".shp,.prj,.shx,.dbf," multiple>
+                  </div>
+                </div>
+                <div>
+                  <p style="padding: 1em">
+                    Select four files with the endings '.shp', '.shx', '.prj', and '.dbf'.
+                  </p>
+                </div>
+              </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+                <div class="button-group">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" id="upload-shapefile-button" class="btn btn-success">Submit Shapefile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
