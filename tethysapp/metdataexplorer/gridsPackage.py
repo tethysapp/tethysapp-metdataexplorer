@@ -211,7 +211,7 @@ def format_parameters_for_grids(request):
             elif geojson_type == 'rectangle':
                 time_series = f"time_series = grids_time_series.bound({formatted_values[0]}, {formatted_values[1]}, stats='all')"
             else:
-                time_series = f"time_series = grids_time_series.shape('Add the filepath to your geojson here!', behavior='dissolve')"
+                time_series = f"time_series = grids_time_series.shape('Add the filepath to your geojson here!', behavior='dissolve', stats='all')"
 
             os.remove(filepath_to_geojson)
             os.remove(filepath_to_shifted_geojson)
@@ -259,5 +259,5 @@ def get_time_series_with_shapefile(grids_initializer, dimension_values, filepath
     if behavior == "features":
         time_series = grids_initializer.shape(filepath_to_geojson, behavior='features', stats='all')
     else:
-        time_series = grids_initializer.shape(filepath_to_geojson, behavior='dissolve')
+        time_series = grids_initializer.shape(filepath_to_geojson, behavior='dissolve', stats='all')
     return time_series

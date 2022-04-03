@@ -174,6 +174,7 @@ def commit_shapefile_to_database(geojson, filename):
     SessionMaker = app.get_persistent_store_database(Persistent_Store_Name, as_sessionmaker=True)
     session = SessionMaker()
     shapefiles = session.query(Shapefiles).all()
+    has_same_name = False
 
     for shapefile_to_check in shapefiles:
         if filename == shapefile_to_check.title:
