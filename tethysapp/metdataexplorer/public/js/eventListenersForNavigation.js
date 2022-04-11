@@ -14,6 +14,7 @@ import {
     notifyOfDanger,
     notifyOfInfo
 } from "./userMessagingPackage.js";
+import {permissionToAdd, permissionToDelete} from "./permissionsPackage";
 
 let setNavigationEventListeners;
 
@@ -22,13 +23,16 @@ setNavigationEventListeners = function () {
         $("#modalHelp").modal("show");
     });
     // Catalogs container
-    document.getElementById("add-groups").addEventListener("click", (event) => {
-        $("#modalAddGroupToDatabase").modal("show");
-    });
-
-    document.getElementById("delete-groups").addEventListener("click", (event) => {
-        populateDeleteGroupsModal();
-    });
+    if (permissionToAdd) {
+        document.getElementById("add-groups").addEventListener("click", (event) => {
+            $("#modalAddGroupToDatabase").modal("show");
+        });
+    }
+    if (permissionToDelete) {
+        document.getElementById("delete-groups").addEventListener("click", (event) => {
+            populateDeleteGroupsModal();
+        });
+    }
 
     /*
     TODO Fix this event listener
