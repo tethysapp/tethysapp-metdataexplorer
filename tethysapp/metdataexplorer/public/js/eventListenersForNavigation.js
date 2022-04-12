@@ -14,7 +14,10 @@ import {
     notifyOfDanger,
     notifyOfInfo
 } from "./userMessagingPackage.js";
-import {permissionToAdd, permissionToDelete} from "./permissionsPackage";
+import {
+    permissionToAdd,
+    permissionToDelete
+} from "./permissionsPackage.js";
 
 let setNavigationEventListeners;
 
@@ -23,12 +26,12 @@ setNavigationEventListeners = function () {
         $("#modalHelp").modal("show");
     });
     // Catalogs container
-    if (permissionToAdd) {
+    if (permissionToAdd()) {
         document.getElementById("add-groups").addEventListener("click", (event) => {
             $("#modalAddGroupToDatabase").modal("show");
         });
     }
-    if (permissionToDelete) {
+    if (permissionToDelete()) {
         document.getElementById("delete-groups").addEventListener("click", (event) => {
             populateDeleteGroupsModal();
         });
@@ -80,6 +83,8 @@ setNavigationEventListeners = function () {
         // File Buttons
         } else if (clickedElement.classList.contains("file-name") || clickedElement.parentElement?.classList.contains("file-name")) {
             const fileId = event.target.closest(".file-and-buttons-container").id.slice(10);
+            $(".file-name").css("text-decoration", "none");
+            event.target.style.textDecoration = "underline";
 
             ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId = fileId;
 

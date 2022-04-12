@@ -389,7 +389,8 @@ htmlForFilesInNavigation = function (groupId, fileId) {
                     </button>
                     <button class="delete-variable btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-trash"></span>
-                    </button>-->
+                    </button>
+                    -->
                 </li>`;
           return newHtml;
 
@@ -397,9 +398,11 @@ htmlForFilesInNavigation = function (groupId, fileId) {
             newHtml = `
                 <li class="file-and-buttons-container" id="container-${fileId}">
                     <span  id= "span-${fileId}" class="file-name" data-toggle="tooltip" data-placement="right" title="${currentFile.title}">${currentFile.title}</span>
+                    <!--ToDO Add back in when fixed
                     <button class="edit-file btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-cog"></span>
                     </button>
+                    -->
                 </li>`;
             return newHtml;
         }

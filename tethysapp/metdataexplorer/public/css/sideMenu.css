@@ -75,6 +75,10 @@
     padding: 0.5em;
 }
 
+.file-and-buttons-container:hover {
+    background-color: #e0e0e0;
+}
+
 .logo_institucion {
     display: flex;
     justify-content: center;
