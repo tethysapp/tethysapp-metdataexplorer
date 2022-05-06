@@ -24,7 +24,10 @@ createGraph = function () {
             y: 1
         },
         plot_bgcolor: "#e0e0e0",
-        paper_bgcolor: "#e0e0e0"
+        paper_bgcolor: "#e0e0e0",
+        yaxis: {
+            tickformat: '.3f',
+        },
     };
     graph = Plotly.newPlot(graphDiv, dataForGraph, layout, {responsive: true});
 };

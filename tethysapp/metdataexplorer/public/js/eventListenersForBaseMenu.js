@@ -161,6 +161,9 @@ setBaseMenuEventListeners = function () {
         } else if (whatToDownload === "html") {
             fileType = "html";
             fileToDownload = formatHTML();
+            if (fileToDownload === undefined) {
+                fileToDownload = false;
+            }
         } else if (whatToDownload === "python") {
             fileType = "ipynb";
             fileToDownload = await formatPython();

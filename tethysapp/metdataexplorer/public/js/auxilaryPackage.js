@@ -53,76 +53,81 @@ addDefaultBehaviorToAjax = function () {
 };
 
 formatValuesFromGrids = function() {
-    const groupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
-    const fileId = ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId;
-    const file = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId];
-    const opendapURL = file.accessURLs.OPENDAP;
-    const userCredentials = file.userCredentials;
-    const variable = $("#variables-select").val();
-    const dimensions = file.variables[variable].dimensions;
-    let geojson;
-    let geojsonType;
-    let dimensionsAndValuesArray = {};
-    let xDimension = false;
-    let yDimension = false;
+    try {
+        const groupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
+        const fileId = ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId;
+        const file = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId];
+        const opendapURL = file.accessURLs.OPENDAP;
+        const userCredentials = file.userCredentials;
+        const variable = $("#variables-select").val();
+        const dimensions = file.variables[variable].dimensions;
+        let geojson;
+        let geojsonType;
+        let dimensionsAndValuesArray = {};
+        let xDimension = false;
+        let yDimension = false;
 
-    dimensions.forEach((dimension) => {
-        const dimensionType = file.dimensions[dimension].dimensionType;
-        if (dimensionType === "other") {
-            dimensionsAndValuesArray[dimension] = {
-                value: parseFloat($(`#dimension-additional-${dimension}-select-values`).val()),
-                dimensionType: "other"
-            };
-        } else if (dimensionType === "time") {
-            if ($(`#dimension-time-${dimension}-first`).is(':disabled')) {
+        dimensions.forEach((dimension) => {
+            const dimensionType = file.dimensions[dimension].dimensionType;
+            if (dimensionType === "other") {
                 dimensionsAndValuesArray[dimension] = {
-                    dimensionType: "time",
-                    value: null
+                    value: parseFloat($(`#dimension-additional-${dimension}-select-values`).val()),
+                    dimensionType: "other"
                 };
-            } else {
+            } else if (dimensionType === "time") {
+                if ($(`#dimension-time-${dimension}-first`).is(':disabled')) {
+                    dimensionsAndValuesArray[dimension] = {
+                        dimensionType: "time",
+                        value: null
+                    };
+                } else {
+                    dimensionsAndValuesArray[dimension] = {
+                        dimensionType: "time",
+                        firstValue: parseFloat($(`#dimension-time-${dimension}-first`).val()),
+                        secondValue: parseFloat($(`#dimension-time-${dimension}-second`).val())
+                    };
+                }
+            } else if (dimensionType === "x") {
                 dimensionsAndValuesArray[dimension] = {
-                    dimensionType: "time",
-                    firstValue: parseFloat($(`#dimension-time-${dimension}-first`).val()),
-                    secondValue: parseFloat($(`#dimension-time-${dimension}-second`).val())
+                    dimensionType: "x",
+                    value: ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].dimensions[dimension].values
                 };
+                xDimension = true;
+            } else if (dimensionType === "y") {
+                dimensionsAndValuesArray[dimension] = {
+                    dimensionType: "y",
+                    value: ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].dimensions[dimension].values
+                };
+                yDimension = true;
             }
-        } else if (dimensionType === "x") {
-            dimensionsAndValuesArray[dimension] = {
-                dimensionType: "x",
-                value: ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].dimensions[dimension].values
-            };
-            xDimension = true;
-        } else if (dimensionType === "y") {
-            dimensionsAndValuesArray[dimension] = {
-                dimensionType: "y",
-                value: ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].dimensions[dimension].values
-            };
-            yDimension = true;
+
+        });
+
+        if (ACTIVE_VARIABLES_PACKAGE.geojson.shapefile) {
+            geojson = ACTIVE_VARIABLES_PACKAGE.geojson.type;
+            geojsonType = "shapefile";
+        } else {
+            geojson = ACTIVE_VARIABLES_PACKAGE.geojson.feature;
+            geojsonType = ACTIVE_VARIABLES_PACKAGE.geojson.type;
         }
 
-    });
-
-    if (ACTIVE_VARIABLES_PACKAGE.geojson.shapefile) {
-        geojson = ACTIVE_VARIABLES_PACKAGE.geojson.type;
-        geojsonType = "shapefile";
-    } else {
-        geojson = ACTIVE_VARIABLES_PACKAGE.geojson.feature;
-        geojsonType = ACTIVE_VARIABLES_PACKAGE.geojson.type;
-    }
-
-    if (Object.keys(ACTIVE_VARIABLES_PACKAGE.geojson.feature).length === 0 && xDimension && yDimension) {
-        notifyOfInfo("Please define an area on the map over which to extract the data.");
-    } else {
-        const parametersForGrids = {
-            dimensions: dimensions,
-            dimensionsAndValues: JSON.stringify(dimensionsAndValuesArray),
-            geojson: JSON.stringify(geojson),
-            geojsonType: geojsonType,
-            opendapURL: opendapURL,
-            userCredentials: JSON.stringify(userCredentials),
-            variable: variable
-        };
-        return parametersForGrids;
+        if (Object.keys(ACTIVE_VARIABLES_PACKAGE.geojson.feature).length === 0 && xDimension && yDimension) {
+            notifyOfInfo("Please define an area on the map over which to extract the data.");
+        } else {
+            const parametersForGrids = {
+                dimensions: dimensions,
+                dimensionsAndValues: JSON.stringify(dimensionsAndValuesArray),
+                geojson: JSON.stringify(geojson),
+                geojsonType: geojsonType,
+                opendapURL: opendapURL,
+                userCredentials: JSON.stringify(userCredentials),
+                variable: variable
+            };
+            return parametersForGrids;
+        }
+    } catch (error) {
+        notifyOfDanger("Please select data to download");
+        console.error(error);
     }
 }
 
