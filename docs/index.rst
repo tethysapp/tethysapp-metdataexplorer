@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. |mde| image:: images/mde.png
+.. |mde| image:: documentation_images/FA.png
    :scale: 10%
 
 ===============================
@@ -18,5 +18,4 @@
 
 
    Met Data Explorer (MDE) <MDE>
-   MDE User Functionalities <MDE_user_func>
-   MDE Administrator Functionalities <MDE_admin_func>
+   MDE NetCDF Formatting Guidelines <MDE_netcdf>

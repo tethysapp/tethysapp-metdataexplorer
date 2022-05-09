@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Met Data Explorer'
-copyright = '2021, Elkin Giovanni Romero Bustamante'
-author = 'Elkin Giovanni Romero Bustamante'
+copyright = '2021, J Enoch Jones and Elkin Giovanni Romero Bustamante'
+author = 'J Enoch Jones and Elkin Giovanni Romero Bustamante'
 
 
 # -- General configuration ---------------------------------------------------

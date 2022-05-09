@@ -102,6 +102,7 @@ def shift_shape_bounds(bounds, filepath):
         new_feature = geojson.Feature(properties={'iterate': 'this needs to change'}, geometry=new_shp)
         new_geom.append(new_feature)
         x += 1
-    new_fc = geojson.FeatureCollection(crs=str(geojson_geometry.crs), features=new_geom)
+    print(geojson_geometry.crs)
+    new_fc = geojson.FeatureCollection(crs='CRS(' + str(geojson_geometry.crs) + ')', features=new_geom)
     new_filepath = print_geojson_to_file(new_fc, 'temp_two')
     return new_filepath
