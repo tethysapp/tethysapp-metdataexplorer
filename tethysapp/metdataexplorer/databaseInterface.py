@@ -329,7 +329,7 @@ def delete_shapefile_from_database(request):
 
 def determine_dimension_type(dimension):
     list_of_time_dimensions = ['time', 'date']
-    list_of_x_dimensions = ['lon', 'longitude', 'x', 'degrees east', 'degrees west']
+    list_of_x_dimensions = ['lon', 'lng', 'longitude', 'x', 'degrees east', 'degrees west']
     list_of_y_dimensions = ['lat', 'latitude', 'y', 'degrees north', 'degrees south']
 
     if dimension.lower() in list_of_time_dimensions or 'time' in dimension.lower():
