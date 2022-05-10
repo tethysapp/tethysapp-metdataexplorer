@@ -98,6 +98,5 @@ elements for creating a ncml file.
 Additional Resources
 ********************
 
-CF Conventions: https://cfconventions.org/cf-conventions/cf-conventions.html
-
-NCML Cookbook: https://docs.unidata.ucar.edu/thredds/ncml/current/ncml_cookbook.html
+*CF Conventions: https://cfconventions.org/cf-conventions/cf-conventions.html
+*NCML Cookbook: https://docs.unidata.ucar.edu/thredds/ncml/current/ncml_cookbook.html
