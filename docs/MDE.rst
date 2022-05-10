@@ -1,36 +1,53 @@
 .. |add| image:: documentation_images/03_add_button.png
+    :width: 20
 
 .. |create_group| image:: documentation_images/05_create_group_button.png
+    :width: 20
 
 .. |url_go| image:: documentation_images/10_url_go.png
+    :width: 20
 
 .. |auth_btn| image:: documentation_images/14_auth_btn.png
+    :width: 100
 
 .. |auth_add| image:: documentation_images/15_auth_add_btn.png
+    :width: 20
 
 .. |save| image:: documentation_images/16_save_btn.png
+    :width: 40
 
 .. |display| image:: documentation_images/20_display_btn.png
+    :width: 100
 
 .. |marker| image:: documentation_images/22_marker.png
+    :width: 20
 
 .. |rectangle| image:: documentation_images/23_rectangle.png
+    :width: 20
 
 .. |polygon| image:: documentation_images/24_polygon.png
+    :width: 20
 
 .. |shp_dropdown| image:: documentation_images/25_use_shp_drop.png
+    :width: 80
 
 .. |use_shp| image:: documentation_images/26_use_shp_btn.png
+    :width: 80
 
 .. |upload_shp| image:: documentation_images/28_upload_shp_btn.png
+    :width: 80
 
 .. |plot| image:: documentation_images/30_plot_btn.png
+    :width: 100
 
 .. |download| image:: documentation_images/32_dnld_btn.png
+    :width: 80
 
 .. |right_arrow| image:: documentation_images/34_right_arrow.png
+    :width: 20
 
 .. |info| image:: documentation_images/35_info_btn.png
+    :width: 20
 
 =========================
 Met Data Explorer (MDE)
@@ -51,9 +68,13 @@ HDF, and GeoTIFF formats. Met Data Explorer (MDE) is a newly developed, web-base
 to discover, access, visualize, and download (using the grids package) data from any TDS that stores meteorological data.
 MDE was also designed in a way that allows users to customize it for local or regional web portals.
 
+|
+
 .. image:: documentation_images/FA.png
    :width: 300
    :align: center
+
+|
 
 MDE is an open-source web application providing users with the functionalities of data discovery, data access,
 and data visualization. MDE can be installed by any organization and requires minimal server space.
@@ -76,7 +97,7 @@ If you do not have admin permissions to complete the second part, the preloaded 
 can be used to complete the final part of this tutorial.
 
 The Interface
-*************
+-------------
 The interface for the MDE is divided into three main sections: the Map Window, the side Navigation Panel, and the
 Graph Window (see Figure 1). The Map Window is used for visualizing and animating the data and for defining the
 area over which to extract the data. The side navigation panel lists the files that have been loaded into the MDE.
@@ -84,42 +105,61 @@ The Graph Window contains all other data-user interactions — including plottin
 and viewing file and variable metadata. The Graph/Map Slider can be used to show or hide the map and graph windows.
 The Navigation Panel Toggle can be used to show or hide the navigation panel.
 
+|
+
 .. image:: documentation_images/F1.png
-   :width: 1000
+   :width: 800
    :align: center
 
+|
 
 Adding Data to the Met Data Explorer
-************************************
+------------------------------------
 To add data to the MDE, make sure you are logged in and that your account has the necessary permissions.
 Groups, or catalogs, are created to organize the files. Select the Add Group Button |add| (see Figure 2).
 The Add Catalog of Thredds Servers dialog will appear (shown in Figure 3).
 
+|
+
 .. image:: documentation_images/F2.png
-   :width: 400
+   :width: 800
    :align: center
 
+|
+
 .. image:: documentation_images/F3.png
-   :width: 400
+   :width: 800
    :align: center
+
+|
 
 Give the group a name and a description (see Figure 3) and click the create group button |create_group|.
 The dialog will close and the group will be added to the navigation panel (see Figure 4).
 
+|
+
 .. image:: documentation_images/F4.png
-   :width: 400
+   :width: 800
    :align: center
+
+|
 
 To add a file to a group, select the Add File Button |add| located on the header of the created group (see Figure 5).
 The Add a Thredds Server File dialog will appear (shown in Figure 6).
 
+|
+
 .. image:: documentation_images/F5.png
-   :width: 400
+   :width: 800
    :align: center
 
+|
+
 .. image:: documentation_images/F6.png
-   :width: 400
+   :width: 800
    :align: center
+
+|
 
 Enter a name and a description for the file. If the file requires user credentials (i.e. username and password) to
 access, skip down and complete the section labeled Enter User Credentials for Files and then return and continue from
@@ -131,21 +171,31 @@ A separate dialog will appear listing the files and folders contained in the cat
 the dialog. If a file is selected, the variables, dimensions, and metadata for the file will be retrieved and
 loaded into the Add a Thredds Server File dialog (see Figure 8).
 
+|
+
 .. image:: documentation_images/F7.png
-   :width: 300
+   :width: 800
    :align: center
 
+|
+
 .. image:: documentation_images/F8.png
-   :width: 400
+   :width: 800
    :align: center
+
+|
 
 All the variables with two or more dimensions will be listed. Select the variables that you want included in the app
 and click the Add Thredds File button. The file will be added to the navigation panel under the group to which it
 was assigned (see Figure 9).
 
+|
+
 .. image:: documentation_images/F9.png
-   :width: 300
+   :width: 800
    :align: center
+
+|
 
 Enter User Credentials for File
 -------------------------------
@@ -158,23 +208,33 @@ radio button next to the authentication you want to be associated with the app. 
 blanks in the Machine, User, and Password columns and press the add button |auth_add|. Click the radio button next to the newly
 added authentication and click save |save|.
 
+|
+
 .. image:: documentation_images/F10.png
-   :width: 400
+   :width: 800
    :align: center
 
+|
+
 Data Discovery
-**************
+--------------
 
 To visualize the data on the map, select a file from the Navigation Panel (see Figure 11). The file will appear on the
 map and the Graph Window will open (see Figure 12).
 
+|
+
 .. image:: documentation_images/F11.png
-   :width: 300
+   :width: 800
    :align: center
 
+|
+
 .. image:: documentation_images/F12.png
-   :width: 600
+   :width: 800
    :align: center
+
+|
 
 The first variable listed in the file will be selected by default. The selected variable can be changed using the
 Variable dropdown. The dimensions associated with the variable will be listed along with the range of values spanned
@@ -186,9 +246,13 @@ Graph Window. Set Data Bounds specifies the data values over which the color ran
 can be specified using the Set Color Style dropdown. The opacity of the data on the map can be set using the Set Layer
 Opacity slider. Once the display setting are set to your liking, click the Update Display Settings button |display|.
 
+|
+
 .. image:: documentation_images/F13.png
-   :width: 600
+   :width: 800
    :align: center
+
+|
 
 Data can be extracted at a point or over a user defined polygon. To extract the data at a point, create a point on
 the map using the Create Marker |marker| tool located on the drawing menu in the map window. The Create Rectangle |rectangle| or Create
@@ -197,57 +261,77 @@ change the Mask Data With |shp_dropdown| dropdown to Use A Shapefile. The Select
 If the shapefile has previously been uploaded to the map, check the radio button next to the desired shapefile and
 click the Use Shapefile button |use_shp|.
 
+|
+
 .. image:: documentation_images/F14.png
-   :width: 400
+   :width: 800
    :align: center
+
+|
 
 To upload a new shapefile, click the Upload Shapefile button |upload_shp|. Follow the prompts to upload the file, click the radio
 button next to the uploaded file, and click the Use Shapefile button.
+
+|
 
 .. image:: documentation_images/F15.png
    :width: 500
    :align: center
 
+|
+
 Once a location over which to extract the data has been specified, click the Plot Time Series button |plot| to extract and
 graph the data. It may take several minutes to retrieve the data, depending on the current network speeds.
 The time series will be plotted in the graph window (see Figure 16).
 
+|
+
 .. image:: documentation_images/F16.png
-   :width: 500
+   :width: 800
    :align: center
+
+|
 
 The time series can be downloaded as a csv or json file. Open the Download Data dropdown |download| and select the desired format.
 An HTML file can also be downloaded which contains a web map that shows the same data that is displayed in the map
 window. The last download option is to download a python notebook with code to extract the time series for the file
 and variable currently selected in the MDE.
 
+|
+
 .. image:: documentation_images/F17.png
-   :width: 500
+   :width: 800
    :align: center
+
+|
 
 There are two more tabs in the graph window which can be examined by clicking the Move Right arrow |right_arrow| located to the
 right of the graph window. The first tab shows the metadata contained in the file (see Figure 18). The second tab
 shows all the variables in the file with the associated dimensions (see Figure 19). The metadata for each variable
 can be seen by clicking the Metadata Info button |info|. A dialog will open showing the variable metadata (see Figure 20).
 
+|
+
 .. image:: documentation_images/F18.png
-   :width: 500
+   :width: 800
    :align: center
+
+|
 
 .. image:: documentation_images/F19.png
-   :width: 500
+   :width: 800
    :align: center
+
+|
 
 .. image:: documentation_images/F20.png
-   :width: 350
+   :width: 800
    :align: center
 
-
-Additional Resources
-********************
+|
 
 Developers
-----------
+**********
 
 MDE was originally developed by Enoch Jones and Elkin Giovanni Romero Bustamante
 at `Brigham Young University's (BYU) Hydroinformatics laboratory <https://hydroinformatics.byu.edu/>`_
@@ -258,7 +342,7 @@ creation of the `Tethys Platform <https://hydroinformatics.byu.edu/tethys-platfo
 and `Hydroserver Lite <http://128.187.106.131/Historical_Data_template.php>`_ . The most recent publications and works can be found on the BYU Hydroinformatics website.
 
 Source Code
------------
+***********
 
 The MDE source code is available on Github:
 
