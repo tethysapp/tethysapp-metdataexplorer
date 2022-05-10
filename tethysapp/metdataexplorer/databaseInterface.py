@@ -3,6 +3,7 @@ import json
 import netCDF4
 import geopandas
 import math
+import numpy as np
 
 from glob import glob
 
@@ -449,13 +450,14 @@ def get_approximate_variable_value_range(variable):
             small_array = variable[::indexing_list[0], ::indexing_list[1], ::indexing_list[2], ::indexing_list[3],
                           ::indexing_list[4], ::indexing_list[5]]
 
-        min_value = small_array.nanmin()
-        max_value = small_array.nanmax()
+        min_value = np.nanmin(small_array)
+        max_value = np.nanmax(small_array)
         min_max_array = {
             'min': str(min_value),
             'max': str(max_value)
         }
-    except Exception:
+    except Exception as e:
+        print(e)
         min_max_array = {
             'min': str(0),
             'max': str(100)
