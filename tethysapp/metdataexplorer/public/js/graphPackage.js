@@ -25,9 +25,15 @@ createGraph = function () {
         },
         plot_bgcolor: "#e0e0e0",
         paper_bgcolor: "#e0e0e0",
-        yaxis: {
-            tickformat: '.3f',
+        xaxis: {
+            autorange: true
         },
+        yaxis: {
+            autorange: true,
+            automargin: true,
+            showexponent: 'all',
+            exponentformat: 'e'
+        }
     };
     graph = Plotly.newPlot(graphDiv, dataForGraph, layout, {responsive: true});
 };

@@ -50,7 +50,7 @@ def extract_time_series_using_grids(request):
         else:
             time_series_array = {
                 'errorMessage': 'The time series could not be retrieved',
-                'error': 'The time series could not be retrieved'
+                'error': 'The time series could not be retrieved',
             }
     except Exception as e:
         print(e)
