@@ -6,6 +6,7 @@ import math
 import numpy as np
 
 from glob import glob
+from math import sqrt
 
 from tethys_sdk.permissions import has_permission
 from django.http import JsonResponse
@@ -78,10 +79,25 @@ def add_file_to_database(request):
             )
 
             for dimension in dataset.dimensions:
+                dimension_type = determine_dimension_type(dimension)
                 if dimension in all_variables:
                     has_variable = 'true'
-                    values = dataset.variables[dimension][:].data.tolist()
                     dimension_metadata = get_variable_metadata(dataset.variables[dimension])
+                    if dimension_type == 'time':
+                        if 'units' in dimension_metadata:
+                            if 'calendar' in dimension_metadata:
+                                calendar = dimension_metadata['calendar']
+                            else:
+                                calendar = 'standard'
+                            date_time_list = netCDF4.num2date(dataset.variables[dimension][:].data.tolist(),
+                                                              dimension_metadata['units'], calendar)
+                            values = []
+                            for time in date_time_list:
+                                values.append(str(time))
+                        else:
+                            values = dataset.variables[dimension][:].data.tolist()
+                    else:
+                        values = dataset.variables[dimension][:].data.tolist()
                 else:
                     has_variable = 'false'
                     values = 'false'
@@ -89,7 +105,7 @@ def add_file_to_database(request):
 
                 file_dictionary['dimensions'][dimension] = {
                     'dimensionMetadata': dimension_metadata,
-                    'dimensionType': determine_dimension_type(dimension),
+                    'dimensionType': dimension_type,
                     'hasVariable': has_variable,
                     'title': dataset.dimensions[dimension].name,
                     'size': dataset.dimensions[dimension].size,
@@ -154,8 +170,8 @@ def add_group_to_database(request):
             SessionMaker = app.get_persistent_store_database(Persistent_Store_Name, as_sessionmaker=True)
             session = SessionMaker()
             group = {
-                'title': request.POST.get("title"),
-                'description': request.POST.get("description")
+                'title': request.POST.get('title'),
+                'description': request.POST.get('description')
             }
             group_database_obj = Groups(title=group['title'], description=group['description'])
             session.add(group_database_obj)
@@ -169,6 +185,41 @@ def add_group_to_database(request):
             'error': str(e)
         }
     return JsonResponse(group)
+
+
+def calculate_new_dataset(request):
+    try:
+        if request.is_ajax() and request.method == 'POST':
+            dataset_array = json.loads(request.POST.get('datasetArray'))
+            math_string = dataset_array['mathString'].replace('^', '**')
+            split_math_string = math_string.split('!')
+            new_name = dataset_array['newName']
+            new_dataset_values = []
+
+            if len(split_math_string) >= 1:
+                for value in range(len(dataset_array[split_math_string[1]]['y'])):
+                    math_expression = ''
+                    for index, expression in enumerate(split_math_string):
+                        if index % 2 == 0:
+                            math_expression += expression
+                        else:
+                            math_expression += str(dataset_array[expression]['y'][value])
+                    new_dataset_values.append(eval(math_expression))
+
+            time_series = {
+                new_name: new_dataset_values,
+                'datetime': dataset_array[split_math_string[1]]['x']
+            }
+
+            array_to_return = {'dataArray': time_series}
+        else:
+            array_to_return = {'errorMessage': 'There was an error while calculating the new dataset.'}
+    except Exception as e:
+        array_to_return = {
+            'errorMessage': 'There was an error while calculating the new dataset.',
+            'error': str(e)
+        }
+    return JsonResponse(array_to_return)
 
 
 def commit_shapefile_to_database(geojson, filename):

@@ -3,6 +3,7 @@ const addFileToDatabaseURL = "addFileToDatabase/";
 const addGroupToDatabaseURL = "addGroupToDatabase/";
 const appProxyURL = "getWMSImageFromServer";
 const addShapefileToDatabaseURL = "addShapefileToDAtabase/";
+const calculateNewDatasetURL = "calculateNewDataset/";
 const deleteFilesFromDatabaseURL = "deleteFilesFromDatabase/";
 const deleteGroupsFromDatabaseURL = "deleteGroupsFromDatabase/";
 const deleteShapefileFromDatabaseURL = "deleteShapefileFromDatabase/";
@@ -24,6 +25,7 @@ export {
     addGroupToDatabaseURL,
     appProxyURL,
     addShapefileToDatabaseURL,
+    calculateNewDatasetURL,
     deleteFilesFromDatabaseURL,
     deleteGroupsFromDatabaseURL,
     deleteShapefileFromDatabaseURL,

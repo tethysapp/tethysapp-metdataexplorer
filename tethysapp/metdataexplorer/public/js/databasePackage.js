@@ -16,7 +16,7 @@ import {
     addShapefileToDatabaseURL,
     getShapefileNamesFromDatabaseURL,
     deleteShapefileFromDatabaseURL,
-    getShapefileCoordinatesFromDatabaseURL
+    getShapefileCoordinatesFromDatabaseURL, calculateNewDatasetURL
 } from "./urlsPackage.js";
 import {htmlForGroupsInNavigation} from "./htmlPackage.js";
 import {generateUniqueId} from "./auxilaryPackage.js";
@@ -26,6 +26,7 @@ let addFileToDatabaseAjax;
 let addGroupToDatabaseAjax;
 let addShapefileToDatabaseAjax;
 let checkForSameNamesAjax;
+let createNewDataset;
 let deleteFileFromDatabaseAjax;
 let deleteGroupsFromDatabaseAjax;
 let deleteShapefileFromDatabaseAjax;
@@ -166,6 +167,26 @@ checkForSameNamesAjax = function (groupOrFile, titleToCheck) {
         });
     }
     return groupOrFileAlreadyExist;
+};
+
+createNewDataset = async function (datasetArray) {
+    try {
+        const result = await $.ajax({
+            data: {datasetArray: JSON.stringify(datasetArray)},
+            dataType: "JSON",
+            type: "POST",
+            url: calculateNewDatasetURL,
+        });
+        if (result.errorMessage !== undefined) {
+            notifyOfDanger(result.errorMessage);
+            console.error(result.error);
+        } else {
+            return result.dataArray;
+        }
+    } catch (error) {
+        notifyOfDanger("An error occurred while running calculations.");
+        console.error(error);
+    }
 };
 
 deleteFileFromDatabaseAjax = function () {
@@ -377,6 +398,7 @@ export {
     addFileToDatabaseAjax,
     addGroupToDatabaseAjax,
     addShapefileToDatabaseAjax,
+    createNewDataset,
     deleteFileFromDatabaseAjax,
     deleteGroupsFromDatabaseAjax,
     deleteShapefileFromDatabaseAjax,

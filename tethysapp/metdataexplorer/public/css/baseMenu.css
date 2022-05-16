@@ -172,8 +172,14 @@ div .active {
     text-align: center;
 }
 
+.div-button {
+    background-color: #3478b7;
+    color: white;
+}
+
 .div-button:hover {
     background-color: #1c588f;
+    cursor: pointer;
 }
 
 .disabled-true {

@@ -7,6 +7,7 @@ import {
 } from "./databasePackage.js";
 
 let addCredentialToServer;
+let addDatasetsToCalculator;
 let addShapefileNameToTable;
 let buildModalShapefileList;
 let formatRowForModalListAuthentication;
@@ -43,6 +44,16 @@ populateDeleteGroupsModal = function () {
         notifyOfDanger("An error occurred while opening form");
         console.error(error);
     };
+};
+
+//modalGraphCalculator
+addDatasetsToCalculator = function () {
+    let html = "";
+    Object.keys(ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter).forEach((dataArrayKey) => {
+        const variable = ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter[dataArrayKey].name;
+        html += `<div class="calculator-dataset-button" data-value=" !${variable}! ">${variable}</div>`
+    });
+    $("#calc-dataset-display").empty().append(html);
 };
 
 //modalListAuthentication
@@ -210,6 +221,7 @@ addShapefileNameToTable = function (uniqueId, name) {
 
 export {
     addCredentialToServer,
+    addDatasetsToCalculator,
     addShapefileNameToTable,
     buildModalShapefileList,
     formatEndRowsForModalListAuthentication,

@@ -10,6 +10,7 @@ import {
     addFileToDatabaseAjax,
     addGroupToDatabaseAjax,
     addShapefileToDatabaseAjax,
+    createNewDataset,
     deleteFileFromDatabaseAjax,
     deleteGroupsFromDatabaseAjax,
     deleteShapefileFromDatabaseAjax,
@@ -30,6 +31,7 @@ import {
     removeCredentialFromServer
 } from "./htmlHelpersForModals.js";
 import {createGeojosnMarker} from "./mapPackage.js";
+import {createGraph, data, makeTrace} from "./graphPackage.js";
 
 let setModalEventListeners;
 
@@ -223,6 +225,61 @@ setModalEventListeners = function () {
                 ACTIVE_VARIABLES_PACKAGE.arrayOfCatalogUrls = [];
                 getFilesAndFoldersFromCatalog(urlForCatalog);
             }
+        }
+    });
+
+    //modalGraphCalculator
+    document.getElementById("data-calculator").addEventListener("click", (event) => {
+        const clickedElement = event.target;
+        if (clickedElement.classList.contains("calculator-button")) {
+            const numberClicked = clickedElement.innerHTML;
+            if (numberClicked === "clear") {
+                $("#calculator-display").val("");
+            } else {
+                $("#calculator-display").val($("#calculator-display").val() + numberClicked);
+            }
+        } else if (clickedElement.classList.contains("calculator-dataset-button")) {
+            const numberClicked = $(clickedElement).data("value");
+            $("#calculator-display").val($("#calculator-display").val() + numberClicked);
+        }
+    });
+
+    document.getElementById("apply-calc-button").addEventListener("click", async (event) => {
+        if ($("#new-dataset-id-input").val() === "") {
+            notifyOfInfo("Please name the new dataset.");
+        } else {
+            const mathExpression = $("#calculator-display").val();
+            let listOfDatasets = [];
+            let datasetArray = {};
+
+            mathExpression.split("!").forEach((partOfString, index) => {
+                if (index % 2 !== 0) {
+                    listOfDatasets.push(partOfString);
+
+                    Object.keys(ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter).forEach((dataArrayKey) => {
+                        const variable = ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter[dataArrayKey].name;
+                        if (variable === partOfString) {
+                            datasetArray[partOfString] = {
+                                x: ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter[dataArrayKey].x,
+                                y: ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter[dataArrayKey].y,
+                            };
+                        }
+                    });
+
+                }
+            });
+
+            datasetArray["mathString"] = mathExpression;
+            datasetArray["newName"] = $("#new-dataset-id-input").val();
+            const newDataset = await createNewDataset(datasetArray);
+            console.log(newDataset);
+
+            Object.keys(newDataset).forEach((key) => {
+                    if (key !== "datetime") {
+                        makeTrace(newDataset[key], newDataset["datetime"], key, key);
+                    }
+                });
+            createGraph();
         }
     });
 

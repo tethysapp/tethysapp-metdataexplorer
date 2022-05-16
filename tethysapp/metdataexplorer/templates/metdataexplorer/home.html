@@ -77,7 +77,10 @@
 
           <div id="carousel-container-2" class="carousel-item">
             <div class="selectpicker-group">
-              <div id="clear-graph-button" class="selectpicker-prepend width-33percent div-button">Clear Graph</div>
+              <div class="selectpicker-prepend width-33percent">
+                <div id="clear-graph-button" class="selectpicker-prepend width-50percent div-button">Clear Graph</div>
+                <div id="graph-calculator-button" class="selectpicker-prepend width-50percent div-button">Calculator</div>
+              </div>
               <select id="graph-type-select" class="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="33.33%">
                 <option value="scatter"> Scatter</option>
                 <option value="box"> Whisker and Box</option>
@@ -136,6 +139,7 @@
   {% include "metdataexplorer/modals/modalEnterURLForWMFService.html" %}
   {% include "metdataexplorer/modals/modalFilterFilesByVariable.html" %}
   {% include "metdataexplorer/modals/modalFoldersAndFilesExplorer.html" %}
+  {% include "metdataexplorer/modals/modalGraphCalculator.html" %}
   {% include "metdataexplorer/modals/modalHelp.html" %}
   {% include "metdataexplorer/modals/modalInformationAboutGroup.html" %}
   {% include "metdataexplorer/modals/modalListAuthentication.html" %}

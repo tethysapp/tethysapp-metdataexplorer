@@ -96,7 +96,12 @@ setNavigationEventListeners = function () {
             $("#additional-dimensions-div").empty();
 
             Object.keys(ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables).forEach((variable, index) => {
-                const option = createOptionForSelect(variable);
+                let value = variable;
+                if (ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.standard_name !== undefined) {
+                    value = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.standard_name;
+                }
+
+                const option = createOptionForSelect(value, variable);
                 if (index === 0) {
                     variableToSelect = variable;
                 }

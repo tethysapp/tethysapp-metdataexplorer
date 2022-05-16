@@ -56,6 +56,11 @@ class Metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.databaseInterface.add_shapefile_to_database'
             ),
             UrlMap(
+                name='calculateNewDataset',
+                url='calculateNewDataset/',
+                controller='metdataexplorer.databaseInterface.calculate_new_dataset'
+            ),
+            UrlMap(
                name='deleteFilesFromDatabase',
                url='deleteFilesFromDatabase/',
                controller='metdataexplorer.databaseInterface.delete_files_from_database'

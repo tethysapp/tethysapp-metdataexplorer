@@ -302,8 +302,11 @@ clearModalAddFileToDatabase = function () {
     };
 };
 
-createOptionForSelect = function (innerText) {
-    const html = `<option value="${innerText}">${innerText}</option>`;
+createOptionForSelect = function (innerText, value = "false") {
+    if (value === "false") {
+        value = innerText;
+    }
+    const html = `<option value="${value}">${innerText}</option>`;
     return html
 };
 

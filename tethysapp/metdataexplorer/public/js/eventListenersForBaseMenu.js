@@ -6,6 +6,7 @@ import {extractTimeseriesAjax} from "./dataRemoteAccessPackage.js";
 import {createGraph, makeTrace} from "./graphPackage.js";
 import {formatCSV, formatHTML, formatJSON, formatPython} from "./formatFilesPackage.js";
 import {formatValuesFromGrids} from "./auxilaryPackage.js";
+import {addDatasetsToCalculator} from "./htmlHelpersForModals.js";
 
 let setBaseMenuEventListeners;
 
@@ -112,9 +113,25 @@ setBaseMenuEventListeners = function () {
                 console.error(result.error);
             } else {
                 const timeSeries = JSON.parse(result.timeSeries);
+                let datasetList = [];
+                let datasetName;
+
+                Object.keys(ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter).forEach((dataArrayKey) => {
+                    datasetList.push(ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter[dataArrayKey].name);
+                });
+
                 Object.keys(timeSeries).forEach((key) => {
+                    let i = "";
                     if (key !== "datetime") {
-                        makeTrace(timeSeries[key], timeSeries["datetime"], key, variable);
+                        do {
+                            datasetName = key + i
+                            if (i === "") {
+                                i = 1;
+                            } else {
+                                i += 1;
+                            }
+                        } while (datasetList.includes(datasetName));
+                        makeTrace(timeSeries[key], timeSeries["datetime"], datasetName, variable);
                     }
                 });
                 createGraph();
@@ -137,6 +154,11 @@ setBaseMenuEventListeners = function () {
             box: []
         };
         createGraph();
+    });
+
+    document.getElementById("graph-calculator-button").addEventListener("click", () => {
+        addDatasetsToCalculator();
+        $("#modalGraphCalculator").modal("show");
     });
 
     $("#graph-type-select").on("changed.bs.select", () => {
