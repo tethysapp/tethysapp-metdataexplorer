@@ -7,6 +7,7 @@ import numpy as np
 
 from glob import glob
 from math import sqrt
+from datetime import datetime
 
 from tethys_sdk.permissions import has_permission
 from django.http import JsonResponse
@@ -195,23 +196,44 @@ def calculate_new_dataset(request):
             split_math_string = math_string.split('!')
             new_name = dataset_array['newName']
             new_dataset_values = []
+            datasets_in_expression = []
+            datetime_lists = []
+            datetimes_match = True
 
-            if len(split_math_string) >= 1:
-                for value in range(len(dataset_array[split_math_string[1]]['y'])):
-                    math_expression = ''
-                    for index, expression in enumerate(split_math_string):
-                        if index % 2 == 0:
-                            math_expression += expression
-                        else:
-                            math_expression += str(dataset_array[expression]['y'][value])
-                    new_dataset_values.append(eval(math_expression))
+            for index, parts_of_expression in enumerate(split_math_string):
+                if index % 2 == 1:
+                    datasets_in_expression.append(parts_of_expression)
 
-            time_series = {
-                new_name: new_dataset_values,
-                'datetime': dataset_array[split_math_string[1]]['x']
-            }
+            for dataset in datasets_in_expression:
+                datetime_list = []
+                for time in dataset_array[dataset]['x']:
+                    datetime_list.append(datetime.strptime(time, '%Y-%m-%d %H:%M:%S'))
+                datetime_lists.append(datetime_list)
 
-            array_to_return = {'dataArray': time_series}
+            for datetime_list in datetime_lists:
+                if not datetime_list == datetime_lists[0]:
+                    print('they dont match')
+                    datetimes_match = False
+
+            if datetimes_match:
+                if len(split_math_string) >= 1:
+                    for value in range(len(dataset_array[split_math_string[1]]['y'])):
+                        math_expression = ''
+                        for index, expression in enumerate(split_math_string):
+                            if index % 2 == 0:
+                                math_expression += expression
+                            else:
+                                math_expression += str(dataset_array[expression]['y'][value])
+                        new_dataset_values.append(eval(math_expression))
+
+                time_series = {
+                    new_name: new_dataset_values,
+                    'datetime': dataset_array[split_math_string[1]]['x']
+                }
+
+                array_to_return = {'dataArray': time_series}
+            else:
+                array_to_return = {'errorMessage': 'The timesteps for each dataset used must match.'}
         else:
             array_to_return = {'errorMessage': 'There was an error while calculating the new dataset.'}
     except Exception as e:

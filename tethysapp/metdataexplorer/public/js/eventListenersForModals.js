@@ -280,6 +280,9 @@ setModalEventListeners = function () {
                     }
                 });
             createGraph();
+            $("#modalGraphCalculator").modal("hide");
+            $("#calculator-display").empty();
+            $("#new-dataset-id-input").empty();
         }
     });
 
