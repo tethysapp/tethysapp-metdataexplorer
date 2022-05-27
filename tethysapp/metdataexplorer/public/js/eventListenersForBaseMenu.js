@@ -60,30 +60,15 @@ setBaseMenuEventListeners = function () {
         };
     });
 
-    /*
-    TODO fix time dimension subsetting
-    document.getElementById("time-dimensions-div").addEventListener("click", (event) => {
+    document.getElementById("carousel-container-1").addEventListener("click", (event) => {
         const clickedElement = event.target;
-
-        if (clickedElement.classList.contains("disabled-true") || clickedElement.parentElement?.classList.contains("disabled-true")) {
-            const divId = clickedElement.closest(".disabled-true").id;
-
-            $(`#dimension-${divId}-first`).prop("disabled", false).selectpicker("refresh");
-            $(`#dimension-${divId}-second`).prop("disabled", false).selectpicker("refresh");
-
-            $(`#${divId}`).removeClass("disabled-true");
-            $(`#${divId}`).addClass("disabled-false");
-        } else if (clickedElement.classList.contains("disabled-false") || clickedElement.parentElement?.classList.contains("disabled-true")) {
-            const divId = clickedElement.closest(".disabled-false").id;
-
-            $(`#dimension-${divId}-first`).prop("disabled", true).selectpicker("refresh");
-            $(`#dimension-${divId}-second`).prop("disabled", true).selectpicker("refresh");
-
-            $(`#${divId}`).removeClass("disabled-false");
-            $(`#${divId}`).addClass("disabled-true");
+        if (clickedElement.classList.contains("metadata-info") || clickedElement.parentElement?.classList.contains("metadata-info")) {
+            const dimension = clickedElement.closest(".metadata-info").value;
+            const html = addFileMetadata(false, null, dimension);
+            $("#metadata_vars").empty().append(html);
+            $("#modalMetaDataForVariable").modal("show");
         }
     });
-     */
 
     document.getElementById("opacity-slider").addEventListener("change", (event) => {
         const newValueAsDecimal = event.target.value;
@@ -101,6 +86,7 @@ setBaseMenuEventListeners = function () {
     document.getElementById("plot-time-series-button").addEventListener("click", async () => {
         try {
             const parametersForGrids = formatValuesFromGrids();
+            console.log(parametersForGrids)
             const variable = $("#variables-select").val();
             notifyOfInfo("Retrieving data. This may take several minutes.");
             const result = await extractTimeseriesAjax(parametersForGrids);
@@ -206,6 +192,7 @@ setBaseMenuEventListeners = function () {
             link.click();
             document.body.removeChild(link);
         }
+        $("#download-data-select").val("").selectpicker("refresh");
     });
 
     //carousel container 4

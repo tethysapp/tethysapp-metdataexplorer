@@ -1,6 +1,7 @@
 import {notifyOfDanger} from "./userMessagingPackage.js";
 import {createWMSLayer} from "./mapPackage.js";
 import {generateUniqueId} from "./auxilaryPackage.js";
+import {updateDimensionsAjax} from "./dataRemoteAccessPackage.js";
 import {
     getGroupsFromDatabaseAjax,
     getFileForSpecificGroupAjax
@@ -20,6 +21,7 @@ let addAllFilesToNavigation;
 let addFileMetadata;
 let addListOfVariablesAndDimensions;
 let addListOfVariablesToBaseMenu;
+let addOptionsToSelect;
 let addValuesToDimensionValueSelect;
 let buildBaseMenuForSelectedVariable;
 let buildFilesAndFolderExplorer;
@@ -95,14 +97,16 @@ addAllFilesToNavigation = async function (groupId) {
     }
 };
 
-addFileMetadata = function (file = true, variable = null) {
+addFileMetadata = function (file = true, variable = null, dimension = null) {
     const currentGroupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
     const currentFileId = ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId;
     let metadata;
     if (file) {
         metadata = ACTIVE_VARIABLES_PACKAGE.allServerData[currentGroupId].files[currentFileId].fileMetadata;
-    } else {
+    } else if (variable !== null) {
         metadata = ACTIVE_VARIABLES_PACKAGE.allServerData[currentGroupId].files[currentFileId].variables[variable].variableMetadata;
+    } else {
+        metadata = ACTIVE_VARIABLES_PACKAGE.allServerData[currentGroupId].files[currentFileId].dimensions[dimension].dimensionMetadata;
     }
 
     let html = "";
@@ -196,6 +200,38 @@ addValuesToDimensionValueSelect = function (selectIdForValues, valuesToAdd, firs
     $(`#${selectIdForValues}`).selectpicker("render");
 };
 
+addOptionsToSelect = function (variableDimensions, currentFile) {
+    variableDimensions.forEach(dimension => {
+        const dimensionType = currentFile.dimensions[dimension].dimensionType;
+        const valuesToAdd = currentFile.dimensions[dimension].values;
+        let htmlForDimension;
+
+        if (dimensionType === "time") {
+            htmlForDimension = timeDimensionContainer(dimension);
+            $("#time-dimensions-div").empty().append(htmlForDimension);
+            addValuesToDimensionValueSelect(`dimension-time-${dimension}-first`, valuesToAdd, "first");
+            addValuesToDimensionValueSelect(`dimension-time-${dimension}-second`, valuesToAdd, "last");
+        } else if (dimensionType === "x") {
+            htmlForDimension = xyDimensionContainer(dimension, "x");
+            $("#x-dimension-div").empty().append(htmlForDimension);
+            $(`#dimension-x-${dimension}-first`).append(`${valuesToAdd[0]}`);
+            $(`#dimension-x-${dimension}-second`).append(`${valuesToAdd[valuesToAdd.length - 1]}`);
+        } else if (dimensionType === "y") {
+            htmlForDimension = xyDimensionContainer(dimension, "y");
+            $("#y-dimension-div").empty().append(htmlForDimension);
+            $(`#dimension-y-${dimension}-first`).append(valuesToAdd[0]);
+            $(`#dimension-y-${dimension}-second`).append(valuesToAdd[valuesToAdd.length - 1]);
+        } else if (dimensionType === "other") {
+            htmlForDimension = addAdditionalDimension(dimension);
+            $("#additional-dimensions-div").empty().append(htmlForDimension);
+            addValuesToDimensionValueSelect(`dimension-additional-${dimension}-select-values`, valuesToAdd, "first");
+            $(`#dimension-additional-${dimension}-select-values`).on("changed.bs.select", () => {
+                createWMSLayer();
+            });
+        }
+    });
+};
+
 buildBaseMenuForSelectedVariable = function () {
     try {
         const currentGroupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
@@ -205,40 +241,10 @@ buildBaseMenuForSelectedVariable = function () {
         const variableDimensions = currentFile.variables[selectedVariable].dimensions;
         const wmsLayerStyle = currentFile.variables[selectedVariable].wmsDisplayColor;
         const wmsValueRange = currentFile.variables[selectedVariable].valueRange;
+        const opendapURL = currentFile.accessURLs.OPENDAP;
 
-        $("#time-dimensions-div").empty();
-        $("#x-dimension-div").empty();
-        $("#y-dimension-div").empty();
-
-        variableDimensions.forEach(dimension => {
-            const dimensionType = currentFile.dimensions[dimension].dimensionType;
-            const valuesToAdd = currentFile.dimensions[dimension].values;
-            let htmlForDimension;
-
-            if (dimensionType === "time") {
-                htmlForDimension = timeDimensionContainer(dimension);
-                $("#time-dimensions-div").append(htmlForDimension);
-                addValuesToDimensionValueSelect(`dimension-time-${dimension}-first`, valuesToAdd, "first");
-                addValuesToDimensionValueSelect(`dimension-time-${dimension}-second`, valuesToAdd, "last");
-            } else if (dimensionType === "x") {
-                htmlForDimension = xyDimensionContainer(dimension, "x");
-                $("#x-dimension-div").append(htmlForDimension);
-                $(`#dimension-x-${dimension}-first`).append(`${valuesToAdd[0]}`);
-                $(`#dimension-x-${dimension}-second`).append(`${valuesToAdd[valuesToAdd.length - 1]}`);
-            } else if (dimensionType === "y") {
-                htmlForDimension = xyDimensionContainer(dimension, "y");
-                $("#y-dimension-div").append(htmlForDimension);
-                $(`#dimension-y-${dimension}-first`).append(valuesToAdd[0]);
-                $(`#dimension-y-${dimension}-second`).append(valuesToAdd[valuesToAdd.length - 1]);
-            } else if (dimensionType === "other") {
-                htmlForDimension = addAdditionalDimension(dimension);
-                $("#additional-dimensions-div").append(htmlForDimension);
-                addValuesToDimensionValueSelect(`dimension-additional-${dimension}-select-values`, valuesToAdd, "first");
-                $(`#dimension-additional-${dimension}-select-values`).on("changed.bs.select", () => {
-                    createWMSLayer();
-                });
-            }
-        });
+        updateDimensionsAjax(variableDimensions, opendapURL, currentFile);
+        addOptionsToSelect(variableDimensions, currentFile);
 
         $("#wmslayer-style").val(wmsLayerStyle);
         $("#wmslayer-style").selectpicker("render");
@@ -420,6 +426,7 @@ export {
     addFileMetadata,
     addListOfVariablesToBaseMenu,
     addListOfVariablesAndDimensions,
+    addOptionsToSelect,
     buildFilesAndFolderExplorer,
     buildBaseMenuForSelectedVariable,
     clearModalAddFileToDatabase,

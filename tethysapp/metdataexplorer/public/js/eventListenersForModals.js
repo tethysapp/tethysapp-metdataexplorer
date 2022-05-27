@@ -221,8 +221,6 @@ setModalEventListeners = function () {
             const urlForCatalog = ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.folders[folderId].url;
 
             if (urlForCatalog !== undefined) {
-                ACTIVE_VARIABLES_PACKAGE.currentCatalogUrl = urlForCatalog;
-                ACTIVE_VARIABLES_PACKAGE.arrayOfCatalogUrls = [];
                 getFilesAndFoldersFromCatalog(urlForCatalog);
             }
         }
@@ -242,6 +240,12 @@ setModalEventListeners = function () {
             const numberClicked = $(clickedElement).data("value");
             $("#calculator-display").val($("#calculator-display").val() + numberClicked);
         }
+    });
+
+    document.getElementById("calculator-cumulative").addEventListener("click", (event) => {
+        const currentExpression = $("#calculator-display").val();
+        const newExpression = `Cumulative ${currentExpression} over time`;
+        $("#calculator-display").val(newExpression);
     });
 
     document.getElementById("apply-calc-button").addEventListener("click", async (event) => {

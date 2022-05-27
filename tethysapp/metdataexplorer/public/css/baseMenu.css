@@ -142,10 +142,12 @@ div .active {
 .selectpicker-group {
     display: flex;
     flex-direction: row;
+    height: 2.7em;
     background-color: #3379b7;
     border-radius: 0.4em;
     border-style: solid;
     border-color: #89a6c2;
+    border-width: 0.01em;
 }
 
 .selectpicker-prepend {

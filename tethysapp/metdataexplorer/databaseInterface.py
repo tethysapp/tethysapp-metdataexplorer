@@ -193,12 +193,18 @@ def calculate_new_dataset(request):
         if request.is_ajax() and request.method == 'POST':
             dataset_array = json.loads(request.POST.get('datasetArray'))
             math_string = dataset_array['mathString'].replace('^', '**')
-            split_math_string = math_string.split('!')
             new_name = dataset_array['newName']
             new_dataset_values = []
             datasets_in_expression = []
             datetime_lists = []
             datetimes_match = True
+            cumulative = False
+
+            if math_string[:10] == 'Cumulative':
+                cumulative = True
+                math_string = math_string[11:-10]
+
+            split_math_string = math_string.split('!')
 
             for index, parts_of_expression in enumerate(split_math_string):
                 if index % 2 == 1:
@@ -216,6 +222,7 @@ def calculate_new_dataset(request):
                     datetimes_match = False
 
             if datetimes_match:
+
                 if len(split_math_string) >= 1:
                     for value in range(len(dataset_array[split_math_string[1]]['y'])):
                         math_expression = ''
@@ -225,6 +232,14 @@ def calculate_new_dataset(request):
                             else:
                                 math_expression += str(dataset_array[expression]['y'][value])
                         new_dataset_values.append(eval(math_expression))
+
+                if cumulative:
+                    print('need to add')
+                    time_series_values = np.array(new_dataset_values)
+                    time_series_length = len(time_series_values)
+                    ones_triangle = np.tril(np.ones((time_series_length, time_series_length)), 0)
+                    cumulative = np.matmul(ones_triangle, time_series_values)
+                    new_dataset_values = cumulative.tolist()
 
                 time_series = {
                     new_name: new_dataset_values,
@@ -402,7 +417,7 @@ def delete_shapefile_from_database(request):
 
 
 def determine_dimension_type(dimension):
-    list_of_time_dimensions = ['time', 'date']
+    list_of_time_dimensions = ['time', 'date', 'month', 'day', 'year', 'hour', 'minute', 'second']
     list_of_x_dimensions = ['lon', 'lng', 'longitude', 'x', 'degrees east', 'degrees west']
     list_of_y_dimensions = ['lat', 'latitude', 'y', 'degrees north', 'degrees south']
 

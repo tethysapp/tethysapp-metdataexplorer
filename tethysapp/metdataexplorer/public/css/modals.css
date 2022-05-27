@@ -237,6 +237,18 @@
     font-size: 14pt;
 }
 
+#calculator-cumulative {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 3em;
+    color: white;
+    background-color: #3478b7;
+    border-style: solid;
+    border-color: black;
+}
+
 .calculator-button {
     display: flex;
     justify-content: center;
@@ -264,6 +276,7 @@
     background-color: white;
     border-style: solid;
     border-color: #565656;
+    border-width: 0.001em;
 }
 
 .calculator-dataset-button:hover {

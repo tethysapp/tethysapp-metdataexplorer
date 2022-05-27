@@ -21,7 +21,6 @@ getFilesAndFoldersFromCatalog = async function (urlForCatalog, pushCurrentUrlToA
         let notifyUser = false;
         let uniqueId;
         let html;
-
         if (pushCurrentUrlToArray) {
             ACTIVE_VARIABLES_PACKAGE.arrayOfCatalogUrls.push(ACTIVE_VARIABLES_PACKAGE.currentCatalogUrl);
             ACTIVE_VARIABLES_PACKAGE.currentCatalogUrl = urlForCatalog;

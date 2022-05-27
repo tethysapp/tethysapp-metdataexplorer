@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from siphon.catalog import TDSCatalog
 from tethys_sdk.permissions import login_required, has_permission
+from .databaseInterface import determine_dimension_type, get_variable_metadata
 
 import os
 import netCDF4
@@ -110,6 +111,59 @@ def get_variables_and_dimensions_for_file(request):
         }
         reset_rc_vars(old_dodsrcfile, old_netrc)
     except Exception as e:
+        dict_to_return = {
+            'data': {
+                'errorMessage': 'An error occurred while connecting to the THREDDS catalog.',
+                'error': str(e)
+            }
+        }
+    return JsonResponse(dict_to_return)
+
+
+def update_dimensions(request):
+    try:
+        url = request.POST.get('url')
+        dimensions = request.POST.getlist('dimensions[]')
+        updated_values = {}
+        url += '?'
+
+        for dimension in dimensions:
+            url += dimension
+            if dimension != dimensions[len(dimensions) - 1]:
+                url += ','
+        print(url)
+        ds = netCDF4.Dataset(url)
+
+        for dimension in ds.dimensions:
+            dimension_type = determine_dimension_type(dimension)
+            print(dimension_type)
+            dimension_metadata = get_variable_metadata(ds.variables[dimension])
+            if dimension_type == 'time':
+                if 'units' in dimension_metadata:
+                    print(dimension_metadata['units'])
+                    if 'calendar' in dimension_metadata:
+                        print(dimension_metadata['calendar'])
+                        calendar = dimension_metadata['calendar']
+                    else:
+                        calendar = 'standard'
+                    date_time_list = netCDF4.num2date(ds.variables[dimension][:].data.tolist(),
+                                                      dimension_metadata['units'], calendar)
+                    values = []
+                    for time in date_time_list:
+                        values.append(str(time))
+                    updated_values[dimension] = values
+                else:
+                    updated_values[dimension] = ds.variables[dimension][:].data.tolist()
+            else:
+                updated_values[dimension] = ds.variables[dimension][:].data.tolist()
+
+        dict_to_return = {
+            'data': {
+                'updatedValues': updated_values
+            }
+        }
+    except Exception as e:
+        print(e)
         dict_to_return = {
             'data': {
                 'errorMessage': 'An error occurred while connecting to the THREDDS catalog.',

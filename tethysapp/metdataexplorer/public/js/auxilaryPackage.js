@@ -57,7 +57,6 @@ formatValuesFromGrids = function() {
         const groupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
         const fileId = ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId;
         const file = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId];
-        const opendapURL = file.accessURLs.OPENDAP;
         const userCredentials = file.userCredentials;
         const variable = $("#variables-select").val();
         const dimensions = file.variables[variable].dimensions;
@@ -66,42 +65,67 @@ formatValuesFromGrids = function() {
         let dimensionsAndValuesArray = {};
         let xDimension = false;
         let yDimension = false;
+        let opendapURL = file.accessURLs.OPENDAP;
+        let opendapURLEnding = "?";
+        let variableSubsetting = `${variable}`;
 
         dimensions.forEach((dimension) => {
             const dimensionType = file.dimensions[dimension].dimensionType;
             if (dimensionType === "other") {
+                let firstValue;
+                if (parseFloat($(`#dimension-additional-${dimension}-select-values`).val()) != NaN) {
+                    firstValue = parseFloat($(`#dimension-additional-${dimension}-select-values`).val());
+                } else {
+                    firstValue = parseFloat($(`#dimension-additional-${dimension}-select-values`).val());
+                }
+
+                const firstNumber = file.dimensions[dimension].values.indexOf(firstValue);
                 dimensionsAndValuesArray[dimension] = {
-                    value: parseFloat($(`#dimension-additional-${dimension}-select-values`).val()),
+                    value: parseFloat(firstValue),
                     dimensionType: "other"
                 };
+                opendapURLEnding += `${dimension}[${firstNumber}],`;
+                variableSubsetting += `[${firstNumber}]`;
             } else if (dimensionType === "time") {
-                if ($(`#dimension-time-${dimension}-first`).is(':disabled')) {
-                    dimensionsAndValuesArray[dimension] = {
-                        dimensionType: "time",
-                        value: null
-                    };
+                const firstValue = $(`#dimension-time-${dimension}-first`).val();
+                const secondValue = $(`#dimension-time-${dimension}-second`).val();
+                let firstNumber;
+                let secondNumber;
+                if (parseFloat($(`#dimension-time-${dimension}-first`).val()) !== NaN || parseFloat($(`#dimension-time-${dimension}-second`).val())) {
+                    firstNumber = parseFloat(file.dimensions[dimension].values.indexOf(firstValue));
+                    secondNumber = parseFloat(file.dimensions[dimension].values.indexOf(secondValue));
                 } else {
-                    dimensionsAndValuesArray[dimension] = {
-                        dimensionType: "time",
-                        firstValue: parseFloat($(`#dimension-time-${dimension}-first`).val()),
-                        secondValue: parseFloat($(`#dimension-time-${dimension}-second`).val())
-                    };
+                    firstNumber = file.dimensions[dimension].values.indexOf(firstValue);
+                    secondNumber = file.dimensions[dimension].values.indexOf(secondValue);
                 }
+                dimensionsAndValuesArray[dimension] = {
+                    dimensionType: "time",
+                    value: null
+                };
+                opendapURLEnding += `${dimension}[${firstNumber}:${secondNumber}],`;
+                variableSubsetting += `[${firstNumber}:${secondNumber}]`;
             } else if (dimensionType === "x") {
+                const values = file.dimensions[dimension].values;
                 dimensionsAndValuesArray[dimension] = {
                     dimensionType: "x",
-                    value: ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].dimensions[dimension].values
+                    value: values
                 };
                 xDimension = true;
+                opendapURLEnding += `${dimension}[0:${values.length - 1}],`;
+                variableSubsetting += `[0:${values.length - 1}]`;
             } else if (dimensionType === "y") {
+                const values = file.dimensions[dimension].values;
                 dimensionsAndValuesArray[dimension] = {
                     dimensionType: "y",
-                    value: ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].dimensions[dimension].values
+                    value: values
                 };
                 yDimension = true;
+                opendapURLEnding += `${dimension}[0:${values.length - 1}],`;
+                variableSubsetting += `[0:${values.length - 1}]`;
             }
-
         });
+
+        opendapURL += `${opendapURLEnding}${variableSubsetting}`;
 
         if (ACTIVE_VARIABLES_PACKAGE.geojson.shapefile) {
             geojson = ACTIVE_VARIABLES_PACKAGE.geojson.type;

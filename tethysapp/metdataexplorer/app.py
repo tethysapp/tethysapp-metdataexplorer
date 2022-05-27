@@ -116,6 +116,11 @@ class Metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.dataRemoteAccess.wms_image_from_server'
             ),
             UrlMap(
+                name='updateDimensions',
+                url='updateDimensions/',
+                controller='metdataexplorer.dataRemoteAccess.update_dimensions'
+            ),
+            UrlMap(
                 name='extractTimeseries',
                 url='extractTimeseries/',
                 controller='metdataexplorer.gridsPackage.extract_time_series_using_grids'
