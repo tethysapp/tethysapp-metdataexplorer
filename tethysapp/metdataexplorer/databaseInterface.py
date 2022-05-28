@@ -7,6 +7,8 @@ import numpy as np
 
 from glob import glob
 from math import sqrt
+from math import log as ln
+from math import log10 as log
 from datetime import datetime
 
 from tethys_sdk.permissions import has_permission
@@ -218,7 +220,6 @@ def calculate_new_dataset(request):
 
             for datetime_list in datetime_lists:
                 if not datetime_list == datetime_lists[0]:
-                    print('they dont match')
                     datetimes_match = False
 
             if datetimes_match:
@@ -234,7 +235,6 @@ def calculate_new_dataset(request):
                         new_dataset_values.append(eval(math_expression))
 
                 if cumulative:
-                    print('need to add')
                     time_series_values = np.array(new_dataset_values)
                     time_series_length = len(time_series_values)
                     ones_triangle = np.tril(np.ones((time_series_length, time_series_length)), 0)

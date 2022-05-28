@@ -23,8 +23,6 @@ def extract_time_series_using_grids(request):
             opendap_url = request.POST.get('opendapURL')
             variable = request.POST.get('variable')
 
-            print(dimension_values['time'])
-
             dimensions_for_grids, final_coordinates, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
                 = prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimension_values)
 

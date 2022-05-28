@@ -131,18 +131,15 @@ def update_dimensions(request):
             url += dimension
             if dimension != dimensions[len(dimensions) - 1]:
                 url += ','
-        print(url)
+
         ds = netCDF4.Dataset(url)
 
         for dimension in ds.dimensions:
             dimension_type = determine_dimension_type(dimension)
-            print(dimension_type)
             dimension_metadata = get_variable_metadata(ds.variables[dimension])
             if dimension_type == 'time':
                 if 'units' in dimension_metadata:
-                    print(dimension_metadata['units'])
                     if 'calendar' in dimension_metadata:
-                        print(dimension_metadata['calendar'])
                         calendar = dimension_metadata['calendar']
                     else:
                         calendar = 'standard'
