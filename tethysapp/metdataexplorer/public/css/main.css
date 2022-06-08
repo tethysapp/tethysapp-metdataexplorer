@@ -210,6 +210,11 @@ tr:hover {
     width: 100%;
 }
 
+.justify-center {
+    display: flex;
+    justify-content: center;
+}
+
 .justify-right {
     display: flex;
     justify-content: right;
@@ -243,8 +248,16 @@ tr:hover {
     width: 25em;
 }
 
+.width-33min-3em {
+    width: calc(33.33% - 3.33em);
+}
+
 .width-33min-5em {
-    width: calc(33.33% - 5em);
+    width: calc(33.33% - 5.83em);
+}
+
+.width-33min-8em {
+    width: calc(33.33% - 8.33em);
 }
 
 .width-33percent {

@@ -67,7 +67,6 @@ updateDimensionsAjax = function (dimensions, opendapURL, currentFile) {
         dimensions: dimensions,
         url: opendapURL
     }
-    console.log(data);
     $.ajax({
         data: data,
         type: "POST",

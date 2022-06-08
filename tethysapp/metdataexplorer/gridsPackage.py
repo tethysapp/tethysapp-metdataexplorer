@@ -22,6 +22,8 @@ def extract_time_series_using_grids(request):
             geojson_type = request.POST.get('geojsonType')
             opendap_url = request.POST.get('opendapURL')
             variable = request.POST.get('variable')
+            shapefile_behavior = json.loads(request.POST.get('shapefileBehavior'))
+            statistic = request.POST.get('statistic')
 
             dimensions_for_grids, final_coordinates, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
                 = prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimension_values)
@@ -35,9 +37,10 @@ def extract_time_series_using_grids(request):
             if geojson_type == 'marker':
                 time_series = get_time_series_with_point(grids_initializer, formatted_values)
             elif geojson_type == 'rectangle':
-                time_series = get_time_series_with_box(grids_initializer, formatted_values)
+                time_series = get_time_series_with_box(grids_initializer, formatted_values, statistic)
             else:
-                time_series = get_time_series_with_shapefile(grids_initializer, formatted_values, filepath_to_shifted_geojson, 'dissolve')
+                time_series = get_time_series_with_shapefile(grids_initializer, filepath_to_shifted_geojson,
+                                                             shapefile_behavior, statistic)
 
             time_series['datetime'] = format_datetime(time_series['datetime'])
 
@@ -250,14 +253,18 @@ def get_time_series_with_point(grids_initializer, dimension_values):
     return time_series
 
 
-def get_time_series_with_box(grids_initializer, dimension_values):
-    time_series = grids_initializer.bound(dimension_values[0], dimension_values[1], stats='all')
+def get_time_series_with_box(grids_initializer, dimension_values, statistic):
+    time_series = grids_initializer.bound(dimension_values[0], dimension_values[1], stats=statistic)
     return time_series
 
 
-def get_time_series_with_shapefile(grids_initializer, dimension_values, filepath_to_geojson, behavior):
-    if behavior == "features":
-        time_series = grids_initializer.shape(filepath_to_geojson, behavior='features', stats='all')
+def get_time_series_with_shapefile(grids_initializer, filepath_to_geojson, behavior, statistic):
+    if behavior['behavior'] == "feature":
+        time_series = grids_initializer.shape(filepath_to_geojson, behavior=behavior['behavior'],
+                                              label_attr=behavior['labelAttr'], feature=behavior['feature'], stats=statistic)
+    elif behavior['behavior'] == "features":
+        time_series = grids_initializer.shape(filepath_to_geojson, behavior=behavior['behavior'],
+                                              label_attr=behavior['labelAttr'], stats=statistic)
     else:
-        time_series = grids_initializer.shape(filepath_to_geojson, behavior='dissolve', stats='all')
+        time_series = grids_initializer.shape(filepath_to_geojson, behavior='dissolve', stats=statistic)
     return time_series

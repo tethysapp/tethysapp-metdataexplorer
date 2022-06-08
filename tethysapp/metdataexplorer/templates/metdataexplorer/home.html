@@ -24,15 +24,36 @@
                 <div class="selectpicker-group">
                   <div class="selectpicker-prepend width-10-em">Variable:</div>
                   <select id="variables-select" class="selectpicker" data-dropup-auto="false" data-live-search="true"
-                          data-style="btn-primary" data-width="calc(100% - 10em)" title="Select Variable">
+                          data-style="btn-primary" data-width="calc(66.6% - 6.66em)" title="Select Variable">
+                  </select>
+                  <select id="statistics-select" class="selectpicker" data-dropup-auto="false" data-style="btn-primary"
+                          data-width="calc(33.3% - 3.33em)">
+                    <option value="mean">Mean</option>
+                    <option value="median">Median</option>
+                    <option value="min">Min</option>
+                    <option value="max">Max</option>
+                    <option value="sum">Sum</option>
+                    <option value="std">Standard Deviation</option>
                   </select>
                 </div>
                 <div class="selectpicker-group">
                   <div class="selectpicker-prepend width-10-em">Mask Data With:</div>
-                  <select id="select-drawing-option" class="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="calc(100% - 10em)">
-                    <option value="draw-on-map">Draw On Map</option>
-                    <option value="use-shapefile">Use A Shapefile</option>
-                  </select>
+                  <div id="select-drawing-option-container">
+                    <select id="select-drawing-option" class="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="100%">
+                      <option value="draw-on-map">Draw On Map</option>
+                      <option value="use-shapefile">Use A Shapefile</option>
+                    </select>
+                  </div>
+                  <div id="shapefile-select-options">
+                    <select id="select-dissolve-by" class="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="50%">
+                      <option value="dissolve">Dissolve</option>
+                      <option value="features">Features</option>
+                    </select>
+                    <select id="select-label-by" class="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="50%">
+                      <option value="name">Name</option>
+                      <option value="id">ID</option>
+                    </select>
+                  </div>
                 </div>
                 <div id="additional-dimensions-div"></div>
                 <div id="time-dimensions-div"></div>
@@ -133,6 +154,7 @@
   {% include "metdataexplorer/modals/modalAddFileToDatabase.html" %}
   {% include "metdataexplorer/modals/modalAddGroupToDatabase.html" %}
   {% include "metdataexplorer/modals/modalAddVariables.html" %}
+  {% include "metdataexplorer/modals/modalAddURLS.html" %}
   {% include "metdataexplorer/modals/modalDeleteFileFromDatabase.html" %}
   {% include "metdataexplorer/modals/modalDeleteGroupsFromDatabase.html" %}
   {% include "metdataexplorer/modals/modalEditFileTitleAndDescription.html" %}

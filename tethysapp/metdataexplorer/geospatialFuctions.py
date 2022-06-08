@@ -75,33 +75,48 @@ def shift_shape_bounds(bounds, filepath):
 
     case = check_lat_lon_within(geo_bounds, bounds)
 
-    x = 0
-    new_geom = []
+    if (case[0] == 1 or case[0] == 3) and (case[1] == 1 or case[1] == 3):
+        x = 0
+        new_geom = []
 
-    for shape in geojson_geometry['geometry']:
-        new_shp = {}
-        if shape.type == 'Point':
-            lonlat = find_shift(shape.coords[0], case)
-            new_shp = geojson.Point(tuple((lonlat[0], lonlat[1])))
-        elif shape.type == 'Polygon':
-            new_coords = []
-            for coord in shape.exterior.coords:
-                lonlat = find_shift(coord, case)
-                new_coords.append(tuple((lonlat[0], lonlat[1])))
-            new_shp = geojson.Polygon([new_coords])
-        elif shape.type == 'MultiPolygon':
-            multipolygons = []
-            for shp in shape.geoms:
+        properties_list = []
+
+        for key in geojson_geometry.keys():
+            if not key == "geometry":
+                properties_list.append(key)
+
+        for index, shape in enumerate(geojson_geometry['geometry']):
+            new_shp = {}
+            if shape.type == 'Point':
+                lonlat = find_shift(shape.coords[0], case)
+                new_shp = geojson.Point(tuple((lonlat[0], lonlat[1])))
+            elif shape.type == 'Polygon':
                 new_coords = []
-                for coord in shp.exterior.coords:
+                for coord in shape.exterior.coords:
                     lonlat = find_shift(coord, case)
                     new_coords.append(tuple((lonlat[0], lonlat[1])))
-                poly = new_coords
-                multipolygons.append(poly)
-            new_shp = geojson.MultiPolygon([multipolygons])
-        new_feature = geojson.Feature(properties={'iterate': 'this needs to change'}, geometry=new_shp)
-        new_geom.append(new_feature)
-        x += 1
-    new_fc = geojson.FeatureCollection(crs='CRS(' + str(geojson_geometry.crs) + ')', features=new_geom)
+                new_shp = geojson.Polygon([new_coords])
+            elif shape.type == 'MultiPolygon':
+                multipolygons = []
+                for shp in shape.geoms:
+                    new_coords = []
+                    for coord in shp.exterior.coords:
+                        lonlat = find_shift(coord, case)
+                        new_coords.append(tuple((lonlat[0], lonlat[1])))
+                    poly = new_coords
+                    multipolygons.append(poly)
+                new_shp = geojson.MultiPolygon([multipolygons])
+            properties = {}
+
+            for feature_property in properties_list:
+                properties[feature_property] = geojson_geometry[feature_property][index]
+
+            new_feature = geojson.Feature(properties=properties, geometry=new_shp)
+            new_geom.append(new_feature)
+            x += 1
+        new_fc = geojson.FeatureCollection(crs='CRS(' + str(geojson_geometry.crs) + ')', features=new_geom)
+    else:
+        new_fc = geojson_geometry
+
     new_filepath = print_geojson_to_file(new_fc, 'temp_two')
     return new_filepath

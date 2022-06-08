@@ -12,9 +12,9 @@ addAdditionalDimension = function (dimension) {
                         <i class="fas fa-info-circle"></i>
                     </button>
                 </div>
-                <div id="dimension-additional-${dimension}-select" class="selectpicker-prepend width-33min-5em">${dimension}</div>
+                <div id="dimension-additional-${dimension}-select" class="selectpicker-prepend width-33min-3em">${dimension}</div>
                     <select id="dimension-additional-${dimension}-select-values" class="selectpicker additional-dimension" 
-                    data-dropup-auto="false" data-style="btn-primary" data-width="calc(66.6% - 5em)">
+                    data-dropup-auto="false" data-style="btn-primary" data-width="calc(66.6% - 6.66em)">
                     </select>
                 </div>`;
     return html;
@@ -76,15 +76,15 @@ moveCarouselRight = function () {
 timeDimensionContainer = function (dimension) {
     const html = `<div class="selectpicker-group">
                     <div class="selectpicker-prepend width-5-em">Time:</div>
-                    <div class="file-metadata-inner metadata-info-icon" style="width: 5em">
+                    <div class="file-metadata-inner metadata-info-icon width-5-em">
                         <button value="${dimension}" class="metadata-info btn btn-primary">
                             <i class="fas fa-info-circle"></i>
                         </button>
                     </div>
-                    <div id="dimension-time-${dimension}-select" class="selectpicker-prepend width-33min-5em">${dimension}</div>
-                    <select id="dimension-time-${dimension}-first" className="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="calc(33.3% - 5em)"></select>
-                    <div class="selectpicker-prepend width-5-em">to</div>
-                    <select id="dimension-time-${dimension}-second" className="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="calc(33.3% - 10em)"></select>
+                    <div id="dimension-time-${dimension}-select" class="selectpicker-prepend width-33min-3em">${dimension}</div>
+                    <select id="dimension-time-${dimension}-first" className="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="calc(33.3% - 8.33em)"></select>
+                    <div class="selectpicker-prepend width-5-em justify-center">to</div>
+                    <select id="dimension-time-${dimension}-second" className="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="calc(33.3% - 3.33em)"></select>
                 </div>`;
     return html;
 };
@@ -92,15 +92,15 @@ timeDimensionContainer = function (dimension) {
 xyDimensionContainer = function (dimension, type) {
     const html = `<div class="selectpicker-group">
                       <div class="selectpicker-prepend width-5-em">${type}:</div>
-                      <div class="file-metadata-inner metadata-info-icon" style="width: 5em">
+                      <div class="file-metadata-inner metadata-info-icon width-5-em">
                           <button value="${dimension}" class="metadata-info btn btn-primary">
                               <i class="fas fa-info-circle"></i>
                           </button>
                       </div>
-                      <div id="dimension-${type}-${dimension}-select" class="selectpicker-prepend width-33min-5em">${dimension}</div>
-                      <div id="dimension-${type}-${dimension}-first" class="selectpicker-prepend width-33min-5em"></div>
-                      <div class="selectpicker-prepend width-5-em">to</div>
-                      <div id="dimension-${type}-${dimension}-second" class="selectpicker-prepend width-33min-5em"></div>
+                      <div id="dimension-${type}-${dimension}-select" class="selectpicker-prepend width-33min-3em">${dimension}</div>
+                      <div id="dimension-${type}-${dimension}-first" class="selectpicker-prepend width-33min-8em"></div>
+                      <div class="selectpicker-prepend width-5-em justify-center">to</div>
+                      <div id="dimension-${type}-${dimension}-second" class="selectpicker-prepend width-33min-3em"></div>
                 </div>`;
     return html;
 };

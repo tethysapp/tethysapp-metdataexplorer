@@ -82,7 +82,7 @@ def add_file_to_database(request):
             )
 
             for dimension in dataset.dimensions:
-                dimension_type = determine_dimension_type(dimension)
+                dimension_type = determine_dimension_type(dataset.dimensions[dimension], dataset.variables)
                 if dimension in all_variables:
                     has_variable = 'true'
                     dimension_metadata = get_variable_metadata(dataset.variables[dimension])
@@ -416,19 +416,29 @@ def delete_shapefile_from_database(request):
     return JsonResponse(result_message)
 
 
-def determine_dimension_type(dimension):
+def determine_dimension_type(dimension, variables):
     list_of_time_dimensions = ['time', 'date', 'month', 'day', 'year', 'hour', 'minute', 'second']
     list_of_x_dimensions = ['lon', 'lng', 'longitude', 'x', 'degrees east', 'degrees west']
     list_of_y_dimensions = ['lat', 'latitude', 'y', 'degrees north', 'degrees south']
 
-    if dimension.lower() in list_of_time_dimensions or 'time' in dimension.lower():
-        dimension_type = 'time'
-    elif dimension.lower() in list_of_x_dimensions or 'lon' in dimension.lower():
-        dimension_type = 'x'
-    elif dimension.lower() in list_of_y_dimensions or 'lat' in dimension.lower():
-        dimension_type = 'y'
+    if dimension.name in variables and 'axis' in variables[dimension.name].__dict__:
+        if variables[dimension.name].__dict__['axis'] == 'T':
+            dimension_type = 'time'
+        elif variables[dimension.name].__dict__['axis'] == 'X':
+            dimension_type = 'x'
+        elif variables[dimension.name].__dict__['axis'] == 'Y':
+            dimension_type = 'y'
+        else:
+            dimension_type = 'other'
     else:
-        dimension_type = 'other'
+        if dimension.name.lower() in list_of_time_dimensions or 'time' in dimension.name.lower():
+            dimension_type = 'time'
+        elif dimension.name.lower() in list_of_x_dimensions or 'lon' in dimension.name.lower():
+            dimension_type = 'x'
+        elif dimension.name.lower() in list_of_y_dimensions or 'lat' in dimension.name.lower():
+            dimension_type = 'y'
+        else:
+            dimension_type = 'other'
     return dimension_type
 
 

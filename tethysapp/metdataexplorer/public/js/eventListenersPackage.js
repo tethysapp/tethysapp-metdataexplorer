@@ -18,7 +18,6 @@ getFilesAndFoldersFromCatalog = async function (urlForCatalog, pushCurrentUrlToA
         showLoadingModal("modalAddFileToDatabase");
         const foldersAndFiles = await getFilesAndFoldersFromCatalogAjax(urlForCatalog);
 
-        let notifyUser = false;
         let uniqueId;
         let html;
         if (pushCurrentUrlToArray) {
@@ -35,19 +34,11 @@ getFilesAndFoldersFromCatalog = async function (urlForCatalog, pushCurrentUrlToA
             console.error(foldersAndFiles.error);
         } else {
             for (const [key, value] of Object.entries(foldersAndFiles.files)) {
-
-                if (value.WMS === undefined || value.OPENDAP === undefined) {
-                    notifyUser = true;
-                }
-
                 uniqueId = generateUniqueId();
                 ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[uniqueId] = {
                     title: key,
                     url: value
                 };
-                if (notifyUser) {
-                    notifyOfDanger("Make sure all variable have WMS and OpenDAP access enabled.");
-                }
             }
             for (const [key, value] of Object.entries(foldersAndFiles.folders)) {
                 uniqueId = generateUniqueId();

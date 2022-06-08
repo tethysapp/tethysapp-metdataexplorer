@@ -12,6 +12,7 @@ const ACTIVE_VARIABLES_PACKAGE = (function () {
         box: []
     };
     let fileAndFolderExplorer = {
+        currentFileId: "",
         files: {},
         folders: {}
     };

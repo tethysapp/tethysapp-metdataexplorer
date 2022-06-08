@@ -45,7 +45,12 @@ def get_files_and_folders_from_catalog(request):
             dict_of_folders[list_of_folders[folder_counter].title] = list_of_folders[folder_counter].href
 
         for file_counter in range(len(list_of_files)):
-            dict_of_files[list_of_files[file_counter].name] = list_of_files[file_counter].access_urls
+            access_url_array = {}
+
+            for url_type in list_of_files[file_counter].access_urls:
+                access_url_array[url_type.upper()] = list_of_files[file_counter].access_urls[url_type]
+
+            dict_of_files[list_of_files[file_counter].name] = access_url_array
 
         dict_to_return = {
             'data': {
@@ -135,7 +140,7 @@ def update_dimensions(request):
         ds = netCDF4.Dataset(url)
 
         for dimension in ds.dimensions:
-            dimension_type = determine_dimension_type(dimension)
+            dimension_type = determine_dimension_type(ds.dimensions[dimension], ds.variables)
             dimension_metadata = get_variable_metadata(ds.variables[dimension])
             if dimension_type == 'time':
                 if 'units' in dimension_metadata:

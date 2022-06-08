@@ -1,5 +1,7 @@
 import {notifyOfDanger, notifyOfInfo} from "./userMessagingPackage.js";
-import {createGraph} from "./graphPackage.js";
+import {createGraph, makeTrace} from "./graphPackage.js";
+import {extractTimeseriesAjax} from "./dataRemoteAccessPackage.js";
+import {moveCarouselLeft} from "./htmlHelpersForBaseMenu.js";
 
 let checkCsrfSafe;
 let getCookie;
@@ -7,6 +9,7 @@ let hideLoadingModal;
 let addDefaultBehaviorToAjax;
 let formatValuesFromGrids;
 let generateUniqueId;
+let plotTimeSeries;
 let searchAndFilterATable;
 let showLoadingModal;
 let sizeWindows;
@@ -52,7 +55,7 @@ addDefaultBehaviorToAjax = function () {
     });
 };
 
-formatValuesFromGrids = function() {
+formatValuesFromGrids = function(featureToUse = false) {
     try {
         const groupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
         const fileId = ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId;
@@ -60,8 +63,10 @@ formatValuesFromGrids = function() {
         const userCredentials = file.userCredentials;
         const variable = $("#variables-select").val();
         const dimensions = file.variables[variable].dimensions;
+        const statistic = $("#statistics-select").val();
         let geojson;
         let geojsonType;
+        let shapefileBehavior;
         let dimensionsAndValuesArray = {};
         let xDimension = false;
         let yDimension = false;
@@ -135,6 +140,22 @@ formatValuesFromGrids = function() {
             geojsonType = ACTIVE_VARIABLES_PACKAGE.geojson.type;
         }
 
+        if (geojsonType === "shapefile") {
+            shapefileBehavior = {
+                behavior: featureToUse ? "feature" : document.getElementById("select-dissolve-by").value,
+                labelAttr: document.getElementById("select-label-by").value,
+                feature: featureToUse
+            }
+        } else if (geojsonType === "polygon") {
+            shapefileBehavior = {
+                behavior: "dissolve",
+                labelAttr: false,
+                feature: false
+            }
+        } else {
+            shapefileBehavior = false;
+        }
+
         if (Object.keys(ACTIVE_VARIABLES_PACKAGE.geojson.feature).length === 0 && xDimension && yDimension) {
             notifyOfInfo("Please define an area on the map over which to extract the data.");
         } else {
@@ -144,6 +165,8 @@ formatValuesFromGrids = function() {
                 geojson: JSON.stringify(geojson),
                 geojsonType: geojsonType,
                 opendapURL: opendapURL,
+                shapefileBehavior: JSON.stringify(shapefileBehavior),
+                statistic: statistic,
                 userCredentials: JSON.stringify(userCredentials),
                 variable: variable
             };
@@ -152,6 +175,45 @@ formatValuesFromGrids = function() {
     } catch (error) {
         notifyOfDanger("Please select data to download");
         console.error(error);
+    }
+}
+
+plotTimeSeries = async function (parametersForGrids) {
+    const variable = $("#variables-select").val();
+    notifyOfInfo("Retrieving data. This may take several minutes.");
+    const result = await extractTimeseriesAjax(parametersForGrids);
+    if (result.errorMessage !== undefined) {
+        if (result.error === "All arrays must be of the same length") {
+            notifyOfDanger("The data could not be retrieved. Refresh the file and try again.");
+        } else {
+            notifyOfDanger(result.errorMessage);
+        }
+        console.error(result.error);
+    } else {
+        const timeSeries = JSON.parse(result.timeSeries);
+        let datasetList = [];
+        let datasetName;
+
+        Object.keys(ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter).forEach((dataArrayKey) => {
+            datasetList.push(ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter[dataArrayKey].name);
+        });
+
+        Object.keys(timeSeries).forEach((key) => {
+            let i = "";
+            if (key !== "datetime") {
+                do {
+                    datasetName = key + i
+                    if (i === "") {
+                        i = 1;
+                    } else {
+                        i += 1;
+                    }
+                } while (datasetList.includes(datasetName));
+                makeTrace(timeSeries[key], timeSeries["datetime"], datasetName, variable);
+            }
+        });
+        createGraph();
+        moveCarouselLeft();
     }
 }
 
@@ -214,6 +276,7 @@ export {
     formatValuesFromGrids,
     generateUniqueId,
     hideLoadingModal,
+    plotTimeSeries,
     searchAndFilterATable,
     showLoadingModal,
     sizeWindows

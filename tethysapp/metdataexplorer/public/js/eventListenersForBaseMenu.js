@@ -1,11 +1,11 @@
 import {addFileMetadata, buildBaseMenuForSelectedVariable} from "./htmlPackage.js";
 import {moveCarouselLeft, moveCarouselRight} from "./htmlHelpersForBaseMenu.js";
-import {changeWMSLayerOpacity, createWMSLayer, drawMenu, mapObj} from "./mapPackage.js";
+import {changeWMSLayerOpacity, createGeojosnMarker, createWMSLayer, drawMenu, mapObj} from "./mapPackage.js";
 import {notifyOfDanger, notifyOfInfo} from "./userMessagingPackage.js";
 import {extractTimeseriesAjax} from "./dataRemoteAccessPackage.js";
 import {createGraph, makeTrace} from "./graphPackage.js";
 import {formatCSV, formatHTML, formatJSON, formatPython} from "./formatFilesPackage.js";
-import {formatValuesFromGrids} from "./auxilaryPackage.js";
+import {formatValuesFromGrids, plotTimeSeries} from "./auxilaryPackage.js";
 import {addDatasetsToCalculator} from "./htmlHelpersForModals.js";
 
 let setBaseMenuEventListeners;
@@ -51,13 +51,21 @@ setBaseMenuEventListeners = function () {
             if($("#select-drawing-option").val() === "use-shapefile") {
                 mapObj.removeControl(drawMenu);
                 $("#modalShapefileList").modal("show");
+                $("#shapefile-select-options").css("display", "flex");
+                $("#select-drawing-option-container").width("calc(33.3% - 3.33em)");
             } else if($("#select-drawing-option").val() === "draw-on-map") {
                 drawMenu.addTo(mapObj);
+                $("#shapefile-select-options").css("display", "none");
+                $("#select-drawing-option-container").width("calc(100% - 10em)");
             }
         } catch (error) {
             notifyOfDanger("An error occurred");
             console.error(error);
         };
+    });
+
+    $("#select-label-by").on("changed.bs.select", () => {
+        createGeojosnMarker(ACTIVE_VARIABLES_PACKAGE.geojson.feature);
     });
 
     document.getElementById("carousel-container-1").addEventListener("click", (event) => {
@@ -83,46 +91,20 @@ setBaseMenuEventListeners = function () {
         changeWMSLayerOpacity(0);
     });
 
+    document.getElementById("map").addEventListener("click", (event) => {
+        const clickedElement = event.target;
+        if (clickedElement.classList.contains("plot-time-series-mini-button") || clickedElement.parentElement?.classList.contains("plot-time-series-mini-button")) {
+            const parameterValue = clickedElement.closest(".plot-time-series-mini-button").value;
+            const parametersForGrids = formatValuesFromGrids(parameterValue);
+            plotTimeSeries(parametersForGrids);
+        }
+    });
+
     document.getElementById("plot-time-series-button").addEventListener("click", async () => {
         try {
             const parametersForGrids = formatValuesFromGrids();
             console.log(parametersForGrids)
-            const variable = $("#variables-select").val();
-            notifyOfInfo("Retrieving data. This may take several minutes.");
-            const result = await extractTimeseriesAjax(parametersForGrids);
-            if (result.errorMessage !== undefined) {
-                if (result.error === "All arrays must be of the same length") {
-                    notifyOfDanger("The data could not be retrieved. Refresh the file and try again.");
-                } else {
-                    notifyOfDanger(result.errorMessage);
-                }
-                console.error(result.error);
-            } else {
-                const timeSeries = JSON.parse(result.timeSeries);
-                let datasetList = [];
-                let datasetName;
-
-                Object.keys(ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter).forEach((dataArrayKey) => {
-                    datasetList.push(ACTIVE_VARIABLES_PACKAGE.dataForGraph.scatter[dataArrayKey].name);
-                });
-
-                Object.keys(timeSeries).forEach((key) => {
-                    let i = "";
-                    if (key !== "datetime") {
-                        do {
-                            datasetName = key + i
-                            if (i === "") {
-                                i = 1;
-                            } else {
-                                i += 1;
-                            }
-                        } while (datasetList.includes(datasetName));
-                        makeTrace(timeSeries[key], timeSeries["datetime"], datasetName, variable);
-                    }
-                });
-                createGraph();
-                moveCarouselLeft();
-            }
+            plotTimeSeries(parametersForGrids);
         } catch (error) {
             notifyOfDanger("An error occurred. Please refresh the page and try again.");
             console.error(error);

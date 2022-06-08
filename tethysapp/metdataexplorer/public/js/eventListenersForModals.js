@@ -18,20 +18,18 @@ import {
     getShapefileCoordinatesFromDatabaseAjax
 } from "./databasePackage.js";
 import {
-    addListOfVariablesAndDimensions,
     clearModalAddFileToDatabase,
     htmlForFilesInNavigation
 } from "./htmlPackage.js";
-import {getDimensionsAndVariablesForFileAjax} from "./dataRemoteAccessPackage.js";
 import {
-    addCredentialToServer,
+    addCredentialToServer, addFilesAndFoldersToModalAddFileToDatabase,
     addShapefileNameToTable,
     formatEndRowsForModalListAuthentication,
     formatRowForModalListAuthentication,
     removeCredentialFromServer
 } from "./htmlHelpersForModals.js";
 import {createGeojosnMarker} from "./mapPackage.js";
-import {createGraph, data, makeTrace} from "./graphPackage.js";
+import {createGraph, makeTrace} from "./graphPackage.js";
 
 let setModalEventListeners;
 
@@ -153,6 +151,26 @@ setModalEventListeners = function () {
         }
     });
 
+    //modalAddURLS
+    document.getElementById("manual-url-continue-btn").addEventListener("click", () => {
+        const opendapURL = document.getElementById("manual-opendap-url").value;
+        const wmsURL = document.getElementById("manual-wms-url").value;
+        const fileId = ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.currentFileId;
+
+        if (opendapURL === "") {
+            notifyOfDanger("An OPeNDAP URL is requiered.");
+        } else if (wmsURL === "") {
+            notifyOfDanger("An OPeNDAP URL is requiered.");
+        } else {
+            ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url["WMS"] = wmsURL;
+            ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url["OPENDAP"] = opendapURL;
+            addFilesAndFoldersToModalAddFileToDatabase(fileId, opendapURL);
+            $("#modalAddURLS").modal("hide");
+            document.getElementById("manual-opendap-url").value = "";
+            document.getElementById("manual-wms-url").value = "";
+        }
+    });
+
     //modalAddVariables
 
     //modalDeleteFileFromDatabase
@@ -184,37 +202,23 @@ setModalEventListeners = function () {
 
     document.getElementById("div-for-folder-and-file-explorer").addEventListener("click", async (event) => {
         const clickedElement = event.target;
-
         if (clickedElement.classList.contains("file") || clickedElement.parentElement?.classList.contains("file")) {
-            showLoadingModal("modalFoldersAndFilesExplorer");
             const fileId = event.target.closest(".file").id.slice(5);
             const opendapURL = ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url.OPENDAP;
-            let arrayOfVariables = await getDimensionsAndVariablesForFileAjax(opendapURL);
-            let html;
-
-            ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.allVariables = arrayOfVariables.allVariables;
-
-            if (arrayOfVariables.errorMessage !== undefined) {
-                notifyOfDanger("An error occurred while retrieving the variables");
-                console.error(arrayOfVariables.error);
-
-            } else {
-                ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.url = ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url;
-                for (const [key, value] of Object.entries(arrayOfVariables.listOfVariables)) {
-                    const id = generateUniqueId();
-                    ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions[id] = {
-                        variable: key,
-                        dimensions: value
-                    };
-                    html += addListOfVariablesAndDimensions(id, key, value);
-                };
-                $("#attributes").append(html);
-                $(".dimension-selectpicker").selectpicker();
-                $("#groups_variables_div").show();
+            const wmsURL = ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url.WMS;
+            if (opendapURL === undefined || wmsURL === undefined) {
+                if (opendapURL !== undefined) {
+                    $("#manual-opendap-url").val(opendapURL);
+                }
+                if (wmsURL !== undefined) {
+                    $("#manual-wms-url").val(wmsURL);
+                }
+                ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.currentFileId = fileId;
                 $("#modalFoldersAndFilesExplorer").modal("hide");
+                $("#modalAddURLS").modal("show");
+            } else {
+                addFilesAndFoldersToModalAddFileToDatabase(fileId, opendapURL);
             }
-
-            hideLoadingModal("modalFoldersAndFilesExplorer");
 
         } else if (clickedElement.classList.contains("folder") || clickedElement.parentElement?.classList.contains("folder")) {
             const folderId = event.target.closest(".folder").id.slice(7);
@@ -350,6 +354,11 @@ setModalEventListeners = function () {
                 notifyOfDanger(geojson.errorMessage);
                 console.error(geojson.error);
             } else {
+                $("#select-label-by").empty();
+                Object.keys(geojson.geojson.features[0].properties).forEach((property) => {
+                    $("#select-label-by").append(`<option value="${property}">${property}</option>`);
+                });
+                $("#select-label-by").selectpicker("refresh");
                 createGeojosnMarker(geojson.geojson);
                 ACTIVE_VARIABLES_PACKAGE.geojson.type = geojson.name;
                 ACTIVE_VARIABLES_PACKAGE.geojson.shapefile = true;

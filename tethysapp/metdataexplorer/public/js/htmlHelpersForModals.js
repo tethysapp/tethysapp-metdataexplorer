@@ -1,13 +1,16 @@
 import {notifyOfDanger, notifyOfInfo} from "./userMessagingPackage.js";
-import {generateUniqueId} from "./auxilaryPackage.js";
+import {generateUniqueId, hideLoadingModal, showLoadingModal} from "./auxilaryPackage.js";
 import {
     addCredentialToServerAjax,
     getShapefileNamesFromDatabaseAjax,
     removeCredentialFromServerAjax
 } from "./databasePackage.js";
+import {getDimensionsAndVariablesForFileAjax} from "./dataRemoteAccessPackage.js";
+import {addListOfVariablesAndDimensions} from "./htmlPackage.js";
 
 let addCredentialToServer;
 let addDatasetsToCalculator;
+let addFilesAndFoldersToModalAddFileToDatabase;
 let addShapefileNameToTable;
 let buildModalShapefileList;
 let formatRowForModalListAuthentication;
@@ -45,6 +48,38 @@ populateDeleteGroupsModal = function () {
         console.error(error);
     };
 };
+
+//modelFileAndFolderExplorer
+addFilesAndFoldersToModalAddFileToDatabase = async function (fileId, opendapURL) {
+    showLoadingModal("modalFoldersAndFilesExplorer");
+
+    let arrayOfVariables = await getDimensionsAndVariablesForFileAjax(opendapURL);
+    let html;
+
+    ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.allVariables = arrayOfVariables.allVariables;
+
+    if (arrayOfVariables.errorMessage !== undefined) {
+        notifyOfDanger("An error occurred while retrieving the variables");
+        console.error(arrayOfVariables.error);
+
+    } else {
+        ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.url = ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url;
+        for (const [key, value] of Object.entries(arrayOfVariables.listOfVariables)) {
+            const id = generateUniqueId();
+            ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions[id] = {
+                variable: key,
+                dimensions: value
+            };
+            html += addListOfVariablesAndDimensions(id, key, value);
+        };
+        $("#attributes").append(html);
+        $(".dimension-selectpicker").selectpicker();
+        $("#groups_variables_div").show();
+        $("#modalFoldersAndFilesExplorer").modal("hide");
+    }
+
+    hideLoadingModal("modalFoldersAndFilesExplorer");
+}
 
 //modalGraphCalculator
 addDatasetsToCalculator = function () {
@@ -222,6 +257,7 @@ addShapefileNameToTable = function (uniqueId, name) {
 export {
     addCredentialToServer,
     addDatasetsToCalculator,
+    addFilesAndFoldersToModalAddFileToDatabase,
     addShapefileNameToTable,
     buildModalShapefileList,
     formatEndRowsForModalListAuthentication,

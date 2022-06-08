@@ -72,6 +72,16 @@ div .active {
     background-color: #d9534e;
 }
 
+#select-drawing-option-container {
+    width: calc(100% - 10em);
+}
+
+#shapefile-select-options {
+    display: none;
+    flex-direction: row;
+    width: calc(66.6% - 6.66em);
+}
+
 #carousel-container-2 {
     left: 100%;
     top: 0;

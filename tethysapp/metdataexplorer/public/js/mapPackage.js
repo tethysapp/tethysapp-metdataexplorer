@@ -1,5 +1,6 @@
 import {appProxyURL} from "./urlsPackage.js";
 import {notifyOfInfo} from "./userMessagingPackage.js";
+//import {plotTimeSeriesForSingleFeature} from "./eventListenersForBaseMenu.js";
 
 let changeWMSLayerOpacity;
 let createDrawingLayers;
@@ -34,10 +35,26 @@ createDrawingLayers = function (map) {
 };
 
 createGeojosnMarker = function (geojsonFeature) {
+    let onEachFeature = function (feature, layer) {
+        const propertyToUse = document.getElementById("select-label-by").value;
+        const property = feature.properties[propertyToUse];
+        layer.bindPopup(`
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span>${property}</span>
+                <button type="button" class="plot-time-series-mini-button" className="btn btn-success" value="${property}">  
+                    <i class="far fa-chart-bar"></i>
+                    Plot Time Series
+                </button>
+            </div>
+        `);
+    };
+
     if (geojsonFeature !== undefined) {
         mapMarkerLayer.clearLayers();
-        geojsonMarkerLayer.clearLayers();
-        geojsonMarkerLayer.addData(geojsonFeature);
+        mapObj.removeLayer(geojsonMarkerLayer);
+        geojsonMarkerLayer = L.geoJSON(geojsonFeature, {
+            onEachFeature: onEachFeature
+        }).addTo(mapObj);
     }
 };
 
