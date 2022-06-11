@@ -1,5 +1,12 @@
-import {notifyOfDanger, notifyOfInfo} from "./userMessagingPackage.js";
-import {generateUniqueId, hideLoadingModal, showLoadingModal} from "./auxilaryPackage.js";
+import {
+    notifyOfDanger,
+    notifyOfInfo
+} from "./userMessagingPackage.js";
+import {
+    generateUniqueId,
+    hideLoadingModal,
+    showLoadingModal
+} from "./auxilaryPackage.js";
 import {
     addCredentialToServerAjax,
     getShapefileNamesFromDatabaseAjax,

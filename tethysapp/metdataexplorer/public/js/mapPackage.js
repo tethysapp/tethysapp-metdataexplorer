@@ -1,6 +1,5 @@
 import {appProxyURL} from "./urlsPackage.js";
 import {notifyOfInfo} from "./userMessagingPackage.js";
-//import {plotTimeSeriesForSingleFeature} from "./eventListenersForBaseMenu.js";
 
 let changeWMSLayerOpacity;
 let createDrawingLayers;

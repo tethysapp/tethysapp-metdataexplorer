@@ -17,12 +17,15 @@ import {
     getCredentialsFromServerAjax,
     getShapefileCoordinatesFromDatabaseAjax
 } from "./databasePackage.js";
+
 import {
     clearModalAddFileToDatabase,
     htmlForFilesInNavigation
 } from "./htmlPackage.js";
+
 import {
-    addCredentialToServer, addFilesAndFoldersToModalAddFileToDatabase,
+    addCredentialToServer,
+    addFilesAndFoldersToModalAddFileToDatabase,
     addShapefileNameToTable,
     formatEndRowsForModalListAuthentication,
     formatRowForModalListAuthentication,

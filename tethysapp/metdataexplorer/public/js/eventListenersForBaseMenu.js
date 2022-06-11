@@ -1,9 +1,8 @@
 import {addFileMetadata, buildBaseMenuForSelectedVariable} from "./htmlPackage.js";
 import {moveCarouselLeft, moveCarouselRight} from "./htmlHelpersForBaseMenu.js";
 import {changeWMSLayerOpacity, createGeojosnMarker, createWMSLayer, drawMenu, mapObj} from "./mapPackage.js";
-import {notifyOfDanger, notifyOfInfo} from "./userMessagingPackage.js";
-import {extractTimeseriesAjax} from "./dataRemoteAccessPackage.js";
-import {createGraph, makeTrace} from "./graphPackage.js";
+import {notifyOfDanger} from "./userMessagingPackage.js";
+import {createGraph} from "./graphPackage.js";
 import {formatCSV, formatHTML, formatJSON, formatPython} from "./formatFilesPackage.js";
 import {formatValuesFromGrids, plotTimeSeries} from "./auxilaryPackage.js";
 import {addDatasetsToCalculator} from "./htmlHelpersForModals.js";

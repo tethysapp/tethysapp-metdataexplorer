@@ -2,7 +2,9 @@ import {
     getFoldersAndFilesFromCatalogURL,
     getVariablesAndDimensionsForFileURL,
     getPermissionsFromServerURL,
-    extractTimeseriesURL, formatParametersForGridsURL, updateDimensionsURL
+    extractTimeseriesURL,
+    formatParametersForGridsURL,
+    updateDimensionsURL
 } from "./urlsPackage.js";
 import {notifyOfDanger} from "./userMessagingPackage.js";
 import {addOptionsToSelect} from "./htmlPackage.js";
