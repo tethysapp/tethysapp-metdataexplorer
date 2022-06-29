@@ -223,16 +223,23 @@ def calculate_new_dataset(request):
                     datetimes_match = False
 
             if datetimes_match:
-
                 if len(split_math_string) >= 1:
                     for value in range(len(dataset_array[split_math_string[1]]['y'])):
                         math_expression = ''
+                        valid_expression = True
                         for index, expression in enumerate(split_math_string):
                             if index % 2 == 0:
                                 math_expression += expression
                             else:
-                                math_expression += str(dataset_array[expression]['y'][value])
-                        new_dataset_values.append(eval(math_expression))
+                                if isinstance(dataset_array[expression]['y'][value], int) or \
+                                        isinstance(dataset_array[expression]['y'][value], float):
+                                    math_expression += str(dataset_array[expression]['y'][value])
+                                else:
+                                    valid_expression = False
+                        if valid_expression:
+                            new_dataset_values.append(eval(math_expression))
+                        else:
+                            new_dataset_values.append(None)
 
                 if cumulative:
                     time_series_values = np.array(new_dataset_values)
@@ -252,6 +259,7 @@ def calculate_new_dataset(request):
         else:
             array_to_return = {'errorMessage': 'There was an error while calculating the new dataset.'}
     except Exception as e:
+        print(e)
         array_to_return = {
             'errorMessage': 'There was an error while calculating the new dataset.',
             'error': str(e)
