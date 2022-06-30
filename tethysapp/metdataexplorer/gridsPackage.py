@@ -44,8 +44,8 @@ def extract_time_series_using_grids(request):
 
             time_series['datetime'] = format_datetime(time_series['datetime'])
 
-            # os.remove(filepath_to_geojson)
-            # os.remove(filepath_to_shifted_geojson)
+            os.remove(filepath_to_geojson)
+            os.remove(filepath_to_shifted_geojson)
 
             time_series_array = {
                 'timeSeries': time_series
@@ -216,8 +216,8 @@ def format_parameters_for_grids(request):
             else:
                 time_series = f"time_series = grids_time_series.shape('Add the filepath to your geojson here!', behavior='dissolve', stats='all')"
 
-            # os.remove(filepath_to_geojson)
-            # os.remove(filepath_to_shifted_geojson)
+            os.remove(filepath_to_geojson)
+            os.remove(filepath_to_shifted_geojson)
 
             formatted_array = {
                 'gridsInitializer': grids_initializer,
