@@ -54,7 +54,7 @@
     border-radius: 0.25em;
 }
 
-#panel-bodyh {
+#accordion-body{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -146,28 +146,28 @@
     cursor: pointer;
 }
 
-.panel-heading a {
+.accordion-header a {
     display: block;
     position: relative;
     font-weight: bold;
 }
 
-.panel {
+.accordion-item {
     border-color: transparent !important;
     border: none !important;
 }
 
-.panel-title {
+.accordion-title {
     display: flex;
     align-items: center;
     justify-content: left;
 }
 
-.panel-body, .panel-heading {
+.accordion-body, .accordion-header {
     padding: 0;
 }
 
-.panel-heading.buttonAppearance {
+.accordion-header.buttonAppearance {
     display: flex;
     height: 20%;
     width: 100%;
@@ -178,7 +178,7 @@
     padding: 0.5em 0.10em 0.5em 0.10em;
 }
 
-.panel-heading.buttonAppearance h4 {
+.accordion-header.buttonAppearance h4 {
     width: 100%;
     align-items: center;
     margin-left: 2%;

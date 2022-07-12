@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from siphon.catalog import TDSCatalog
-from tethys_sdk.permissions import login_required, has_permission
+from tethys_sdk.permissions import has_permission
+from tethys_sdk.routing import controller
 
 from .app import Metdataexplorer as app
 from .databaseInterface import determine_dimension_type, get_variable_metadata, add_variables_to_opendap_url, \
@@ -26,6 +27,10 @@ def reset_home_var(home_variable):
         os.environ.pop('HOME')
 
 
+@controller(
+    name='getFoldersAndFilesFromCatalog',
+    url='getFoldersAndFilesFromCatalog/',
+)
 def get_files_and_folders_from_catalog(request):
     try:
         home_variable = set_rc_vars()
@@ -68,6 +73,10 @@ def get_files_and_folders_from_catalog(request):
     return JsonResponse(dict_to_return)
 
 
+@controller(
+    name='getPermissionsFromServer',
+    url='getPermissionsFromServer/',
+)
 def get_permissions_from_server(request):
     try:
         permissions = {
@@ -84,6 +93,10 @@ def get_permissions_from_server(request):
     return JsonResponse(permissions)
 
 
+@controller(
+    name='getVariablesAndDimensionsForFile',
+    url='getVariablesAndDimensionsForFile/',
+)
 def get_variables_and_dimensions_for_file(request):
     try:
         home_variable = set_rc_vars()
@@ -135,6 +148,10 @@ def get_variables_and_dimensions_for_file(request):
     return JsonResponse(dict_to_return)
 
 
+@controller(
+    name='updateFileData',
+    url='updateFileData/',
+)
 def update_files(request):
     try:
         if request.is_ajax() and request.method == 'POST':
@@ -254,6 +271,10 @@ def update_files(request):
     return JsonResponse(file_to_return)
 
 
+@controller(
+    name='getWMSImageFromServer',
+    url='getWMSImageFromServer/',
+)
 def wms_image_from_server(request):
     try:
         if 'main_url' in request.GET:
@@ -271,6 +292,10 @@ def wms_image_from_server(request):
         return JsonResponse({'error': e})
 
 
+@controller(
+    name='getLegendImageFromServer',
+    url='getLegendImageFromServer/',
+)
 def legend_image_from_server(request):
     try:
         if 'main_url' in request.GET:

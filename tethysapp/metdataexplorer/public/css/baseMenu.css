@@ -198,6 +198,18 @@ div .active {
     color: white;
 }
 
+.btn-primary {
+    border-color: #3379b7;
+    background-color: #3379b7;
+    color: white;
+}
+
+.btn-primary:hover {
+    border-color: #204d74;
+    background-color: #204d74;
+    color: white;
+}
+
 .wms-input {
     height: 2.4em;
     background-color: #3478b7;

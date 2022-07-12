@@ -1,7 +1,12 @@
 import os
 from django.http import JsonResponse
+from tethys_sdk.routing import controller
 
 
+@controller(
+    name='getCredentialsFromServer',
+    url='getCredentialsFromServer/',
+)
 def get_authentication_credentials_from_file(request):
     file_with_credentials = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                               'workspaces', 'app_workspace', '.netrc'), 'r')
@@ -54,6 +59,10 @@ def make_files_for_authentication_credentials():
         print(e)
 
 
+@controller(
+    name='removeCredentialsFromServer',
+    url='removeCredentialsFromServer/',
+)
 def remove_authentication_credentials_from_file(request):
     try:
         machine = request.POST.get('machine')
@@ -84,6 +93,10 @@ def remove_authentication_credentials_from_file(request):
     return JsonResponse(message)
 
 
+# @controller(
+#     name='addCredentialToServer',
+#     url='addCredentialToServer/',
+# )
 # def write_authentication_credentials_to_file(request):
     # try:
     #         machine = request.POST.get('machine')

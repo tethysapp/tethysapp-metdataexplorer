@@ -1,6 +1,10 @@
 {% extends "metdataexplorer/base.html" %}
 {% load tethys_gizmos %}
 
+{% block import_gizmos %}
+  {% import_gizmo_dependency select_input %}
+{% endblock %}
+
 {% block app_content %}
 <div id="main-window">
   <div id="map"></div>
@@ -14,7 +18,7 @@
       </div>
       <div id="carousel-lower-div">
         <div id="move-carousel-right" class="carousel-arrow">
-          <span class="glyphicon glyphicon-chevron-left carousel-arrow-btn"></span>
+          <i class="bi bi-chevron-left carousel-arrow-btn"></i>
         </div>
         <div class="carousel-inner">
           <div id="carousel-container-1" class="carousel-item">
@@ -151,7 +155,7 @@
           </div>
         </div>
         <div id="move-carousel-left" class="carousel-arrow">
-          <span class="glyphicon glyphicon-chevron-right carousel-arrow-btn"></span>
+          <i class="bi bi-chevron-right carousel-arrow-btn"></i>
         </div>
       </div>
     </div>

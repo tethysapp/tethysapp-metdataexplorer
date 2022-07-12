@@ -62,17 +62,17 @@ setModalEventListeners = function () {
     });
 
     document.getElementById("select-all-button").addEventListener("click", () => {
-        if ($("#select-all-button").attr("data-select") === "true") {
+        if ($("#select-all-button").attr("data-bs-select") === "true") {
             $("#select-all-button").empty();
-            $("#select-all-button").html(`<span class="glyphicon glyphicon-check"></span>`);
-            $("#select-all-button").attr("data-select", "false");
+            $("#select-all-button").html(`<i class="bi bi-check2-square"></i>`);
+            $("#select-all-button").attr("data-bs-select", "false");
             $(".attr-checkbox").each(function () {
                 $(this).prop("checked", false);
             });
         } else {
             $("#select-all-button").empty();
-            $("#select-all-button").html(`<span class="glyphicon glyphicon-unchecked"></span>`);
-            $("#select-all-button").attr("data-select", "true");
+            $("#select-all-button").html(`<i class="bi bi-square"></i>`);
+            $("#select-all-button").attr("data-bs-select", "true");
             $(".attr-checkbox").each(function () {
                 $(this).prop("checked", true);
             });
