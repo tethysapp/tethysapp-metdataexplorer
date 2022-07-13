@@ -101,12 +101,12 @@ def get_variables_and_dimensions_for_file(request):
             list_of_dimensions = []
             all_variables.append(variable)
 
-            if len(ds[variable].dimensions) > 1:
-                if variable != ds[variable].dimensions[0]:
-                    for dimension in ds[variable].dimensions:
-                        list_of_dimensions.append(dimension)
+            # if len(ds[variable].dimensions) > 1:
+            #     if variable != ds[variable].dimensions[0]:
+            for dimension in ds[variable].dimensions:
+                list_of_dimensions.append(dimension)
 
-                    list_of_variables[variable] = list_of_dimensions
+            list_of_variables[variable] = list_of_dimensions
 
         dict_to_return = {
             'data': {
