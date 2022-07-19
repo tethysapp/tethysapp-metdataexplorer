@@ -190,9 +190,9 @@ def prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimensi
 
 
 @controller(
-     name='formatParametersForGrids',
-     url='formatParametersForGrids/',
- )
+    name='formatParametersForGrids',
+    url='formatParametersForGrids/',
+)
 def format_parameters_for_grids(request):
     try:
         if request.is_ajax() and request.method == 'POST':
