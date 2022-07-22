@@ -66,24 +66,24 @@ addGroupToDatabaseAjax = function () {
         description: $('#addGroup-description').val()
     };
 
-    $("#loading-add-group").removeClass("hidden");
+    $("#loading-add-group").removeClass("d-none");
     try {
         if (checkForSameNamesAjax("Group", newGroup.title) == true) {
-            $("#loading-add-group").addClass("hidden");
+            $("#loading-add-group").addClass("d-none");
             notifyOfInfo('There is already a group with that name. Please provide a unique name');
             return false;
         }
         if (newGroup.title == "") {
-            $("#loading-add-group").addClass("hidden");
+            $("#loading-add-group").addClass("d-none");
             notifyOfInfo('Please enter a title. This field cannot be blank.');
             return false;
         } else if (specials.test(newGroup.title)) {
-            $("#loading-add-group").addClass("hidden");
+            $("#loading-add-group").addClass("d-none");
             notifyOfInfo("The following characters are not permitted in the title [ * | \" : < > [ \ ] { } ` \ \ ( ) ' ; @ & $ ]");
             return false;
         }
         if (newGroup.description == "") {
-            $("#loading-add-group").addClass("hidden");
+            $("#loading-add-group").addClass("d-none");
             notifyOfInfo('Please enter a description for this group. This field cannot be blank.');
             return false;
         }
@@ -109,7 +109,7 @@ addGroupToDatabaseAjax = function () {
 
                     htmlForNavigation = htmlForGroupsInNavigation(groupId);
                     $(htmlForNavigation).appendTo("#groups-in-navigation-container");
-                    $("#loading-add-group").addClass("hidden");
+                    $("#loading-add-group").addClass("d-none");
                     $("#modalAddGroupToDatabase").modal("hide");
                 }
             }

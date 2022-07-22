@@ -36,10 +36,10 @@ let setModalEventListeners;
 setModalEventListeners = function () {
     //modalAddFileToDatabase
     document.getElementById("information-about-group-button").addEventListener("click", () => {
-        if ($("#info-tdsURL").attr("class") === "hidden") {
-            $("#info-tdsURL").removeClass("hidden");
+        if ($("#info-tdsURL").attr("class") === "d-none") {
+            $("#info-tdsURL").removeClass("d-none");
         } else {
-            $("#info-tdsURL").addClass("hidden");
+            $("#info-tdsURL").addClass("d-none");
         }
     });
 
