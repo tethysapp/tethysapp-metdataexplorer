@@ -4,10 +4,12 @@
   <div class="modal-dialog">
     <div class="modal-content myModal">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">
-          &times;
-        </button>
         <h4 class="modal-title">Catalog Files and Folders</h4>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
       </div>
       <div
         id="loading-for-modalFoldersAndFilesExplorer"
@@ -21,7 +23,7 @@
       </div>
       <div id="modal-body-for-modalFoldersAndFilesExplorer" class="modal-body">
         <div id="up-a-level-btn" class="file">
-          <span class="file-folder-icon glyphicon glyphicon-menu-up"></span>
+          <i class="file-folder-icon bi bi-chevron-up"></i>
           <p class="file-folder-text">Up a Level</p>
         </div>
         <div id="div-for-folder-and-file-explorer"></div>

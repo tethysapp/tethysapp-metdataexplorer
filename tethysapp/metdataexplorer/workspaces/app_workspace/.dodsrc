@@ -1,0 +1,2 @@
+HTTP.COOKIEJAR=/home/tethys/tethysdev/tethysapp-metdataexplorer/tethysapp/metdataexplorer/workspaces/app_workspace/.urs_cookies
+HTTP.NETRC=/home/tethys/tethysdev/tethysapp-metdataexplorer/tethysapp/metdataexplorer/workspaces/app_workspace/.netrc
