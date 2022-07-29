@@ -25,18 +25,26 @@ def extract_time_series_using_grids(request):
             shapefile_behavior = json.loads(request.POST.get('shapefileBehavior'))
             statistic = request.POST.get('statistic')
 
+            print(opendap_url)
+            print(variable)
+
             dimensions_for_grids, final_coordinates, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
                 = prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimension_values)
+
+            print(dimensions_for_grids)
 
             if credentials != 'none':
                 grids_initializer = grids.TimeSeries([opendap_url], variable, dimensions_for_grids,
                                                      user=credentials['username'], pswd=credentials['password'])
             else:
                 grids_initializer = grids.TimeSeries([opendap_url], variable, dimensions_for_grids)
+                print(grids_initializer)
 
+            print(geojson_type)
             if geojson_type == 'marker':
                 time_series = get_time_series_with_point(grids_initializer, formatted_values)
             elif geojson_type == 'rectangle':
+
                 time_series = get_time_series_with_box(grids_initializer, formatted_values, statistic)
             else:
                 time_series = get_time_series_with_shapefile(grids_initializer, filepath_to_shifted_geojson,
@@ -254,7 +262,13 @@ def get_time_series_with_point(grids_initializer, dimension_values):
 
 
 def get_time_series_with_box(grids_initializer, dimension_values, statistic):
+    print('------------------------------')
+    print(grids_initializer)
+    print(dimension_values)
+    print(statistic)
+    print('------------------------------')
     time_series = grids_initializer.bound(dimension_values[0], dimension_values[1], stats=statistic)
+    print(time_series)
     return time_series
 
 

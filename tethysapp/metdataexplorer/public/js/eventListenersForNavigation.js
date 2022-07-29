@@ -97,7 +97,9 @@ setNavigationEventListeners = function () {
 
             Object.keys(ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables).forEach((variable, index) => {
                 let value = variable;
-                if (ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.standard_name !== undefined) {
+                if (ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.long_name !== undefined) {
+                    value = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.long_name;
+                } else if (ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.standard_name !== undefined) {
                     value = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.standard_name;
                 }
 

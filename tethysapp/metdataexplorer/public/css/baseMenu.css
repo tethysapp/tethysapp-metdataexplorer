@@ -160,6 +160,10 @@ div .active {
     border-width: 0.01em;
 }
 
+.dropdown-menu {
+    width: 100%;
+}
+
 .selectpicker-prepend {
     display: flex;
     flex-direction: row;

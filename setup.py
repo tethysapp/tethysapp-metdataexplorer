@@ -16,7 +16,7 @@ resource_files += find_resource_files('tethysapp/' + app_package + '/workspaces'
 
 setup(
     name=release_package,
-    version='1.4.9',
+    version='1.4.10',
     description='An app for viewing and analysing gridded data served from a THREDDS DATA SERVER.',
     long_description='',
     keywords='netCDF, THREDDS, meteorological, gridded data',
