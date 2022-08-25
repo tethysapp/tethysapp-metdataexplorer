@@ -344,7 +344,6 @@ def delete_files_from_database(request):
             if request.is_ajax() and request.method == 'POST':
                 files = request.POST.getlist("titles[]")
 
-
                 SessionMaker = app.get_persistent_store_database(Persistent_Store_Name, as_sessionmaker=True)
                 session = SessionMaker()
 
@@ -569,6 +568,23 @@ def get_approximate_variable_value_range(variable):
             'max': str(100)
         }
     return min_max_array
+
+
+def get_disclaimer(request):
+    try:
+        disclaimer_message = app.get_custom_setting('disclaimer_message')
+        disclaimer_header = app.get_custom_setting('disclaimer_header')
+
+        array_to_return = {
+            'header': disclaimer_header,
+            'message': disclaimer_message
+        }
+    except Exception as e:
+        array_to_return = {
+            'errorMessage': 'An error occurred.',
+            'error': str(e)
+        }
+    return JsonResponse(array_to_return)
 
 
 def get_variable_metadata(variable):

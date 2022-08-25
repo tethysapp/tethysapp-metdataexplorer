@@ -16,7 +16,7 @@ import {
     addShapefileToDatabaseURL,
     getShapefileNamesFromDatabaseURL,
     deleteShapefileFromDatabaseURL,
-    getShapefileCoordinatesFromDatabaseURL, calculateNewDatasetURL
+    getShapefileCoordinatesFromDatabaseURL, calculateNewDatasetURL, getDisclaimerURL
 } from "./urlsPackage.js";
 import {htmlForGroupsInNavigation} from "./htmlPackage.js";
 import {generateUniqueId} from "./auxilaryPackage.js";
@@ -31,6 +31,7 @@ let deleteFileFromDatabaseAjax;
 let deleteGroupsFromDatabaseAjax;
 let deleteShapefileFromDatabaseAjax;
 let getCredentialsFromServerAjax;
+let getDisclaimerAjax;
 let getGroupsFromDatabaseAjax;
 let getFileForSpecificGroupAjax;
 let getShapefileCoordinatesFromDatabaseAjax;
@@ -331,6 +332,26 @@ getCredentialsFromServerAjax = async function () {
     }
 };
 
+getDisclaimerAjax = async function () {
+    try {
+        const result = await $.ajax({
+            dataType: "JSON",
+            type: "GET",
+            url: getDisclaimerURL,
+        });
+
+        if (result.errorMessage !== undefined) {
+            notifyOfDanger(result.errorMessage);
+            console.error(errorMessage);
+        } else {
+            return result;
+        }
+    } catch (error) {
+        notifyOfDanger("An error occurred.");
+        console.error(error);
+    }
+};
+
 getGroupsFromDatabaseAjax = async function () {
     try {
         const result = await $.ajax({
@@ -403,6 +424,7 @@ export {
     deleteGroupsFromDatabaseAjax,
     deleteShapefileFromDatabaseAjax,
     getCredentialsFromServerAjax,
+    getDisclaimerAjax,
     getGroupsFromDatabaseAjax,
     getFileForSpecificGroupAjax,
     getShapefileCoordinatesFromDatabaseAjax,

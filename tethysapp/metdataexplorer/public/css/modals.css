@@ -249,6 +249,10 @@
     border-color: black;
 }
 
+#disclaimer-header {
+    text-align: center
+}
+
 .calculator-button {
     display: flex;
     justify-content: center;

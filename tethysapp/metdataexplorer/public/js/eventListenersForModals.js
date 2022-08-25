@@ -33,6 +33,7 @@ import {
 } from "./htmlHelpersForModals.js";
 import {createGeojosnMarker} from "./mapPackage.js";
 import {createGraph, makeTrace} from "./graphPackage.js";
+import {permissionToAdd} from "./permissionsPackage.js";
 
 let setModalEventListeners;
 
@@ -329,9 +330,11 @@ setModalEventListeners = function () {
     //modalStyleInformationForWMSLayer
 
     //modalShapefilelist
-    document.getElementById("shapefile-list-upload-shapefile-button").addEventListener("click", () => {
-        $("#modalUploadAShapefile").modal("show");
-    });
+    if (permissionToAdd()) {
+        document.getElementById("shapefile-list-upload-shapefile-button").addEventListener("click", () => {
+            $("#modalUploadAShapefile").modal("show");
+        });
+    }
 
     document.getElementById("shapefile-list").addEventListener("click", (event) => {
         const clickedElement = event.target;

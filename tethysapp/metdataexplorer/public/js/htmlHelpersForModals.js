@@ -12,6 +12,10 @@ import {
     getShapefileNamesFromDatabaseAjax,
     removeCredentialFromServerAjax
 } from "./databasePackage.js";
+import {
+    permissionToAdd,
+    permissionToDelete
+} from "./permissionsPackage.js";
 import {getDimensionsAndVariablesForFileAjax} from "./dataRemoteAccessPackage.js";
 import {addListOfVariablesAndDimensions} from "./htmlPackage.js";
 
@@ -99,6 +103,7 @@ addDatasetsToCalculator = function () {
 };
 
 //modalListAuthentication
+
 addCredentialToServer = async function () {
     try {
         if ($("#new-credential-machine").val() === "" || $("#new-credential-username").val() === "" || $("#new-credential-password").val() === "") {
@@ -243,19 +248,22 @@ buildModalShapefileList = async function () {
 };
 
 addShapefileNameToTable = function (uniqueId, name) {
-        const html = `<tr id="shapefile-group-${uniqueId}">
+        let html = `<tr id="shapefile-group-${uniqueId}">
             <th scope="col">
                 <span>
                     <input type="radio" class="shapefile-radio-button" name="auth-select" value="${uniqueId}">
                 </span>
             </th>
             <th scope="col"><span><p class="shapefile-name">${name}</p></span></th>
-            <th scope="col">
-                <button class="delete-shapefile" type="button" value="${uniqueId}">
-                    <span class="glyphicon glyphicon-trash"></span>
-                </button>
-            </th>
-        </tr>`;
+            <th scope="col">`;
+
+        if (permissionToDelete()) {
+            html += `<button class="delete-shapefile" type="button" value="${uniqueId}">
+                        <span class="glyphicon glyphicon-trash"></span>
+                     </button>`;
+        }
+
+        html += `</th></tr>`;
     return html;
 };
 

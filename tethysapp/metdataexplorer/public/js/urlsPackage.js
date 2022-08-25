@@ -11,6 +11,7 @@ const extractTimeseriesURL = "extractTimeseries/";
 const formatParametersForGridsURL = "formatParametersForGrids/";
 const getAllGroupsFromServerURL = "getAllGroupsFromDatabase/";
 const getCredentialsFromServerURL = "getCredentialsFromServer/";
+const getDisclaimerURL = "getDisclaimerFromServer/";
 const getFoldersAndFilesFromCatalogURL = "getFoldersAndFilesFromCatalog/";
 const getPermissionsFromServerURL = "getPermissionsFromServer/";
 const getShapefileNamesFromDatabaseURL = "getShapefileNamesFromDatabase/";
@@ -34,6 +35,7 @@ export {
     formatParametersForGridsURL,
     getAllGroupsFromServerURL,
     getCredentialsFromServerURL,
+    getDisclaimerURL,
     getFoldersAndFilesFromCatalogURL,
     getPermissionsFromServerURL,
     getThreddsFileForSingleGroupURL,

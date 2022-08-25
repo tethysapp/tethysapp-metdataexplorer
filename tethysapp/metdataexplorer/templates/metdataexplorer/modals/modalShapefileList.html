@@ -16,14 +16,18 @@
                     <tr>
                       <th scope="col"></th>
                       <th scope="col">Name</th>
-                      <th scope="col">Delete</th>
+                      {% if can_delete_groups %}
+                        <th scope="col">Delete</th>
+                      {% endif %}
                     </tr>
                   </thead>
                   <tbody id="shapefile-list"></tbody>
                 </table>
                 <div class="table-row">
                     <div>
+                    {% if can_add_groups %}
                         <button id="shapefile-list-upload-shapefile-button" type="button" class="btn btn-primary table-button">Upload Shapefile</button>
+                    {% endif %}
                     </div>
                 </div>
             </div>

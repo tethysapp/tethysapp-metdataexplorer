@@ -1,4 +1,4 @@
-from tethys_sdk.app_settings import PersistentStoreDatabaseSetting
+from tethys_sdk.app_settings import PersistentStoreDatabaseSetting, CustomSetting
 from tethys_sdk.base import TethysAppBase, url_map_maker
 
 
@@ -86,6 +86,11 @@ class Metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.databaseInterface.get_all_files_from_a_group'
             ),
             UrlMap(
+                name='getDisclaimerFromServer',
+                url='getDisclaimerFromServer/',
+                controller='metdataexplorer.databaseInterface.get_disclaimer'
+            ),
+            UrlMap(
                 name='getShapefileCoordinatesFromDatabase',
                 url='getShapefileCoordinatesFromDatabase/',
                 controller='metdataexplorer.databaseInterface.get_shapefile_coordinates'
@@ -149,3 +154,35 @@ class Metdataexplorer(TethysAppBase):
             ),
         )
         return ps_settings
+
+    def custom_settings(self):
+        """
+        Example custom_settings method.
+        """
+        custom_settings = (
+            CustomSetting(
+                name='disclaimer_header',
+                type=CustomSetting.TYPE_STRING,
+                description='Disclaimer Header',
+                required=False
+            ),
+            CustomSetting(
+                name='disclaimer_message',
+                type=CustomSetting.TYPE_STRING,
+                description='Disclaimer Message',
+                required=False
+            ),
+            CustomSetting(
+                name='ges_disc_username',
+                type=CustomSetting.TYPE_STRING,
+                description='Username for GES DISC',
+                required=False
+            ),
+            CustomSetting(
+                name='ges_disc_password',
+                type=CustomSetting.TYPE_STRING,
+                description='Password for GES DISC',
+                required=False
+            )
+        )
+        return custom_settings
