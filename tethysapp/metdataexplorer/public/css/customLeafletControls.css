@@ -1,0 +1,73 @@
+.leaflet-control-wms-legend {
+    display: flex;
+    padding: 0.2em;
+    border-radius: 2px;
+    box-shadow: 0 1px 7px rgba(0, 0, 0, 0.65);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    background-color: #000000;
+}
+
+.leaflet-control-wms-legend:hover {
+    background-color: #000000;
+}
+
+.leaflet-lat-lon {
+    display: flex;
+    position: relative;
+    left: 2px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    cursor: pointer;
+    background-color: #FFFFFF;
+    height: 30px;
+}
+
+.lat-lon-input {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 33em;
+}
+
+.lat-lon-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+}
+
+.sub-input-lat-lon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 27em;
+    height: 30px;
+}
+
+.lat-lon-tx-input {
+    width: 10em;
+    height: 1.7em;
+}
+
+.close-lat-lon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+}
+
+.add-lat-lon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+}

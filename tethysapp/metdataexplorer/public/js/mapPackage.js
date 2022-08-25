@@ -1,10 +1,12 @@
 import {appProxyURL} from "./urlsPackage.js";
 import {notifyOfInfo} from "./userMessagingPackage.js";
+import {addLatLonControl, wmsLegend} from "./customLeafletControlsPackage.js";
 
 let changeWMSLayerOpacity;
 let createDrawingLayers;
 let createGeojosnMarker;
 let createMapMarker;
+let createMapMarkerFromLatLon;
 let createWMSLayer;
 let getMarkerGeojson;
 let mapMarkerLayer;
@@ -12,6 +14,7 @@ let geojsonMarkerLayer;
 let drawMenu;
 let initBaseMaps;
 let initMap;
+let legend;
 let mapObj;
 let mapDrawingMenu;
 let removeTimeDimensionLayer;
@@ -68,6 +71,16 @@ createMapMarker = function (drawEvent) {
     }
 };
 
+createMapMarkerFromLatLon = function (lat, lon) {
+    const marker = L.marker([lat, lon]);
+    mapMarkerLayer.clearLayers();
+    geojsonMarkerLayer.clearLayers();
+    marker.addTo(mapMarkerLayer);
+    ACTIVE_VARIABLES_PACKAGE.geojson.type = "marker";
+    ACTIVE_VARIABLES_PACKAGE.geojson.shapefile = false;
+    ACTIVE_VARIABLES_PACKAGE.geojson.feature = marker.toGeoJSON();
+};
+
 createWMSLayer = function () {
     const currentGroupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
     const currentFileId = ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId;
@@ -75,13 +88,31 @@ createWMSLayer = function () {
     const variable = document.getElementById("variables-select").value;
     const dimensions = ACTIVE_VARIABLES_PACKAGE.allServerData[currentGroupId].files[currentFileId].variables[variable].dimensions;
     const min = document.getElementById("wms-bound-min").value;
-    const max = $("#wms-bound-max").val();
+    const max = document.getElementById("wms-bound-max").value;
     const range = `${min},${max}`;
     const style = $("#wmslayer-style").val();
+    const legendStyle = style.replace('boxfill/', '');
+
+    const span = max - min;
 
     let proxyWMSURL;
     let wmsLayer;
     let additionalDimensionArray = {};
+    let finalMax;
+    let finalMin;
+
+    if (Math.abs(span) <= 1) {
+        finalMax = max;
+        finalMin = min;
+    } else if (Math.abs(span) <= 10) {
+        finalMax = Math.round(max * 100) / 100;
+        finalMin = Math.round(min * 100) / 100;
+    } else {
+        finalMax = Math.round(max);
+        finalMin = Math.round(min);
+    }
+
+    const legendRange = `${finalMin},${finalMax}`;
 
     dimensions.forEach((dimension) => {
         const dimensionType = ACTIVE_VARIABLES_PACKAGE.allServerData[currentGroupId].files[currentFileId].dimensions[dimension].dimensionType;
@@ -115,13 +146,18 @@ createWMSLayer = function () {
 
         wmsTimeDimensionLayer = L.timeDimension.layer.wms(wmsLayer, {
             cacheForward: 200,
-            name: `timeDimensionLayer`,
+            name: "timeDimensionLayer",
             requestTimefromCapabilities: false,
             updateTimeDimension: true,
             updateTimeDimensionMode: "replace"
         });
 
         wmsTimeDimensionLayer.addTo(mapObj);
+
+        const legendURI = `${wmsURL}?REQUEST=GetLegendGraphic&LAYER=${variable}&PALETTE=${legendStyle}&colorscalerange=${legendRange}`;
+        console.log(legendURI)
+        legend = wmsLegend(legendURI, 'bottomright')
+
     } catch (err) {
         console.error(err);
     }
@@ -201,12 +237,14 @@ mapDrawingMenu = function (map) {
 removeTimeDimensionLayer = function () {
     if (mapObj.hasLayer(wmsTimeDimensionLayer)) {
         mapObj.removeLayer(wmsTimeDimensionLayer);
+        mapObj.removeControl(legend);
     }
 };
 
 setUpMap = function (callback) {
     initMap();
     initBaseMaps(mapObj);
+    addLatLonControl();
     createDrawingLayers(mapObj);
     drawMenu = mapDrawingMenu(mapObj);
 
@@ -223,6 +261,7 @@ export {
     changeWMSLayerOpacity,
     createGeojosnMarker,
     createMapMarker,
+    createMapMarkerFromLatLon,
     createWMSLayer,
     drawMenu,
     getMarkerGeojson,

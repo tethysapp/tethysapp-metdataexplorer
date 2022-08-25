@@ -136,16 +136,13 @@ def update_dimensions(request):
             url += dimension
             if dimension != dimensions[len(dimensions) - 1]:
                 url += ','
-        print(url)
+
         ds = netCDF4.Dataset(url)
-        print('dataset retrieved')
 
         for dimension in ds.dimensions:
-            print(dimension)
             dimension_type = determine_dimension_type(ds.dimensions[dimension], ds.variables)
             dimension_metadata = get_variable_metadata(ds.variables[dimension])
             if dimension_type == 'time':
-                print('dimension is time')
                 if 'units' in dimension_metadata:
                     if 'calendar' in dimension_metadata:
                         calendar = dimension_metadata['calendar']
@@ -162,7 +159,6 @@ def update_dimensions(request):
             else:
                 updated_values[dimension] = ds.variables[dimension][:].data.tolist()
 
-        print(updated_values)
         dict_to_return = {
             'data': {
                 'updatedValues': updated_values
