@@ -1,6 +1,6 @@
 import {appProxyURL} from "./urlsPackage.js";
 import {notifyOfInfo} from "./userMessagingPackage.js";
-import {addLatLonControl, wmsLegend} from "./customLeafletControlsPackage.js";
+import {addLatLonControl, wmsLegend} from "./customControlsPackage.js";
 
 let changeWMSLayerOpacity;
 let createDrawingLayers;
@@ -155,7 +155,6 @@ createWMSLayer = function () {
         wmsTimeDimensionLayer.addTo(mapObj);
 
         const legendURI = `${wmsURL}?REQUEST=GetLegendGraphic&LAYER=${variable}&PALETTE=${legendStyle}&colorscalerange=${legendRange}`;
-        console.log(legendURI)
         legend = wmsLegend(legendURI, 'bottomright')
 
     } catch (err) {
