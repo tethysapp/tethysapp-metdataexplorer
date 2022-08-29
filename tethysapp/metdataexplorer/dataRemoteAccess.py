@@ -3,6 +3,7 @@ from siphon.catalog import TDSCatalog
 from tethys_sdk.permissions import login_required, has_permission
 from .databaseInterface import determine_dimension_type, get_variable_metadata
 
+import cfbuild
 import os
 import netCDF4
 import requests
@@ -94,19 +95,18 @@ def get_variables_and_dimensions_for_file(request):
         opendap_url = request.POST.get('opendapURL')
         list_of_variables = {}
 
-        ds = netCDF4.Dataset(opendap_url)
+        ds = cfbuild.Dataset(opendap_url)
         all_variables = []
 
         for variable in ds.variables:
-            list_of_dimensions = []
-            all_variables.append(variable)
+            if variable.variable_type == 'Georeferenced Data Variable':
+                list_of_dimensions = []
+                all_variables.append(variable.name)
 
-            if len(ds[variable].dimensions) > 0:
-                if variable != ds[variable].dimensions[0]:
-                    for dimension in ds[variable].dimensions:
-                        list_of_dimensions.append(dimension)
+                for dimension in variable.dimensions:
+                    list_of_dimensions.append(dimension)
 
-            list_of_variables[variable] = list_of_dimensions
+                list_of_variables[variable.name] = list_of_dimensions
 
         dict_to_return = {
             'data': {

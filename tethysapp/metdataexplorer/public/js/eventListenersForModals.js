@@ -58,7 +58,7 @@ setModalEventListeners = function () {
         }
     });
 
-    document.getElementById("search-for-variable").addEventListener("click", () => {
+    document.getElementById("search-for-variable").addEventListener("input", () => {
         const idOfInputWithValueToSearch = "search-for-variable";
         const idOfTableToSearch = "table-of-variables";
         searchAndFilterATable(idOfInputWithValueToSearch, idOfTableToSearch);

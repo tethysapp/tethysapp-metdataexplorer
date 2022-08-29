@@ -19,4 +19,5 @@ requirements:
       - netcdf4
   pip:
     - grids
+    - cfbuild
 post:
