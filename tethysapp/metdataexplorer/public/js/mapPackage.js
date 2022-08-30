@@ -122,7 +122,7 @@ createWMSLayer = function () {
     });
 
     if (Object.keys(additionalDimensionArray).length <= 0) {
-        additionalDimensionArray["null"] = null
+        additionalDimensionArray["null"] = null;
     }
 
     try {

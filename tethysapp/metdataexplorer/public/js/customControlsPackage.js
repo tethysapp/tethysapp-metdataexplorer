@@ -1,5 +1,6 @@
 import {createMapMarkerFromLatLon, mapObj} from "./mapPackage.js";
 import {notifyOfDanger} from "./userMessagingPackage.js";
+import {appProxyURL} from "./urlsPackage.js";
 
 let addLatLonControl;
 let createLegend;
@@ -23,7 +24,7 @@ createLegend = L.Control.extend({
         this.legendText.innerText = "Legend";
         this.legendText.style.display = "none";
         this.img = L.DomUtil.create("img", legendClassName, this.container);
-        this.img.src = this.options.uri;
+        this.img.src = `${appProxyURL}?main_url=${this.options.uri}`;
 
         L.DomEvent
             .on(this.img, "click", this._click, this)
