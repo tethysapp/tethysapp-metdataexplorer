@@ -121,6 +121,11 @@ class Metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.dataRemoteAccess.wms_image_from_server'
             ),
             UrlMap(
+                name='getLegendImageFromServer',
+                url='getLegendImageFromServer/',
+                controller='metdataexplorer.dataRemoteAccess.legend_image_from_server'
+            ),
+            UrlMap(
                 name='updateDimensions',
                 url='updateDimensions/',
                 controller='metdataexplorer.dataRemoteAccess.update_dimensions'

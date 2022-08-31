@@ -1,4 +1,4 @@
-import {appProxyURL} from "./urlsPackage.js";
+import {appProxyURL, legendProxyURL} from "./urlsPackage.js";
 import {notifyOfInfo} from "./userMessagingPackage.js";
 import {addLatLonControl, wmsLegend} from "./customControlsPackage.js";
 
@@ -155,7 +155,8 @@ createWMSLayer = function () {
         wmsTimeDimensionLayer.addTo(mapObj);
 
         const legendURI = `${wmsURL}?REQUEST=GetLegendGraphic&LAYER=${variable}&PALETTE=${legendStyle}&colorscalerange=${legendRange}`;
-        legend = wmsLegend(legendURI, 'bottomright')
+        const proxyLegendURI = `${legendProxyURL}?main_url=${encodeURIComponent(legendURI)}`;
+        legend = wmsLegend(proxyLegendURI, 'bottomright')
 
     } catch (err) {
         console.error(err);

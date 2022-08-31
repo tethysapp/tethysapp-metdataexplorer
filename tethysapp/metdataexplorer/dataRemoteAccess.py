@@ -190,3 +190,21 @@ def wms_image_from_server(request):
     except Exception as e:
         print(e)
         return JsonResponse({'error': e})
+
+
+def legend_image_from_server(request):
+    try:
+        if 'main_url' in request.GET:
+            print('--------------------------------------------------')
+            print(request.GET.get())
+            request_url = request.GET.get('main_url')
+            print(request_url)
+            r = requests.get(request_url)
+            reset_rc_vars(old_dodsrcfile, old_netrc)
+            print('success')
+            return HttpResponse(r.content, content_type="image/png")
+        else:
+            return JsonResponse({})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': e})

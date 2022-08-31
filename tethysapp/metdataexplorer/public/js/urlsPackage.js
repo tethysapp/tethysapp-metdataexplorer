@@ -2,6 +2,7 @@ const addCredentialToServerURL = "addCredentialToServer/";
 const addFileToDatabaseURL = "addFileToDatabase/";
 const addGroupToDatabaseURL = "addGroupToDatabase/";
 const appProxyURL = "getWMSImageFromServer";
+const legendProxyURL = "getLegendImageFromServer";
 const addShapefileToDatabaseURL = "addShapefileToDAtabase/";
 const calculateNewDatasetURL = "calculateNewDataset/";
 const deleteFilesFromDatabaseURL = "deleteFilesFromDatabase/";
@@ -42,6 +43,7 @@ export {
     getShapefileCoordinatesFromDatabaseURL,
     getShapefileNamesFromDatabaseURL,
     getVariablesAndDimensionsForFileURL,
+    legendProxyURL,
     removeCredentialsFromServerURL,
     updateDimensionsURL
 };

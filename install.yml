@@ -17,6 +17,7 @@ requirements:
       - requests
       - setuptools
       - netcdf4
+      - cfunits
   pip:
     - grids
     - cfbuild
