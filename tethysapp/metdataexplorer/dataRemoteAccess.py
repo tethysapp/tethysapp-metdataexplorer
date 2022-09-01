@@ -195,10 +195,9 @@ def wms_image_from_server(request):
 def legend_image_from_server(request):
     try:
         if 'main_url' in request.GET:
-            print('--------------------------------------------------')
-            print(request.GET.get())
             request_url = request.GET.get('main_url')
             print(request_url)
+            old_dodsrcfile, old_netrc = set_rc_vars()
             r = requests.get(request_url)
             reset_rc_vars(old_dodsrcfile, old_netrc)
             print('success')
