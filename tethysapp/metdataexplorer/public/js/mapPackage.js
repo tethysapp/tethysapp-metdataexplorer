@@ -128,6 +128,10 @@ createWMSLayer = function () {
     try {
         removeTimeDimensionLayer();
 
+        const legendURI = `${wmsURL}?REQUEST=GetLegendGraphic&LAYER=${variable}&PALETTE=${legendStyle}&colorscalerange=${legendRange}`;
+        const proxyLegendURI = `${legendProxyURL}?main_url=${encodeURIComponent(legendURI)}`;
+        legend = wmsLegend(proxyLegendURI, 'bottomright');
+
         proxyWMSURL = `${appProxyURL}?main_url=${encodeURIComponent(wmsURL)}`;
 
         wmsLayer = L.tileLayer.wms(proxyWMSURL, {
@@ -153,11 +157,6 @@ createWMSLayer = function () {
         });
 
         wmsTimeDimensionLayer.addTo(mapObj);
-
-        const legendURI = `${wmsURL}?REQUEST=GetLegendGraphic&LAYER=${variable}&PALETTE=${legendStyle}&colorscalerange=${legendRange}`;
-        const proxyLegendURI = `${legendProxyURL}?main_url=${encodeURIComponent(legendURI)}`;
-        legend = wmsLegend(proxyLegendURI, 'bottomright')
-
     } catch (err) {
         console.error(err);
     }
