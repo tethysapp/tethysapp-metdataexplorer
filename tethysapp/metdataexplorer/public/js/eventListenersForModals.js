@@ -83,6 +83,9 @@ setModalEventListeners = function () {
     });
 
     document.getElementById("btn-link-authentication").addEventListener("click", async () => {
+        $("#modalUserCredentials").modal("show");
+    });
+    /*
         let html = "";
         ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials = {};
         showLoadingModal("modalAddFileToDatabase");
@@ -99,6 +102,7 @@ setModalEventListeners = function () {
         $("#modalListAuthentication").modal("show");
         hideLoadingModal("modalAddFileToDatabase");
     });
+    */
 
     document.getElementById("add-file-to-database-button").addEventListener("click", async () => {
         if ($("#addService-title").val() === "") {
@@ -313,14 +317,21 @@ setModalEventListeners = function () {
         }
     });
 
-    document.getElementById("btn-save-auth").addEventListener("click", () => {
-        const credentialId = $(".credential-radio-button:checked").val();
+    //btn-save-auth
+    document.getElementById("add-credentials-button").addEventListener("click", () => {
+        //const credentialId = $(".credential-radio-button:checked").val();
+        const credentials = `${$("#username-input").val()},${$("#password-input").val()}`;
+        /*
         if (credentialId != "none") {
             ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials[credentialId];
         } else {
             ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = credentialId;
         }
         $("#modalListAuthentication").modal("hide");
+
+         */
+        ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = credentials;
+        $("#modalUserCredentials").modal("hide");
     });
 
     //modalMetaDataForVariable

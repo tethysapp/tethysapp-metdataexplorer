@@ -103,7 +103,7 @@ addDatasetsToCalculator = function () {
 };
 
 //modalListAuthentication
-
+/*
 addCredentialToServer = async function () {
     try {
         if ($("#new-credential-machine").val() === "" || $("#new-credential-username").val() === "" || $("#new-credential-password").val() === "") {
@@ -217,6 +217,8 @@ removeCredentialFromServer = async function (credentialId) {
         console.error(error);
     }
 };
+
+ */
 
 //modalMetaDataForVariable
 
