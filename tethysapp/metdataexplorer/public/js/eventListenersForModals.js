@@ -307,6 +307,7 @@ setModalEventListeners = function () {
     //modalInformationAboutGroup
 
     //modalListAuthentication
+    /*
     document.getElementById("added-auth-credentials").addEventListener("click", (event) => {
         const clickedElement = event.target;
         if (clickedElement.classList.contains("delete-credential") || clickedElement.parentElement?.classList.contains("delete-credential")) {
@@ -317,21 +318,30 @@ setModalEventListeners = function () {
         }
     });
 
+     */
+
     //btn-save-auth
     document.getElementById("add-credentials-button").addEventListener("click", () => {
         //const credentialId = $(".credential-radio-button:checked").val();
-        const credentials = `${$("#username-input").val()},${$("#password-input").val()}`;
-        /*
-        if (credentialId != "none") {
-            ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials[credentialId];
+        if ($("#username-input").val() === "" || $("#password-input").val() === "") {
+            notifyOfDanger("A username and password are required.");
         } else {
-            ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = credentialId;
-        }
-        $("#modalListAuthentication").modal("hide");
+            const credentials = {
+                username: $("#username-input").val(),
+                password: $("#password-input").val()
+            };
+            /*
+            if (credentialId != "none") {
+                ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials[credentialId];
+            } else {
+                ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = credentialId;
+            }
+            $("#modalListAuthentication").modal("hide");
 
-         */
-        ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = credentials;
-        $("#modalUserCredentials").modal("hide");
+             */
+            ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = credentials;
+            $("#modalUserCredentials").modal("hide");
+        }
     });
 
     //modalMetaDataForVariable
