@@ -1,6 +1,8 @@
 from tethys_sdk.app_settings import PersistentStoreDatabaseSetting, CustomSetting
 from tethys_sdk.base import TethysAppBase, url_map_maker
 
+import os
+
 
 class Metdataexplorer(TethysAppBase):
     """
@@ -164,6 +166,18 @@ class Metdataexplorer(TethysAppBase):
         """
         Example custom_settings method.
         """
+        if 'HOME' in os.environ:
+            home_variable = os.environ['HOME']
+        else:
+            home_variable = None
+
+        if home_variable is not None:
+            description = f'Path to the home directory (default: {home_variable}).'
+            home_var_string = home_variable
+        else:
+            description = f'Path to the home directory'
+            home_var_string = ''
+
         custom_settings = (
             CustomSetting(
                 name='disclaimer_header',
@@ -178,16 +192,11 @@ class Metdataexplorer(TethysAppBase):
                 required=False
             ),
             CustomSetting(
-                name='ges_disc_username',
+                name='server_home_directory',
                 type=CustomSetting.TYPE_STRING,
-                description='Username for GES DISC',
-                required=False
-            ),
-            CustomSetting(
-                name='ges_disc_password',
-                type=CustomSetting.TYPE_STRING,
-                description='Password for GES DISC',
-                required=False
+                description=description,
+                default=home_var_string,
+                required=True
             )
         )
         return custom_settings

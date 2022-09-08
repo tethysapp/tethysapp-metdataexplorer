@@ -1,6 +1,8 @@
 from django.http import JsonResponse, HttpResponse
 from siphon.catalog import TDSCatalog
 from tethys_sdk.permissions import login_required, has_permission
+
+from .app import Metdataexplorer as app
 from .databaseInterface import determine_dimension_type, get_variable_metadata
 
 import cfbuild
@@ -9,30 +11,21 @@ import netCDF4
 import requests
 
 
-# def set_rc_vars():
-#    old_dodsrcfile = os.environ.get('DAPRCFILE')
-#    old_netrc = os.environ.get('NETRC')
-#    os.environ['DAPRCFILE'] = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-#                                           'workspaces', 'app_workspace', '.dodsrc')
-#    os.environ['NETRC'] = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-#                                       'workspaces', 'app_workspace', '.netrc')
-#    return old_dodsrcfile, old_netrc
+def set_rc_vars():
+    home_variable = app.get_custom_setting('server_home_directory')
+    return home_variable
 
 
-# def reset_rc_vars(old_dodsrcfile, old_netrc):
-#    if old_dodsrcfile is not None:
-#        os.environ['DAPRCFILE'] = old_dodsrcfile
-#    else:
-#        os.environ.pop('DAPRCFILE')
-#    if old_netrc is not None:
-#        os.environ['NETRC'] = old_netrc
-#    else:
-#        os.environ.pop('NETRC')
+def reset_home_var(home_variable):
+    if home_variable is not None:
+        os.environ['HOME'] = home_variable
+    else:
+        os.environ.pop('HOME')
 
 
 def get_files_and_folders_from_catalog(request):
     try:
-        # old_dodsrcfile, old_netrc = set_rc_vars()
+        home_variable = set_rc_vars()
         dict_of_folders = {}
         dict_of_files = {}
 
@@ -61,7 +54,7 @@ def get_files_and_folders_from_catalog(request):
             }
         }
 
-        # reset_rc_vars(old_dodsrcfile, old_netrc)
+        reset_home_var(home_variable)
     except Exception as e:
         dict_to_return = {
             'data': {
@@ -90,7 +83,7 @@ def get_permissions_from_server(request):
 
 def get_variables_and_dimensions_for_file(request):
     try:
-        # old_dodsrcfile, old_netrc = set_rc_vars()
+        home_variable = set_rc_vars()
 
         opendap_url = request.POST.get('opendapURL')
         list_of_variables = {}
@@ -114,7 +107,7 @@ def get_variables_and_dimensions_for_file(request):
                 'allVariables': all_variables
             }
         }
-        # reset_rc_vars(old_dodsrcfile, old_netrc)
+        reset_home_var(home_variable)
     except Exception as e:
         dict_to_return = {
             'data': {
@@ -181,9 +174,9 @@ def wms_image_from_server(request):
             request_url = request.GET.get('main_url')
             query_params = request.GET.dict()
             query_params.pop('main_url', None)
-            # old_dodsrcfile, old_netrc = set_rc_vars()
+            home_variable = set_rc_vars()
             r = requests.get(request_url, params=query_params)
-            # reset_rc_vars(old_dodsrcfile, old_netrc)
+            reset_home_var(home_variable)
             return HttpResponse(r.content, content_type="image/png")
         else:
             return JsonResponse({})
@@ -197,9 +190,9 @@ def legend_image_from_server(request):
         if 'main_url' in request.GET:
             request_url = request.GET.get('main_url')
             print(request_url)
-            # old_dodsrcfile, old_netrc = set_rc_vars()
+            home_variable = set_rc_vars()
             r = requests.get(request_url)
-            # reset_rc_vars(old_dodsrcfile, old_netrc)
+            reset_home_var(home_variable)
             print('success')
             return HttpResponse(r.content, content_type="image/png")
         else:
