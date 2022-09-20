@@ -6,10 +6,7 @@ from tethys_sdk.routing import controller
 from .app import Metdataexplorer as app
 
 
-@controller(
-    name='home',
-    url='metdataexplorer',
-)
+@controller(name='home', url='metdataexplorer')
 def home(request):
     """
     Controller for the app home page.

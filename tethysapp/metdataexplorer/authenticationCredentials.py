@@ -3,10 +3,7 @@ from django.http import JsonResponse
 from tethys_sdk.routing import controller
 
 
-@controller(
-    name='getCredentialsFromServer',
-    url='getCredentialsFromServer/',
-)
+@controller(name='getCredentialsFromServer', url='getCredentialsFromServer/')
 def get_authentication_credentials_from_file(request):
     file_with_credentials = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                               'workspaces', 'app_workspace', '.netrc'), 'r')
@@ -59,10 +56,7 @@ def make_files_for_authentication_credentials():
         print(e)
 
 
-@controller(
-    name='removeCredentialsFromServer',
-    url='removeCredentialsFromServer/',
-)
+@controller(name='removeCredentialsFromServer', url='removeCredentialsFromServer/')
 def remove_authentication_credentials_from_file(request):
     try:
         machine = request.POST.get('machine')
@@ -93,32 +87,29 @@ def remove_authentication_credentials_from_file(request):
     return JsonResponse(message)
 
 
-# @controller(
-#     name='addCredentialToServer',
-#     url='addCredentialToServer/',
-# )
+# @controller(name='addCredentialToServer', url='addCredentialToServer/')
 # def write_authentication_credentials_to_file(request):
-    # try:
-    #         machine = request.POST.get('machine')
-    #   username = request.POST.get('username')
-    #   password = request.POST.get('password')
-    #   file_with_credentials = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-    #                                             'workspaces', 'app_workspace', '.netrc'), 'a+')
-    #   lines = file_with_credentials.readlines()
-    #   if len(lines) == 0:
-    #       file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
-    #   elif lines[-1] == '\n':
-    #       file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
-    #   else:
-    #       file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
-    #
-    #   file_with_credentials.close()
-    #
-    #   message = {'successMessage': 'Authentication Successfully Added.'}
-    #
-    # except Exception as e:
-    #   message = {
-    #       'errorMessage': 'An error occurred while adding the credentials.',
-    #       'error': str(e)
-    #   }
-    # return JsonResponse(message)
+#     try:
+#         machine = request.POST.get('machine')
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         file_with_credentials = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+#                                                   'workspaces', 'app_workspace', '.netrc'), 'a+')
+#         lines = file_with_credentials.readlines()
+#         if len(lines) == 0:
+#             file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
+#         elif lines[-1] == '\n':
+#             file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
+#         else:
+#             file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
+
+#         file_with_credentials.close()
+
+#         message = {'successMessage': 'Authentication Successfully Added.'}
+
+#     except Exception as e:
+#         message = {
+#             'errorMessage': 'An error occurred while adding the credentials.',
+#             'error': str(e)
+#         }
+#     return JsonResponse(message)

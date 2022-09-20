@@ -13,10 +13,7 @@ from tethys_sdk.routing import controller
 
 Persistent_Store_Name = 'thredds_db'
 
-@controller(
-    name='extractTimeseries',
-    url='extractTimeseries/',
-)
+@controller(name='extractTimeseries', url='extractTimeseries/')
 def extract_time_series_using_grids(request):
     try:
         if request.is_ajax() and request.method == 'POST':
@@ -189,10 +186,7 @@ def prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimensi
     return dimensions_for_grids, final_coordinates, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson
 
 
-@controller(
-    name='formatParametersForGrids',
-    url='formatParametersForGrids/',
-)
+@controller(name='formatParametersForGrids', url='formatParametersForGrids/')
 def format_parameters_for_grids(request):
     try:
         if request.is_ajax() and request.method == 'POST':
