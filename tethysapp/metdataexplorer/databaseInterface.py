@@ -6,9 +6,6 @@ import math
 import numpy as np
 
 from glob import glob
-from math import sqrt
-from math import log as ln
-from math import log10 as log
 from datetime import datetime
 
 from tethys_sdk.permissions import has_permission
@@ -516,10 +513,10 @@ def get_approximate_variable_value_range(variable):
             small_array = variable[::indexing_list[0], ::indexing_list[1], ::indexing_list[2], ::indexing_list[3]]
         elif len(var_size) == 5:
             small_array = variable[::indexing_list[0], ::indexing_list[1], ::indexing_list[2], ::indexing_list[3],
-                          ::indexing_list[4]]
+                                   ::indexing_list[4]]
         elif len(var_size) == 6:
             small_array = variable[::indexing_list[0], ::indexing_list[1], ::indexing_list[2], ::indexing_list[3],
-                          ::indexing_list[4], ::indexing_list[5]]
+                                   ::indexing_list[4], ::indexing_list[5]]
 
         min_value = np.nanmin(small_array)
         max_value = np.nanmax(small_array)

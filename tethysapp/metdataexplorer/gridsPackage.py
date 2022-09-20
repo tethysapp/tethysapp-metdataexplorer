@@ -13,6 +13,7 @@ from tethys_sdk.routing import controller
 
 Persistent_Store_Name = 'thredds_db'
 
+
 @controller(name='extractTimeseries', url='extractTimeseries/')
 def extract_time_series_using_grids(request):
     try:
@@ -32,7 +33,7 @@ def extract_time_series_using_grids(request):
 
             # if engine == 'grids':
                 # print('engine is grids')
-            dimensions_for_grids, final_coordinates, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
+            dimensions_for_grids, _, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
                 = prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimension_values)
 
             if credentials != 'none':
@@ -198,7 +199,7 @@ def format_parameters_for_grids(request):
             opendap_url = request.POST.get('opendapURL')
             variable = request.POST.get('variable')
 
-            dimensions_for_grids, final_coordinates, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
+            dimensions_for_grids, _, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
                 = prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimension_values)
 
             if credentials != 'none':
@@ -213,20 +214,24 @@ def format_parameters_for_grids(request):
                 if len(formatted_values[0]) == 1:
                     time_series = f"time_series = grids_time_series.point({formatted_values[0][1]})"
                 elif len(formatted_values[0]) == 2:
-                    time_series = f"time_series = grids_time_series.point({formatted_values[0][0]}, {formatted_values[0][1]})"
+                    time_series = f"time_series = grids_time_series.point({formatted_values[0][0]}, " \
+                                  f"{formatted_values[0][1]})"
                 elif len(formatted_values[0]) == 3:
-                    time_series = f"time_series = grids_time_series.point({formatted_values[0][0]}, {formatted_values[0][1]}, " \
-                                  f"{formatted_values[0][2]})"
+                    time_series = f"time_series = grids_time_series.point({formatted_values[0][0]}, " \
+                                  f"{formatted_values[0][1]}, {formatted_values[0][2]})"
                 elif len(formatted_values[0]) == 4:
-                    time_series = f"time_series = grids_time_series.point({formatted_values[0][0]}, {formatted_values[0][1]}, " \
-                                  f"{formatted_values[0][2]}, {formatted_values[0][3]})"
+                    time_series = f"time_series = grids_time_series.point({formatted_values[0][0]}, " \
+                                  f"{formatted_values[0][1]}, {formatted_values[0][2]}, {formatted_values[0][3]})"
                 elif len(formatted_values[0]) == 5:
-                    time_series = f"time_series = grids_time_series.point({formatted_values[0][0]}, {formatted_values[0][1]}, " \
-                                  f"{formatted_values[0][2]}, {formatted_values[0][3]}, {formatted_values[0][4]})"
+                    time_series = f"time_series = grids_time_series.point({formatted_values[0][0]}, " \
+                                  f"{formatted_values[0][1]}, {formatted_values[0][2]}, {formatted_values[0][3]}, " \
+                                  f"{formatted_values[0][4]})"
             elif geojson_type == 'rectangle':
-                time_series = f"time_series = grids_time_series.bound({formatted_values[0]}, {formatted_values[1]}, stats='all')"
+                time_series = f"time_series = grids_time_series.bound({formatted_values[0]}, " \
+                              f"{formatted_values[1]}, stats='all')"
             else:
-                time_series = f"time_series = grids_time_series.shape('Add the filepath to your geojson here!', behavior='dissolve', stats='all')"
+                time_series = "time_series = grids_time_series.shape('Add the filepath to your geojson here!', " \
+                              "behavior='dissolve', stats='all')"
 
             os.remove(filepath_to_geojson)
             os.remove(filepath_to_shifted_geojson)
@@ -273,7 +278,8 @@ def get_time_series_with_box(grids_initializer, dimension_values, statistic):
 def get_time_series_with_shapefile(grids_initializer, filepath_to_geojson, behavior, statistic):
     if behavior['behavior'] == "feature":
         time_series = grids_initializer.shape(filepath_to_geojson, behavior=behavior['behavior'],
-                                              label_attr=behavior['labelAttr'], feature=behavior['feature'], stats=statistic)
+                                              label_attr=behavior['labelAttr'], feature=behavior['feature'],
+                                              stats=statistic)
     elif behavior['behavior'] == "features":
         time_series = grids_initializer.shape(filepath_to_geojson, behavior=behavior['behavior'],
                                               label_attr=behavior['labelAttr'], stats=statistic)

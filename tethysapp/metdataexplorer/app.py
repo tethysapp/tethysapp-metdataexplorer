@@ -1,5 +1,5 @@
 from tethys_sdk.app_settings import PersistentStoreDatabaseSetting, CustomSetting
-from tethys_sdk.base import TethysAppBase, url_map_maker
+from tethys_sdk.base import TethysAppBase
 
 import os
 
@@ -19,8 +19,9 @@ class Metdataexplorer(TethysAppBase):
     tags = '"Hydrology", "Grided Data", "THREDDS"'
     enable_feedback = False
     feedback_emails = []
-    
-    controller_modules = ['controllers', 'gridsPackage', 'dataRemoteAccess', 'databaseInterface', 'authenticationCredentials',]
+
+    controller_modules = ['controllers', 'gridsPackage', 'dataRemoteAccess', 'databaseInterface',
+                          'authenticationCredentials']
 
     def persistent_store_settings(self):
         ps_settings = (
