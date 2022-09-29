@@ -198,7 +198,6 @@ setModalEventListeners = function () {
     //modalFilterFilesByVariable
 
     //modalFoldersAndFilesExplorer
-    //TODO fix this event listener
     document.getElementById("up-a-level-btn").addEventListener("click", () => {
         if (ACTIVE_VARIABLES_PACKAGE.arrayOfCatalogUrls.length <= 0) {
             notifyOfDanger("Already at the top level.");
@@ -236,6 +235,12 @@ setModalEventListeners = function () {
                 getFilesAndFoldersFromCatalog(urlForCatalog);
             }
         }
+    });
+
+    document.getElementById("add-catalog-button").addEventListener("click", (event) => {
+        const currentCatalogURL = ACTIVE_VARIABLES_PACKAGE.currentCatalogUrl;
+        $("#modalFoldersAndFilesExplorer").modal("hide");
+        $("#modalAddURLS").modal("show");
     });
 
     //modalGraphCalculator

@@ -13,6 +13,7 @@ import requests
 
 def set_rc_vars():
     home_variable = app.get_custom_setting('server_home_directory')
+    os.environ['HOME'] = home_variable
     return home_variable
 
 
