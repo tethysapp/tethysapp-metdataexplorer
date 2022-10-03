@@ -62,9 +62,9 @@ addFileToDatabaseAjax = async function () {
         if (result.errorMessage !== undefined) {
                 notifyOfDanger(result.errorMessage);
                 console.error(result.error);
-            } else {
-                return result.file;
-            }
+        } else {
+            return result.file;
+        }
     } catch (error) {
         notifyOfDanger("An error occurred while retrieving the groups.");
         console.error(error);

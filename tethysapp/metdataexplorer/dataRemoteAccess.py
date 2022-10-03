@@ -3,10 +3,12 @@ from siphon.catalog import TDSCatalog
 from tethys_sdk.permissions import login_required, has_permission
 
 from .app import Metdataexplorer as app
-from .databaseInterface import determine_dimension_type, get_variable_metadata
+from .databaseInterface import determine_dimension_type, get_variable_metadata, add_variables_to_opendap_url, \
+    get_approximate_variable_value_range
 
 import cfbuild
 import os
+import json
 import netCDF4
 import requests
 
@@ -87,20 +89,22 @@ def get_variables_and_dimensions_for_file(request):
         home_variable = set_rc_vars()
 
         opendap_url = request.POST.get('opendapURL')
+
         list_of_variables = {}
 
         ds = cfbuild.Dataset(opendap_url)
         all_variables = []
 
         for variable in ds.variables:
-            if variable.variable_type == 'Georeferenced Data Variable':
+            if ds.variables[variable].variable_type == 'Georeferenced Data Variable':
                 list_of_dimensions = []
-                all_variables.append(variable.name)
+                all_variables.append(ds.variables[variable].name)
 
-                for dimension in variable.dimensions:
+                for dimension in ds.variables[variable].dimensions:
                     list_of_dimensions.append(dimension)
+                    all_variables.append(dimension)
 
-                list_of_variables[variable.name] = list_of_dimensions
+                list_of_variables[ds.variables[variable].name] = list_of_dimensions
 
         dict_to_return = {
             'data': {
@@ -119,54 +123,108 @@ def get_variables_and_dimensions_for_file(request):
     return JsonResponse(dict_to_return)
 
 
-def update_dimensions(request):
+def update_files(request):
     try:
-        url = request.POST.get('url')
-        dimensions = request.POST.getlist('dimensions[]')
-        updated_values = {}
-        url += '?'
+        if request.is_ajax() and request.method == 'POST':
+            file_dictionary = {
+                'accessURLs': json.loads(request.POST.get('urls')),
+                'fileType': request.POST.get('fileType'),
+                'dimensions': {},
+                'fileMetadata': {},
+                'variables': {},
+                'variablesAndDimensions': json.loads(request.POST.get('listOfVariables'))
+            }
 
-        for dimension in dimensions:
-            url += dimension
-            if dimension != dimensions[len(dimensions) - 1]:
-                url += ','
+            dimensional_variables = request.POST.getlist('listOfDimensionalVariable[]')
 
-        ds = netCDF4.Dataset(url)
+            list_for_opendap = []
 
-        for dimension in ds.dimensions:
-            dimension_type = determine_dimension_type(ds.dimensions[dimension], ds.variables)
-            dimension_metadata = get_variable_metadata(ds.variables[dimension])
-            if dimension_type == 'time':
-                if 'units' in dimension_metadata:
-                    if 'calendar' in dimension_metadata:
-                        calendar = dimension_metadata['calendar']
-                    else:
-                        calendar = 'standard'
-                    date_time_list = netCDF4.num2date(ds.variables[dimension][:].data.tolist(),
-                                                      dimension_metadata['units'], calendar)
-                    values = []
-                    for time in date_time_list:
-                        values.append(str(time))
-                    updated_values[dimension] = values
-                else:
-                    updated_values[dimension] = ds.variables[dimension][:].data.tolist()
+            if len(file_dictionary['variablesAndDimensions']) > 0:
+                for variable in file_dictionary['variablesAndDimensions']:
+                    list_for_opendap.append(variable)
+
+                for dimension in dimensional_variables:
+                    list_for_opendap.append(dimension)
+
+                opendap_url = add_variables_to_opendap_url(file_dictionary['accessURLs']['OPENDAP'], list_for_opendap)
             else:
-                updated_values[dimension] = ds.variables[dimension][:].data.tolist()
+                opendap_url = file_dictionary['accessURLs']['OPENDAP']
 
-        dict_to_return = {
-            'data': {
-                'updatedValues': updated_values
+            dataset = netCDF4.Dataset(opendap_url)
+
+            for key in dataset.__dict__:
+                file_dictionary['fileMetadata'][key] = str(dataset.__dict__[key])
+
+            if len(file_dictionary['variablesAndDimensions']) == 0:
+                ds = cfbuild.Dataset(opendap_url)
+
+                for variable in ds.variables:
+                    if ds.variables[variable].variable_type == 'Georeferenced Data Variable':
+                        file_dictionary['variablesAndDimensions'][variable] = {'title': variable}
+
+            for dimension in dataset.dimensions:
+                if dimension in dataset.variables:
+                    dimension_type = determine_dimension_type(dataset.dimensions[dimension], dataset.variables)
+                    dimension_metadata = get_variable_metadata(dataset.variables[dimension])
+                    if dimension_type == 'time':
+                        if 'units' in dimension_metadata:
+                            if 'calendar' in dimension_metadata:
+                                calendar = dimension_metadata['calendar']
+                            else:
+                                calendar = 'standard'
+                            date_time_list = netCDF4.num2date(dataset.variables[dimension][:].data.tolist(),
+                                                              dimension_metadata['units'], calendar)
+                            values = []
+                            for time in date_time_list:
+                                values.append(str(time))
+                        else:
+                            values = dataset.variables[dimension][:].data.tolist()
+                    else:
+                        values = dataset.variables[dimension][:].data.tolist()
+
+                    file_dictionary['dimensions'][dimension] = {
+                        'dimensionMetadata': dimension_metadata,
+                        'dimensionType': dimension_type,
+                        'title': dataset.dimensions[dimension].name,
+                        'size': dataset.dimensions[dimension].size,
+                        'values': values,
+                    }
+
+            for variable in file_dictionary['variablesAndDimensions']:
+                list_of_dimensions = []
+
+                if 'valueRange' in file_dictionary['variablesAndDimensions'][variable]:
+                    actual_range = file_dictionary['variablesAndDimensions'][variable]['valueRange']
+                elif 'actual_range' in dataset.variables[variable].__dict__:
+                    actual_range = dataset.variables[variable].__dict__['actual_range']
+                else:
+                    actual_range = get_approximate_variable_value_range(dataset.variables[variable])
+
+                for dimension in dataset.variables[variable].dimensions:
+                    list_of_dimensions.append(dimension)
+
+                file_dictionary['variables'][variable] = {
+                    'title': variable,
+                    'dimensions': list_of_dimensions,
+                    'shape': dataset.variables[variable].shape,
+                    'wmsDisplayColor': 'boxfill/rainbow',
+                    'valueRange': actual_range,
+                    'variableMetadata': get_variable_metadata(dataset.variables[variable])
+                }
+
+            file_to_return = {
+                'file': file_dictionary
             }
-        }
+
+        else:
+            file_to_return = {'errorMessage': 'There was an error retrieving the file'}
+
     except Exception as e:
-        print(e)
-        dict_to_return = {
-            'data': {
-                'errorMessage': 'An error occurred while connecting to the THREDDS catalog.',
-                'error': str(e)
-            }
+        file_to_return = {
+            'errorMessage': 'There was an error retrieving the file',
+            'error': str(e)
         }
-    return JsonResponse(dict_to_return)
+    return JsonResponse(file_to_return)
 
 
 def wms_image_from_server(request):
@@ -190,11 +248,9 @@ def legend_image_from_server(request):
     try:
         if 'main_url' in request.GET:
             request_url = request.GET.get('main_url')
-            print(request_url)
             home_variable = set_rc_vars()
             r = requests.get(request_url)
             reset_home_var(home_variable)
-            print('success')
             return HttpResponse(r.content, content_type="image/png")
         else:
             return JsonResponse({})

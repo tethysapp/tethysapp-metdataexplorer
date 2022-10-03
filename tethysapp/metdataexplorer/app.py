@@ -128,9 +128,9 @@ class Metdataexplorer(TethysAppBase):
                 controller='metdataexplorer.dataRemoteAccess.legend_image_from_server'
             ),
             UrlMap(
-                name='updateDimensions',
-                url='updateDimensions/',
-                controller='metdataexplorer.dataRemoteAccess.update_dimensions'
+                name='updateFileData',
+                url='updateFileData/',
+                controller='metdataexplorer.dataRemoteAccess.update_files'
             ),
             UrlMap(
                 name='extractTimeseries',

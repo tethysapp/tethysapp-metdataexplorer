@@ -14,7 +14,6 @@ import {
     deleteFileFromDatabaseAjax,
     deleteGroupsFromDatabaseAjax,
     deleteShapefileFromDatabaseAjax,
-    getCredentialsFromServerAjax,
     getShapefileCoordinatesFromDatabaseAjax
 } from "./databasePackage.js";
 
@@ -24,16 +23,13 @@ import {
 } from "./htmlPackage.js";
 
 import {
-    addCredentialToServer,
     addFilesAndFoldersToModalAddFileToDatabase,
     addShapefileNameToTable,
-    formatEndRowsForModalListAuthentication,
-    formatRowForModalListAuthentication,
-    removeCredentialFromServer
 } from "./htmlHelpersForModals.js";
 import {createGeojosnMarker} from "./mapPackage.js";
 import {createGraph, makeTrace} from "./graphPackage.js";
 import {permissionToAdd} from "./permissionsPackage.js";
+import {updateAndBuildBaseMenu, updateFileDataAjax} from "./dataRemoteAccessPackage.js";
 
 let setModalEventListeners;
 
@@ -52,6 +48,7 @@ setModalEventListeners = function () {
         if (urlForCatalog === "") {
             notifyOfInfo("Please enter a URL to a THREDDS catalog.");
         } else {
+            ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.addToDatabase = true;
             ACTIVE_VARIABLES_PACKAGE.currentCatalogUrl = urlForCatalog;
             ACTIVE_VARIABLES_PACKAGE.arrayOfCatalogUrls = [];
             getFilesAndFoldersFromCatalog(urlForCatalog, false);
@@ -105,6 +102,8 @@ setModalEventListeners = function () {
     */
 
     document.getElementById("add-file-to-database-button").addEventListener("click", async () => {
+        let addFile = false;
+
         if ($("#addService-title").val() === "") {
             notifyOfInfo("A title is required.");
         } else if ($("#addService-description").val() === "") {
@@ -112,21 +111,32 @@ setModalEventListeners = function () {
         } else if ($("#url-for-catalog").val() === "") {
             notifyOfInfo("Please provide a THREDDS Catalog URL.");
         } else {
+
+            ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.title = $("#addService-title").val();
+            ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.description = $("#addService-description").val();
+
+            if (ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.fileType === "catalog") {
+                ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.url = {catalog: document.getElementById("url-for-catalog").value};
+                addFile = true;
+            } else {
                 const checkboxes = $(".attr-checkbox:checkbox:not(:checked)");
 
-                ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.title = $("#addService-title").val();
-                ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.description = $("#addService-description").val();
+                if (Object.keys($(".attr-checkbox:checkbox:not(:checked)")).length === Object.keys($(".attr-checkbox")).length) {
+                    notifyOfInfo('Please select a variable');
+                    addFile = false;
+                } else {
+                    for (const checkbox of checkboxes) {
+                        delete ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions[checkbox.value];
+                    }
+                    for (const [key, value] of Object.entries(ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions)) {
+                        ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions[value.variable] = value.dimensions;
+                        delete ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions[key];
+                    }
+                    addFile = true;
+                }
+            }
 
-            if (Object.keys($(".attr-checkbox:checkbox:not(:checked)")).length === Object.keys($(".attr-checkbox")).length) {
-                notifyOfInfo('Please select a variable');
-            } else {
-                for (const checkbox of checkboxes) {
-                    delete ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions[checkbox.value];
-                }
-                for (const [key, value] of Object.entries(ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions)) {
-                    ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions[value.variable] = value.dimensions;
-                    delete ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.variablesAndDimensions[key];
-                }
+            if (addFile) {
                 const groupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
 
                 ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.group = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].title;
@@ -210,9 +220,13 @@ setModalEventListeners = function () {
     document.getElementById("div-for-folder-and-file-explorer").addEventListener("click", async (event) => {
         const clickedElement = event.target;
         if (clickedElement.classList.contains("file") || clickedElement.parentElement?.classList.contains("file")) {
-            const fileId = event.target.closest(".file").id.slice(5);
+            const fileId = clickedElement.closest(".file").id.slice(5);
+            const previousFileId = ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId;
             const opendapURL = ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url.OPENDAP;
             const wmsURL = ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url.WMS;
+
+            ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId = fileId;
+
             if (opendapURL === undefined || wmsURL === undefined) {
                 if (opendapURL !== undefined) {
                     $("#manual-opendap-url").val(opendapURL);
@@ -224,9 +238,23 @@ setModalEventListeners = function () {
                 $("#modalFoldersAndFilesExplorer").modal("hide");
                 $("#modalAddURLS").modal("show");
             } else {
-                addFilesAndFoldersToModalAddFileToDatabase(fileId, opendapURL);
+                if (ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.addToDatabase) {
+                    addFilesAndFoldersToModalAddFileToDatabase(fileId, opendapURL);
+                } else {
+                    const groupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
+                    ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId = "temp";
+                    debugger
+                    ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files["temp"] = {
+                        accessURLs: ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url,
+                        fileType: "catalog",
+                        userCredentials: ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[previousFileId].userCredentials,
+                        variables: {},
+                        dimensionalVariables: []
+                    };
+                    $("#modalFoldersAndFilesExplorer").modal("hide");
+                    updateAndBuildBaseMenu();
+                }
             }
-
         } else if (clickedElement.classList.contains("folder") || clickedElement.parentElement?.classList.contains("folder")) {
             const folderId = event.target.closest(".folder").id.slice(7);
             const urlForCatalog = ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.folders[folderId].url;
@@ -239,8 +267,10 @@ setModalEventListeners = function () {
 
     document.getElementById("add-catalog-button").addEventListener("click", (event) => {
         const currentCatalogURL = ACTIVE_VARIABLES_PACKAGE.currentCatalogUrl;
+        document.getElementById("url-for-catalog").value = currentCatalogURL;
+        ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.fileType = "catalog";
         $("#modalFoldersAndFilesExplorer").modal("hide");
-        $("#modalAddURLS").modal("show");
+        $("#modalAddFileToDatabase").modal("show");
     });
 
     //modalGraphCalculator

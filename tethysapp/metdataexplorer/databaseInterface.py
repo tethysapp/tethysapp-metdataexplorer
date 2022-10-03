@@ -14,7 +14,7 @@ from datetime import datetime
 from tethys_sdk.permissions import has_permission
 from django.http import JsonResponse
 from .app import Metdataexplorer as app
-from .model import Dimensions, Files, Groups, Variables, Shapefiles
+from .model import Files, Groups, Variables, Shapefiles
 
 Persistent_Store_Name = 'thredds_db'
 
@@ -31,19 +31,19 @@ def add_variables_to_opendap_url(opendap_url, list_of_variables):
 
 def add_file_to_database(request):
     try:
-
         if request.is_ajax() and request.method == 'POST':
             file_dictionary = {
                 'accessURLs': json.loads(request.POST.get('url')),
                 'description': request.POST.get('description'),
-                'dimensions': {},
-                'fileMetadata': {},
+                'dimensionalVariables': [],
+                'fileType': request.POST.get('fileType'),
                 'group': request.POST.get('group'),
                 'title': request.POST.get('title'),
                 'userCredentials': json.loads(request.POST.get('userCredentials')),
                 'variables': {},
                 'variablesAndDimensions': json.loads(request.POST.get('variablesAndDimensions'))
             }
+
             all_variables = request.POST.getlist('allVariables[]')
             list_for_opendap = []
 
@@ -60,95 +60,64 @@ def add_file_to_database(request):
                     session.close()
                     return JsonResponse(array_to_return)
 
-            for variable in file_dictionary['variablesAndDimensions']:
-                list_for_opendap.append(variable)
-                for dimension in file_dictionary['variablesAndDimensions'][variable]:
-                    if dimension in all_variables and dimension not in list_for_opendap:
-                        list_for_opendap.append(dimension)
-
-            opendap_url = add_variables_to_opendap_url(file_dictionary['accessURLs']['OPENDAP'], list_for_opendap)
-
-            dataset = netCDF4.Dataset(opendap_url)
-
-            for key in dataset.__dict__:
-                file_dictionary['fileMetadata'][key] = str(dataset.__dict__[key])
-
-            file_to_add = Files(
-                authentication=json.dumps(file_dictionary['userCredentials']),
-                description=file_dictionary['description'],
-                file_metadata=json.dumps(file_dictionary['fileMetadata']),
-                title=file_dictionary['title'],
-                urls=json.dumps(file_dictionary['accessURLs']),
-            )
-
-            for dimension in dataset.dimensions:
-                dimension_type = determine_dimension_type(dataset.dimensions[dimension], dataset.variables)
-                if dimension in all_variables:
-                    has_variable = 'true'
-                    dimension_metadata = get_variable_metadata(dataset.variables[dimension])
-                    if dimension_type == 'time':
-                        if 'units' in dimension_metadata:
-                            if 'calendar' in dimension_metadata:
-                                calendar = dimension_metadata['calendar']
-                            else:
-                                calendar = 'standard'
-                            date_time_list = netCDF4.num2date(dataset.variables[dimension][:].data.tolist(),
-                                                              dimension_metadata['units'], calendar)
-                            values = []
-                            for time in date_time_list:
-                                values.append(str(time))
-                        else:
-                            values = dataset.variables[dimension][:].data.tolist()
-                    else:
-                        values = dataset.variables[dimension][:].data.tolist()
-                else:
-                    has_variable = 'false'
-                    values = 'false'
-                    dimension_metadata = 'false'
-
-                file_dictionary['dimensions'][dimension] = {
-                    'dimensionMetadata': dimension_metadata,
-                    'dimensionType': dimension_type,
-                    'hasVariable': has_variable,
-                    'title': dataset.dimensions[dimension].name,
-                    'size': dataset.dimensions[dimension].size,
-                    'values': values,
-                }
-
-                dimension_to_add = Dimensions(
-                    has_variable=file_dictionary['dimensions'][dimension]['hasVariable'],
-                    dimension_metadata=json.dumps(file_dictionary['dimensions'][dimension]['dimensionMetadata']),
-                    dimension_type=file_dictionary['dimensions'][dimension]['dimensionType'],
-                    title=file_dictionary['dimensions'][dimension]['title'],
-                    size=json.dumps(file_dictionary['dimensions'][dimension]['size']),
-                    values=json.dumps(file_dictionary['dimensions'][dimension]['values']),
+            if file_dictionary['fileType'] == 'catalog':
+                print('adding a catalog')
+                file_to_add = Files(
+                    authentication=json.dumps(file_dictionary['userCredentials']),
+                    description=file_dictionary['description'],
+                    dimensional_variables=json.dumps(file_dictionary['dimensionalVariables']),
+                    file_type=file_dictionary['fileType'],
+                    title=file_dictionary['title'],
+                    urls=json.dumps(file_dictionary['accessURLs']),
                 )
-
-                file_to_add.dimensions.append(dimension_to_add)
-
-            for variable in file_dictionary['variablesAndDimensions']:
-                file_dictionary['variables'][variable] = {
-                    'title': variable,
-                    'dimensions': file_dictionary['variablesAndDimensions'][variable],
-                    'shape': dataset.variables[variable].shape,
-                    'wmsDisplayColor': 'boxfill/rainbow',
-                    'valueRange': get_approximate_variable_value_range(dataset.variables[variable]),
-                    'variableMetadata': get_variable_metadata(dataset.variables[variable])
-                }
 
                 variable_to_add = Variables(
-                    dimensions=json.dumps(file_dictionary['variables'][variable]['dimensions']),
-                    title=file_dictionary['variables'][variable]['title'],
-                    shape=json.dumps(file_dictionary['variables'][variable]['shape']),
-                    value_range=json.dumps(file_dictionary['variables'][variable]['valueRange']),
-                    variable_metadata=json.dumps(file_dictionary['variables'][variable]['variableMetadata']),
-                    wms_display_color=file_dictionary['variables'][variable]['wmsDisplayColor']
+                    title='',
+                    value_range=json.dumps([]),
+                )
+                file_to_add.variables.append(variable_to_add)
+            else:
+                for variable in file_dictionary['variablesAndDimensions']:
+                    list_for_opendap.append(variable)
+                    for dimension in file_dictionary['variablesAndDimensions'][variable]:
+                        file_dictionary['dimensionalVariables'].append(dimension)
+                        if dimension in all_variables and dimension not in list_for_opendap:
+                            list_for_opendap.append(dimension)
+
+                opendap_url = add_variables_to_opendap_url(file_dictionary['accessURLs']['OPENDAP'], list_for_opendap)
+
+                dataset = netCDF4.Dataset(opendap_url)
+
+                file_to_add = Files(
+                    authentication=json.dumps(file_dictionary['userCredentials']),
+                    description=file_dictionary['description'],
+                    dimensional_variables=json.dumps(file_dictionary['dimensionalVariables']),
+                    file_type=file_dictionary['fileType'],
+                    title=file_dictionary['title'],
+                    urls=json.dumps(file_dictionary['accessURLs']),
                 )
 
-                file_to_add.variables.append(variable_to_add)
+                for variable in file_dictionary['variablesAndDimensions']:
+                    if 'actual_range' in dataset.variables[variable].__dict__:
+                        actual_range = dataset.variables[variable].__dict__['actual_range']
+                    else:
+                        actual_range = get_approximate_variable_value_range(dataset.variables[variable])
+
+                    file_dictionary['variables'][variable] = {
+                        'title': variable,
+                        'valueRange': actual_range,
+                    }
+
+                    variable_to_add = Variables(
+                        title=file_dictionary['variables'][variable]['title'],
+                        value_range=json.dumps(file_dictionary['variables'][variable]['valueRange']),
+                    )
+
+                    file_to_add.variables.append(variable_to_add)
 
             current_group.files.append(file_to_add)
             session.add(current_group)
+
             session.commit()
             session.close()
             file_to_return = {
@@ -485,37 +454,23 @@ def get_all_files_from_a_group(request):
             current_file_array = {
                 'accessURLs': json.loads(current_file.urls),
                 'description': current_file.description,
-                'dimensions': {},
-                'fileMetadata': json.loads(current_file.file_metadata),
+                'dimensionalVariables': json.loads(current_file.dimensional_variables),
+                'fileType': current_file.file_type,
                 'title': current_file.title,
                 'userCredentials': json.loads(current_file.authentication),
                 'variables': {},
             }
 
-            for dimension in current_file.dimensions:
-                dimension_array = {
-                    'dimensionMetadata': json.loads(dimension.dimension_metadata),
-                    'dimensionType': dimension.dimension_type,
-                    'hasVariable': dimension.has_variable,
-                    'title': dimension.title,
-                    'size': json.loads(dimension.size),
-                    'values': json.loads(dimension.values)
-                }
-                current_file_array['dimensions'][dimension.title] = dimension_array
-
             for variable in current_file.variables:
                 variable_array = {
-                    'dimensions': json.loads(variable.dimensions),
-                    'shape': json.loads(variable.shape),
                     'title': variable.title,
-                    'wmsDisplayColor': variable.wms_display_color,
                     'valueRange': json.loads(variable.value_range),
-                    'variableMetadata': json.loads(variable.variable_metadata)
                 }
                 current_file_array['variables'][variable.title] = variable_array
 
             list_of_files.append(current_file_array)
 
+        session.close()
         array_to_return = {'listOfFiles': list_of_files}
     except Exception as e:
         array_to_return = {

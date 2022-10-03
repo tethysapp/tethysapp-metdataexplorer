@@ -8,27 +8,20 @@ import {
     showLoadingModal
 } from "./auxilaryPackage.js";
 import {
-    addCredentialToServerAjax,
     getShapefileNamesFromDatabaseAjax,
-    removeCredentialFromServerAjax
 } from "./databasePackage.js";
 import {
-    permissionToAdd,
     permissionToDelete
 } from "./permissionsPackage.js";
 import {getDimensionsAndVariablesForFileAjax} from "./dataRemoteAccessPackage.js";
 import {addListOfVariablesAndDimensions} from "./htmlPackage.js";
 
-let addCredentialToServer;
 let addDatasetsToCalculator;
 let addFilesAndFoldersToModalAddFileToDatabase;
 let addShapefileNameToTable;
 let buildModalShapefileList;
-let formatRowForModalListAuthentication;
-let formatEndRowsForModalListAuthentication;
 let htmlForDeleteGroups;
 let populateDeleteGroupsModal;
-let removeCredentialFromServer;
 
 
 htmlForDeleteGroups = function (arrayToIterate, columnHeader) {
@@ -86,9 +79,9 @@ addFilesAndFoldersToModalAddFileToDatabase = async function (fileId, opendapURL)
         $("#attributes").append(html);
         $(".dimension-selectpicker").selectpicker();
         $("#groups_variables_div").show();
+        $("#modalAddFileToDatabase").modal("show");
         $("#modalFoldersAndFilesExplorer").modal("hide");
     }
-
     hideLoadingModal("modalFoldersAndFilesExplorer");
 }
 

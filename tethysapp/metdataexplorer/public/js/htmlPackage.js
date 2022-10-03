@@ -1,7 +1,6 @@
 import {notifyOfDanger} from "./userMessagingPackage.js";
 import {createWMSLayer} from "./mapPackage.js";
 import {generateUniqueId} from "./auxilaryPackage.js";
-import {updateDimensionsAjax} from "./dataRemoteAccessPackage.js";
 import {
     getGroupsFromDatabaseAjax,
     getFileForSpecificGroupAjax
@@ -243,7 +242,6 @@ buildBaseMenuForSelectedVariable = function () {
         const wmsValueRange = currentFile.variables[selectedVariable].valueRange;
         const opendapURL = currentFile.accessURLs.OPENDAP;
 
-        updateDimensionsAjax(variableDimensions, opendapURL, currentFile);
         addOptionsToSelect(variableDimensions, currentFile);
 
         $("#wmslayer-style").val(wmsLayerStyle);

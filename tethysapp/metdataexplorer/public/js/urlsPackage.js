@@ -20,7 +20,7 @@ const getShapefileCoordinatesFromDatabaseURL = "getShapefileCoordinatesFromDatab
 const getThreddsFileForSingleGroupURL = "getAllThreddsFilesFromDatabase/";
 const getVariablesAndDimensionsForFileURL = "getVariablesAndDimensionsForFile/";
 const removeCredentialsFromServerURL = "removeCredentialsFromServer/";
-const updateDimensionsURL = "updateDimensions/";
+const updateFileDataURL = "updateFileData/";
 
 export {
     addCredentialToServerURL,
@@ -45,5 +45,5 @@ export {
     getVariablesAndDimensionsForFileURL,
     legendProxyURL,
     removeCredentialsFromServerURL,
-    updateDimensionsURL
+    updateFileDataURL
 };

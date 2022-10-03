@@ -1,3 +1,4 @@
+/*
 import {
     addFileMetadata,
     addListOfVariablesToBaseMenu,
@@ -6,6 +7,8 @@ import {
 } from "./htmlPackage.js";
 import {sizeWindows} from "./auxilaryPackage.js";
 import {createGraph} from "./graphPackage.js";
+
+ */
 import {
     populateDeleteGroupsModal,
     htmlForDeleteGroups
@@ -18,6 +21,8 @@ import {
     permissionToAdd,
     permissionToDelete
 } from "./permissionsPackage.js";
+import {updateAndBuildBaseMenu, updateFileDataAjax} from "./dataRemoteAccessPackage.js";
+import {getFilesAndFoldersFromCatalog} from "./eventListenersPackage.js";
 
 let setNavigationEventListeners;
 
@@ -88,42 +93,15 @@ setNavigationEventListeners = function () {
 
             ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId = fileId;
 
-            const fileMetadataHtml = addFileMetadata();
-            const listOfVariablesHtml = addListOfVariablesToBaseMenu();
-            let variableToSelect = "";
-
-            $("#variables-select").empty();
-            $("#additional-dimensions-div").empty();
-
-            Object.keys(ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables).forEach((variable, index) => {
-                let value = variable;
-                if (ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.long_name !== undefined) {
-                    value = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.long_name;
-                } else if (ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.standard_name !== undefined) {
-                    value = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.standard_name;
-                }
-
-                const option = createOptionForSelect(value, variable);
-                if (index === 0) {
-                    variableToSelect = variable;
-                }
-                $("#variables-select").append(option);
-            });
-            $("#variables-select").selectpicker("refresh");
-
-            if (variableToSelect !== "") {
-                $("#variables-select").val(variableToSelect);
-                $("#variables-select").selectpicker("render");
+            if (ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].fileType === "catalog") {
+                const urlForCatalog = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].accessURLs.catalog;
+                ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.addToDatabase = false;
+                ACTIVE_VARIABLES_PACKAGE.currentCatalogUrl = urlForCatalog;
+                ACTIVE_VARIABLES_PACKAGE.arrayOfCatalogUrls = [];
+                getFilesAndFoldersFromCatalog(urlForCatalog, false);
+            } else {
+                updateAndBuildBaseMenu();
             }
-
-            buildBaseMenuForSelectedVariable();
-
-            $("#slider-bar").css("left", "50%");
-            sizeWindows();
-            createGraph();
-
-            $("#file-metadata-div").empty().append(fileMetadataHtml);
-            $("#list-of-variables-div").empty().append(listOfVariablesHtml);
 
         } else if (clickedElement.classList.contains("refresh-file") || clickedElement.parentElement?.classList.contains("refresh-file")) {
             console.log("refresh the file");

@@ -15,6 +15,11 @@ let showModalHelp;
 
 getFilesAndFoldersFromCatalog = async function (urlForCatalog, pushCurrentUrlToArray = true) {
     try {
+        if (ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.addToDatabase) {
+            document.getElementById("add-catalog-button").style.display = "inline-block";
+        } else {
+            document.getElementById("add-catalog-button").style.display = "none";
+        }
         showLoadingModal("modalAddFileToDatabase");
         const foldersAndFiles = await getFilesAndFoldersFromCatalogAjax(urlForCatalog);
 
@@ -26,6 +31,7 @@ getFilesAndFoldersFromCatalog = async function (urlForCatalog, pushCurrentUrlToA
         }
 
         ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer = {
+            addToDatabase: ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.addToDatabase,
             files: {},
             folders: {}
         };

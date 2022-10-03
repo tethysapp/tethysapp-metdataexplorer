@@ -12,6 +12,7 @@ const ACTIVE_VARIABLES_PACKAGE = (function () {
         box: []
     };
     let fileAndFolderExplorer = {
+        addToDatabase: true,
         currentFileId: "",
         files: {},
         folders: {}
@@ -24,6 +25,7 @@ const ACTIVE_VARIABLES_PACKAGE = (function () {
     let threddsFileToAdd = {
         allVariables: [],
         description: "",
+        fileType: "",
         group: "",
         url: {},
         title: "",

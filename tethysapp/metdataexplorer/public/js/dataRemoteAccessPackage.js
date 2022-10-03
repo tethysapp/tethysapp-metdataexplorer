@@ -4,17 +4,25 @@ import {
     getPermissionsFromServerURL,
     extractTimeseriesURL,
     formatParametersForGridsURL,
-    updateDimensionsURL
+    updateFileDataURL
 } from "./urlsPackage.js";
 import {notifyOfDanger} from "./userMessagingPackage.js";
-import {addOptionsToSelect} from "./htmlPackage.js";
+import {
+    addFileMetadata,
+    addListOfVariablesToBaseMenu,
+    buildBaseMenuForSelectedVariable,
+    createOptionForSelect
+} from "./htmlPackage.js";
+import {sizeWindows} from "./auxilaryPackage.js";
+import {createGraph} from "./graphPackage.js";
 
 let extractTimeseriesAjax;
 let formatNotebookWithTimeseriesAjax;
 let getFilesAndFoldersFromCatalogAjax;
 let getDimensionsAndVariablesForFileAjax;
 let hasPermissionToAddAndDeleteAjax;
-let updateDimensionsAjax;
+let updateAndBuildBaseMenu;
+let updateFileDataAjax;
 
 extractTimeseriesAjax = async function (parametersForGrids) {
     const result = await $.ajax({
@@ -64,29 +72,76 @@ hasPermissionToAddAndDeleteAjax = async function () {
     return result;
 };
 
-updateDimensionsAjax = function (dimensions, opendapURL, currentFile) {
-    const data = {
-        dimensions: dimensions,
-        url: opendapURL
+updateAndBuildBaseMenu = async function () {
+    const groupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
+    const fileId = ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId;
+
+    const accessURLS = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].accessURLs;
+    const fileType = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].fileType;
+    const listOfVariables = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables;
+    const dimensionalVariables = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].dimensionalVariables;
+
+    const updatedFileDict = await updateFileDataAjax(accessURLS, fileType, listOfVariables, dimensionalVariables)
+    debugger
+    ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId] = {...ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId], ...updatedFileDict}
+
+    const fileMetadataHtml = addFileMetadata();
+    const listOfVariablesHtml = addListOfVariablesToBaseMenu();
+    let variableToSelect = "";
+
+    $("#variables-select").empty();
+    $("#additional-dimensions-div").empty();
+
+    Object.keys(ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables).forEach((variable, index) => {
+        let value = variable;
+        if (ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.long_name !== undefined) {
+            value = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.long_name;
+        } else if (ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.standard_name !== undefined) {
+            value = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].variables[variable].variableMetadata.standard_name;
+        }
+
+        const option = createOptionForSelect(value, variable);
+        if (index === 0) {
+            variableToSelect = variable;
+        }
+        $("#variables-select").append(option);
+    });
+    $("#variables-select").selectpicker("refresh");
+
+    if (variableToSelect !== "") {
+        $("#variables-select").val(variableToSelect);
+        $("#variables-select").selectpicker("render");
     }
-    $.ajax({
+
+    buildBaseMenuForSelectedVariable();
+
+    $("#slider-bar").css("left", "50%");
+    sizeWindows();
+    createGraph();
+
+    $("#file-metadata-div").empty().append(fileMetadataHtml);
+    $("#list-of-variables-div").empty().append(listOfVariablesHtml);
+}
+
+updateFileDataAjax = async function (accessURLS, fileType, listOfVariables, dimensionalVariables) {
+    const data = {
+        urls: JSON.stringify(accessURLS),
+        fileType: fileType,
+        listOfVariables: JSON.stringify(listOfVariables),
+        listOfDimensionalVariable: dimensionalVariables
+    }
+    const result = await $.ajax({
         data: data,
         type: "POST",
-        url: updateDimensionsURL,
-        success: function (data) {
-            const result = data.data;
-            if (result.errorMessage !== undefined) {
-                console.error(result.error);
-                notifyOfDanger(result.errorMessage);
-            } else {
-                Object.keys(result.updatedValues).forEach((key) => {
-                    currentFile.dimensions[key].values = result.updatedValues[key];
-                    addOptionsToSelect(dimensions, currentFile);
-                });
-            }
-        }
+        url: updateFileDataURL,
     });
-}
+    if (result.errorMessage !== undefined) {
+        notifyOfDanger(result.errorMessage);
+        console.error(result.error);
+    } else {
+        return result.file;
+    }
+};
 
 export {
     extractTimeseriesAjax,
@@ -94,5 +149,6 @@ export {
     getFilesAndFoldersFromCatalogAjax,
     getDimensionsAndVariablesForFileAjax,
     hasPermissionToAddAndDeleteAjax,
-    updateDimensionsAjax
+    updateAndBuildBaseMenu,
+    updateFileDataAjax
 };
