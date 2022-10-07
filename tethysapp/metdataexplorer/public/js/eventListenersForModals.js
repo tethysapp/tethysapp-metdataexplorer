@@ -82,24 +82,6 @@ setModalEventListeners = function () {
     document.getElementById("btn-link-authentication").addEventListener("click", async () => {
         $("#modalUserCredentials").modal("show");
     });
-    /*
-        let html = "";
-        ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials = {};
-        showLoadingModal("modalAddFileToDatabase");
-
-        if (await getCredentialsFromServerAjax()) {
-            if (Object.keys(ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials).length > 0) {
-                Object.keys(ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials).forEach( uniqueId => {
-                    html += formatRowForModalListAuthentication(uniqueId);
-                });
-            }
-            html += formatEndRowsForModalListAuthentication();
-            $("#added-auth-credentials").empty().append(html);
-        }
-        $("#modalListAuthentication").modal("show");
-        hideLoadingModal("modalAddFileToDatabase");
-    });
-    */
 
     document.getElementById("add-file-to-database-button").addEventListener("click", async () => {
         let addFile = false;
@@ -342,18 +324,6 @@ setModalEventListeners = function () {
     //modalInformationAboutGroup
 
     //modalListAuthentication
-    /*
-    document.getElementById("added-auth-credentials").addEventListener("click", (event) => {
-        const clickedElement = event.target;
-        if (clickedElement.classList.contains("delete-credential") || clickedElement.parentElement?.classList.contains("delete-credential")) {
-            const credentialId = clickedElement.closest(".delete-credential").id.slice(7);
-            removeCredentialFromServer(credentialId);
-        } else if (clickedElement.classList.contains("add-credential") || clickedElement.parentElement?.classList.contains("add-credential")) {
-            addCredentialToServer();
-        }
-    });
-
-     */
 
     //btn-save-auth
     document.getElementById("add-credentials-button").addEventListener("click", () => {
@@ -365,15 +335,6 @@ setModalEventListeners = function () {
                 username: $("#username-input").val(),
                 password: $("#password-input").val()
             };
-            /*
-            if (credentialId != "none") {
-                ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = ACTIVE_VARIABLES_PACKAGE.userAuthenticationCredentials[credentialId];
-            } else {
-                ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = credentialId;
-            }
-            $("#modalListAuthentication").modal("hide");
-
-             */
             ACTIVE_VARIABLES_PACKAGE.threddsFileToAdd.userCredentials = credentials;
             $("#modalUserCredentials").modal("hide");
         }

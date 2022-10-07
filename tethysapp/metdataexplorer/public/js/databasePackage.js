@@ -11,7 +11,6 @@ import {
     deleteGroupsFromDatabaseURL,
     deleteFilesFromDatabaseURL,
     addFileToDatabaseURL,
-    //addCredentialToServerURL,
     getAllGroupsFromServerURL,
     addShapefileToDatabaseURL,
     getShapefileNamesFromDatabaseURL,
@@ -21,7 +20,6 @@ import {
 import {htmlForGroupsInNavigation} from "./htmlPackage.js";
 import {generateUniqueId} from "./auxilaryPackage.js";
 
-//let addCredentialToServerAjax;
 let addFileToDatabaseAjax;
 let addGroupToDatabaseAjax;
 let addShapefileToDatabaseAjax;
@@ -37,18 +35,6 @@ let getFileForSpecificGroupAjax;
 let getShapefileCoordinatesFromDatabaseAjax;
 let getShapefileNamesFromDatabaseAjax;
 let removeCredentialFromServerAjax;
-
-/*
-addCredentialToServerAjax = async function (credentialArray) {
-    const result = await $.ajax({
-        data: credentialArray,
-        dataType: "JSON",
-        type: "POST",
-        url: addCredentialToServerURL,
-    });
-    return result;
-};
- */
 
 addFileToDatabaseAjax = async function () {
     try {
@@ -417,7 +403,6 @@ removeCredentialFromServerAjax = async function (credentialArray) {
 };
 
 export {
-    //addCredentialToServerAjax,
     addFileToDatabaseAjax,
     addGroupToDatabaseAjax,
     addShapefileToDatabaseAjax,

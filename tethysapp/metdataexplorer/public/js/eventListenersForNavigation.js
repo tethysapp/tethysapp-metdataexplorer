@@ -1,14 +1,3 @@
-/*
-import {
-    addFileMetadata,
-    addListOfVariablesToBaseMenu,
-    buildBaseMenuForSelectedVariable,
-    createOptionForSelect
-} from "./htmlPackage.js";
-import {sizeWindows} from "./auxilaryPackage.js";
-import {createGraph} from "./graphPackage.js";
-
- */
 import {
     populateDeleteGroupsModal,
     htmlForDeleteGroups

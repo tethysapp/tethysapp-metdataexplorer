@@ -27,11 +27,6 @@ class Metdataexplorer(TethysAppBase):
         UrlMap = url_map_maker(self.root_url)
 
         url_maps = (
-            # UrlMap(
-            #     name='addCredentialToServer',
-            #     url='addCredentialToServer/',
-            #     controller='metdataexplorer.authenticationCredentials.write_authentication_credentials_to_file'
-            # ),
             UrlMap(
                 name='getCredentialsFromServer',
                 url='getCredentialsFromServer/',
