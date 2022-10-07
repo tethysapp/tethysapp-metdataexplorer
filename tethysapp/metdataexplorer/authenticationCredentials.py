@@ -84,28 +84,28 @@ def remove_authentication_credentials_from_file(request):
     return JsonResponse(message)
 
 
-def write_authentication_credentials_to_file(request):
-    try:
-        machine = request.POST.get('machine')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        file_with_credentials = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                  'workspaces', 'app_workspace', '.netrc'), 'a+')
-        lines = file_with_credentials.readlines()
-        if len(lines) == 0:
-            file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
-        elif lines[-1] == '\n':
-            file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
-        else:
-            file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
-
-        file_with_credentials.close()
-
-        message = {'successMessage': 'Authentication Successfully Added.'}
-
-    except Exception as e:
-        message = {
-            'errorMessage': 'An error occurred while adding the credentials.',
-            'error': str(e)
-        }
-    return JsonResponse(message)
+# def write_authentication_credentials_to_file(request):
+    # try:
+    #         machine = request.POST.get('machine')
+    #   username = request.POST.get('username')
+    #   password = request.POST.get('password')
+    #   file_with_credentials = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+    #                                             'workspaces', 'app_workspace', '.netrc'), 'a+')
+    #   lines = file_with_credentials.readlines()
+    #   if len(lines) == 0:
+    #       file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
+    #   elif lines[-1] == '\n':
+    #       file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
+    #   else:
+    #       file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')
+    #
+    #   file_with_credentials.close()
+    #
+    #   message = {'successMessage': 'Authentication Successfully Added.'}
+    #
+    # except Exception as e:
+    #   message = {
+    #       'errorMessage': 'An error occurred while adding the credentials.',
+    #       'error': str(e)
+    #   }
+    # return JsonResponse(message)

@@ -1,4 +1,4 @@
-const addCredentialToServerURL = "addCredentialToServer/";
+//const addCredentialToServerURL = "addCredentialToServer/";
 const addFileToDatabaseURL = "addFileToDatabase/";
 const addGroupToDatabaseURL = "addGroupToDatabase/";
 const appProxyURL = "getWMSImageFromServer";
@@ -23,7 +23,7 @@ const removeCredentialsFromServerURL = "removeCredentialsFromServer/";
 const updateFileDataURL = "updateFileData/";
 
 export {
-    addCredentialToServerURL,
+    //addCredentialToServerURL,
     addFileToDatabaseURL,
     addGroupToDatabaseURL,
     appProxyURL,

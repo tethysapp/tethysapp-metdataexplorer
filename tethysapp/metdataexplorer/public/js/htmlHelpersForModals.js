@@ -265,14 +265,14 @@ addShapefileNameToTable = function (uniqueId, name) {
 //modalUploadAShapefile
 
 export {
-    addCredentialToServer,
+    //addCredentialToServer,
     addDatasetsToCalculator,
     addFilesAndFoldersToModalAddFileToDatabase,
     addShapefileNameToTable,
     buildModalShapefileList,
-    formatEndRowsForModalListAuthentication,
-    formatRowForModalListAuthentication,
+    //formatEndRowsForModalListAuthentication,
+    //formatRowForModalListAuthentication,
     htmlForDeleteGroups,
     populateDeleteGroupsModal,
-    removeCredentialFromServer
+    //removeCredentialFromServer
 };
