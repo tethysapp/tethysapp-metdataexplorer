@@ -225,7 +225,7 @@ setModalEventListeners = function () {
                 } else {
                     const groupId = ACTIVE_VARIABLES_PACKAGE.currentGroup.groupId;
                     ACTIVE_VARIABLES_PACKAGE.currentGroup.fileId = "temp";
-                    debugger
+
                     ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files["temp"] = {
                         accessURLs: ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.files[fileId].url,
                         fileType: "catalog",

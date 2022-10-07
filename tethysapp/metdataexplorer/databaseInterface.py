@@ -61,7 +61,6 @@ def add_file_to_database(request):
                     return JsonResponse(array_to_return)
 
             if file_dictionary['fileType'] == 'catalog':
-                print('adding a catalog')
                 file_to_add = Files(
                     authentication=json.dumps(file_dictionary['userCredentials']),
                     description=file_dictionary['description'],
