@@ -126,6 +126,7 @@ def get_variables_and_dimensions_for_file(request):
 def update_files(request):
     try:
         if request.is_ajax() and request.method == 'POST':
+
             file_dictionary = {
                 'accessURLs': json.loads(request.POST.get('urls')),
                 'fileType': request.POST.get('fileType'),
