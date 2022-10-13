@@ -44,6 +44,11 @@
 {% endblock %}
 
 {% block header_buttons %}
+  <div>
+    <div id="loading-for-top-bar" class="loading-div" style="display: none; height: 10em">
+      <img class="loading-gif" src="{% static 'metdataexplorer/images/loading.gif' %}"/>
+    </div>
+  </div>
   <div id="graph-map-btn">
     <div id="graph-btn">Graph</div>
     <div id="slider-bar" draggable="true"></div>

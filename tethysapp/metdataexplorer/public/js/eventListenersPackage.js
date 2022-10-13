@@ -16,6 +16,7 @@ let showModalHelp;
 getFilesAndFoldersFromCatalog = async function (urlForCatalog, pushCurrentUrlToArray = true) {
     try {
         if (ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.addToDatabase) {
+            $("#loading-for-top-bar").css("display", "none");
             document.getElementById("add-catalog-button").style.display = "inline-block";
         } else {
             document.getElementById("add-catalog-button").style.display = "none";
@@ -55,6 +56,10 @@ getFilesAndFoldersFromCatalog = async function (urlForCatalog, pushCurrentUrlToA
             }
             html = buildFilesAndFolderExplorer();
             $("#div-for-folder-and-file-explorer").empty().append(html);
+
+            if (!ACTIVE_VARIABLES_PACKAGE.fileAndFolderExplorer.addToDatabase) {
+                $("#loading-for-top-bar").css("display", "none");
+            }
             $('#modalFoldersAndFilesExplorer').modal('show');
         }
         hideLoadingModal("modalAddFileToDatabase");

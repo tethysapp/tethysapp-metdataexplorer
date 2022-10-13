@@ -59,10 +59,19 @@
                 <div id="time-dimensions-div"></div>
                 <div id="x-dimension-div"></div>
                 <div id="y-dimension-div"></div>
-                <button type="button" id="plot-time-series-button" class="btn btn-success">
-                  <i class="far fa-chart-bar"></i>
-                  Plot Time Series
-                </button>
+                <div id="plot-btn-and-engine-container" class="selectpicker-group">
+                  <button type="button" id="plot-time-series-button" class="btn btn-success">
+                    <i class="far fa-chart-bar"></i>
+                    Plot Time Series
+                  </button>
+                  <div id="engine-div" class="selectpicker-group">
+                    <div class="selectpicker-prepend width-10-em">Engine:</div>
+                    <select id="engine-select" class="selectpicker" data-dropup-auto="false" data-style="btn-primary" data-width="50%">
+                      <option value="grids">GRIDS</option>
+                      <option value="ncarrays">NCARRAYS</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
               <div class="carousel-flex-column">

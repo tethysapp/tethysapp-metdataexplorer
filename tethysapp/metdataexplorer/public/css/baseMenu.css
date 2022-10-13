@@ -133,6 +133,24 @@ div .active {
     width: calc(100% - 55em);
 }
 
+#plot-btn-and-engine-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+#plot-time-series-button {
+    height: 2.65em;
+    width: 66.66%;
+    margin: 0.025em;
+}
+
+#engine-div {
+    width: 33.33%;
+    display: flex;
+    flex-direction: row;
+}
+
 .carousel-flex {
     display: flex;
     flex-direction: column;

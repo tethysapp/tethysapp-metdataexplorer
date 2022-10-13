@@ -119,6 +119,7 @@ updateAndBuildBaseMenu = async function () {
     sizeWindows();
     createGraph();
 
+    $("#loading-for-top-bar").css("display", "none");
     $("#file-metadata-div").empty().append(fileMetadataHtml);
     $("#list-of-variables-div").empty().append(listOfVariablesHtml);
 }

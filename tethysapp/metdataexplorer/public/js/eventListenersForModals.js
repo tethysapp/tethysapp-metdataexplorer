@@ -234,6 +234,7 @@ setModalEventListeners = function () {
                         dimensionalVariables: []
                     };
                     $("#modalFoldersAndFilesExplorer").modal("hide");
+                    $("#loading-for-top-bar").css("display", "flex");
                     updateAndBuildBaseMenu();
                 }
             }

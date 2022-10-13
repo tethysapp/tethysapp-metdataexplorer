@@ -10,8 +10,9 @@ import {
     permissionToAdd,
     permissionToDelete
 } from "./permissionsPackage.js";
-import {updateAndBuildBaseMenu, updateFileDataAjax} from "./dataRemoteAccessPackage.js";
+import {updateAndBuildBaseMenu} from "./dataRemoteAccessPackage.js";
 import {getFilesAndFoldersFromCatalog} from "./eventListenersPackage.js";
+import {showLoadingModal} from "./auxilaryPackage.js";
 
 let setNavigationEventListeners;
 
@@ -76,6 +77,7 @@ setNavigationEventListeners = function () {
             };
         // File Buttons
         } else if (clickedElement.classList.contains("file-name") || clickedElement.parentElement?.classList.contains("file-name")) {
+            $("#loading-for-top-bar").css("display", "flex");
             const fileId = event.target.closest(".file-and-buttons-container").id.slice(10);
             $(".file-name").css("text-decoration", "none");
             event.target.style.textDecoration = "underline";
@@ -91,7 +93,6 @@ setNavigationEventListeners = function () {
             } else {
                 updateAndBuildBaseMenu();
             }
-
         } else if (clickedElement.classList.contains("refresh-file") || clickedElement.parentElement?.classList.contains("refresh-file")) {
             console.log("refresh the file");
         } else if (clickedElement.classList.contains("edit-file") || clickedElement.parentElement?.classList.contains("edit-file")) {
