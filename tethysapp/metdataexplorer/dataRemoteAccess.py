@@ -94,22 +94,34 @@ def get_variables_and_dimensions_for_file(request):
 
         ds = cfbuild.Dataset(opendap_url)
         all_variables = []
+        list_of_incompatible_variables = []
 
         for variable in ds.variables:
             if ds.variables[variable].variable_type == 'Georeferenced Data Variable':
                 list_of_dimensions = []
                 all_variables.append(ds.variables[variable].name)
+                add_variable = True
 
                 for dimension in ds.variables[variable].dimensions:
-                    list_of_dimensions.append(dimension)
-                    all_variables.append(dimension)
+                    if dimension in ds.variables:
+                        list_of_dimensions.append(dimension)
+                        if dimension not in all_variables:
+                            all_variables.append(dimension)
+                    else:
+                        add_variable = False
+                        if variable not in list_of_incompatible_variables:
+                            list_of_incompatible_variables.append(variable)
 
-                list_of_variables[ds.variables[variable].name] = list_of_dimensions
+                if add_variable:
+                    list_of_variables[ds.variables[variable].name] = list_of_dimensions
+            else:
+                list_of_incompatible_variables.append(variable)
 
         dict_to_return = {
             'data': {
                 'listOfVariables': list_of_variables,
-                'allVariables': all_variables
+                'allVariables': all_variables,
+                'incompatibleVariables': list_of_incompatible_variables
             }
         }
         reset_home_var(home_variable)

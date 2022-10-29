@@ -79,7 +79,8 @@ def add_file_to_database(request):
                 for variable in file_dictionary['variablesAndDimensions']:
                     list_for_opendap.append(variable)
                     for dimension in file_dictionary['variablesAndDimensions'][variable]:
-                        file_dictionary['dimensionalVariables'].append(dimension)
+                        if dimension not in file_dictionary['dimensionalVariables']:
+                            file_dictionary['dimensionalVariables'].append(dimension)
                         if dimension in all_variables and dimension not in list_for_opendap:
                             list_for_opendap.append(dimension)
 

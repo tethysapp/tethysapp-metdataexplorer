@@ -16,11 +16,10 @@ Persistent_Store_Name = 'thredds_db'
 def extract_time_series_using_grids(request):
     try:
         if request.is_ajax() and request.method == 'POST':
-            print('started')
             credentials = json.loads(request.POST.get('userCredentials'))
             dimensions = request.POST.getlist('dimensions[]')
             dimension_values = json.loads(request.POST.get('dimensionsAndValues'))
-            engine = request.POST.get('engine')
+            # engine = request.POST.get('engine')
             geojson_feature = json.loads(request.POST.get('geojson'))
             geojson_type = request.POST.get('geojsonType')
             opendap_url = request.POST.get('opendapURL')
@@ -28,35 +27,35 @@ def extract_time_series_using_grids(request):
             shapefile_behavior = json.loads(request.POST.get('shapefileBehavior'))
             statistic = request.POST.get('statistic')
 
-            print(engine)
+            # print(engine)
 
-            if engine == 'grids':
-                print('engine is grids')
-                dimensions_for_grids, final_coordinates, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
-                    = prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimension_values)
+            # if engine == 'grids':
+                # print('engine is grids')
+            dimensions_for_grids, final_coordinates, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
+                = prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimension_values)
 
-                if credentials != 'none':
-                    grids_initializer = grids.TimeSeries([opendap_url], variable, dimensions_for_grids,
-                                                         user=credentials['username'], pswd=credentials['password'])
-                else:
-                    grids_initializer = grids.TimeSeries([opendap_url], variable, dimensions_for_grids)
-
-                if geojson_type == 'marker':
-                    time_series = get_time_series_with_point(grids_initializer, formatted_values)
-                elif geojson_type == 'rectangle':
-
-                    time_series = get_time_series_with_box(grids_initializer, formatted_values, statistic)
-                else:
-                    time_series = get_time_series_with_shapefile(grids_initializer, filepath_to_shifted_geojson,
-                                                                 shapefile_behavior, statistic)
-
-                time_series['datetime'] = format_datetime(time_series['datetime'])
-
-                os.remove(filepath_to_geojson)
-                os.remove(filepath_to_shifted_geojson)
+            if credentials != 'none':
+                grids_initializer = grids.TimeSeries([opendap_url], variable, dimensions_for_grids,
+                                                     user=credentials['username'], pswd=credentials['password'])
             else:
-                print('engine is ncarrays')
-                time_series = ''
+                grids_initializer = grids.TimeSeries([opendap_url], variable, dimensions_for_grids)
+
+            if geojson_type == 'marker':
+                time_series = get_time_series_with_point(grids_initializer, formatted_values)
+            elif geojson_type == 'rectangle':
+
+                time_series = get_time_series_with_box(grids_initializer, formatted_values, statistic)
+            else:
+                time_series = get_time_series_with_shapefile(grids_initializer, filepath_to_shifted_geojson,
+                                                             shapefile_behavior, statistic)
+
+            time_series['datetime'] = format_datetime(time_series['datetime'])
+
+            os.remove(filepath_to_geojson)
+            os.remove(filepath_to_shifted_geojson)
+            # else:
+            #     print('engine is ncarrays')
+            #     time_series = ''
 
             time_series_array = {
                 'timeSeries': time_series

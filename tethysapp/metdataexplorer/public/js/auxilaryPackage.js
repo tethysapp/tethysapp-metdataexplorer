@@ -64,7 +64,7 @@ formatValuesFromGrids = function(featureToUse = false) {
         const variable = $("#variables-select").val();
         const dimensions = file.variables[variable].dimensions;
         const statistic = $("#statistics-select").val();
-        const engine = $("#engine-select").val();
+        // const engine = $("#engine-select").val();
         let geojson;
         let geojsonType;
         let shapefileBehavior;
@@ -163,7 +163,7 @@ formatValuesFromGrids = function(featureToUse = false) {
             const parametersForGrids = {
                 dimensions: dimensions,
                 dimensionsAndValues: JSON.stringify(dimensionsAndValuesArray),
-                engine: engine,
+                // engine: engine,
                 geojson: JSON.stringify(geojson),
                 geojsonType: geojsonType,
                 opendapURL: opendapURL,
