@@ -82,6 +82,8 @@ updateAndBuildBaseMenu = async function () {
     const dimensionalVariables = ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId].dimensionalVariables;
 
     const updatedFileDict = await updateFileDataAjax(accessURLS, fileType, listOfVariables, dimensionalVariables)
+    debugger
+    console.log(updatedFileDict)
 
     ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId] = {...ACTIVE_VARIABLES_PACKAGE.allServerData[groupId].files[fileId], ...updatedFileDict}
 

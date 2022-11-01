@@ -144,6 +144,7 @@ def update_files(request):
                 'fileType': request.POST.get('fileType'),
                 'dimensions': {},
                 'fileMetadata': {},
+                'gridMapping': '',
                 'variables': {},
                 'variablesAndDimensions': json.loads(request.POST.get('listOfVariables'))
             }
@@ -172,8 +173,21 @@ def update_files(request):
                 ds = cfbuild.Dataset(opendap_url)
 
                 for variable in ds.variables:
+                    print(ds.variables[variable].variable_type)
                     if ds.variables[variable].variable_type == 'Georeferenced Data Variable':
                         file_dictionary['variablesAndDimensions'][variable] = {'title': variable}
+                    if ds.variables[variable].variable_type == 'Grid Mapping Variable':
+                        params = {}
+                        print('!!!!!!!!!grid mapping!!!!!!!!!')
+                        for attr in ds.variables[variable].attributes:
+                            print(attr)
+                            print(ds.variables[variable].attributes[attr])
+                            params[attr] = ds.variables[variable].attributes[attr]
+
+                        file_dictionary['gridMapping'] = {
+                            'title': variable,
+                            'params': params
+                        }
 
             for dimension in dataset.dimensions:
                 if dimension in dataset.variables:
