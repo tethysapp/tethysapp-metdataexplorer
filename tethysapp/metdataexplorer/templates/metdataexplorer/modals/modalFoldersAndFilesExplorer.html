@@ -1,28 +1,43 @@
-{% load staticfiles %}
+{% load static %}
 
 <div id="modalFoldersAndFilesExplorer" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content myModal">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Catalog Files and Folders</h4>
-            </div>
-            <div id="loading-for-modalFoldersAndFilesExplorer" class="loading-div" style="display: none">
-                <img class="loading-gif" src="{% static 'metdataexplorer/images/loading.gif' %}"/>
-            </div>
-            <div id="modal-body-for-modalFoldersAndFilesExplorer" class="modal-body">
-              <div id="up-a-level-btn" class="file">
-                <span class="file-folder-icon glyphicon glyphicon-menu-up"></span>
-                <p class="file-folder-text">Up a Level</p>
-              </div>
-              <div id="div-for-folder-and-file-explorer"></div>
-            </div>
-            <div class="modal-footer">
-                <div class="button-group">
-                    <button id="add-catalog-button" type="button" class="btn btn-success">Add Catalog</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-          </div>
+  <div class="modal-dialog">
+    <div class="modal-content myModal">
+      <div class="modal-header">
+        <h4 class="modal-title">Catalog Files and Folders</h4>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div
+        id="loading-for-modalFoldersAndFilesExplorer"
+        class="loading-div"
+        style="display: none"
+      >
+        <img
+          class="loading-gif"
+          src="{% static 'metdataexplorer/images/loading.gif' %}"
+        />
+      </div>
+      <div id="modal-body-for-modalFoldersAndFilesExplorer" class="modal-body">
+        <div id="up-a-level-btn" class="file">
+          <i class="file-folder-icon bi bi-chevron-up"></i>
+          <p class="file-folder-text">Up a Level</p>
+        </div>
+        <div id="div-for-folder-and-file-explorer"></div>
+      </div>
+      <div class="modal-footer">
+        <div class="button-group">
+          <button id="add-catalog-button" type="button" class="btn btn-success">
+            Add Catalog
+          </button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

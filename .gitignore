@@ -9,3 +9,7 @@
 *.DS_Store
 .idea/
 services.yml
+.vscode/settings.json
+/tethysapp/metdataexplorer/workspaces/app_workspace/.urs_cookies
+/tethysapp/metdataexplorer/workspaces/app_workspace/.dodsrc
+/tethysapp/metdataexplorer/workspaces/app_workspace/.netrc

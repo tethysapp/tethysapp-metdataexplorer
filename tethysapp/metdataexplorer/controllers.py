@@ -1,10 +1,12 @@
+
 from django.shortcuts import render
-from tethys_sdk.permissions import login_required, has_permission
+from tethys_sdk.permissions import has_permission
+from tethys_sdk.routing import controller
 
 from .app import Metdataexplorer as app
 
 
-@login_required()
+@controller(name='home', url='metdataexplorer')
 def home(request):
     """
     Controller for the app home page.

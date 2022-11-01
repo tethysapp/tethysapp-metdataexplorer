@@ -167,7 +167,7 @@ addListOfVariablesToBaseMenu = function () {
                     <div class="file-metadata-inner ${colorClass}" style="width: calc(50% - 10em)"><p>${listOfVariables[variable].dimensions.join(", ")}</p></div>
                     <div class="file-metadata-inner metadata-info-icon ${colorClass}" style="width: 10em">
                         <button value="${variable}" class="metadata-info btn btn-primary">
-                          <i class="fas fa-info-circle"></i>
+                          <i class="bi bi-info-circle"></i>
                         </button>
                     </div>
                 </div>`;
@@ -265,7 +265,7 @@ buildFilesAndFolderExplorer = function () {
                 <tr>
                     <td>
                         <div id="file-${fileId}" class="file">
-                            <span class="file-folder-icon glyphicon glyphicon-file"></span>
+                            <i class="file-folder-icon bi bi-file-earmark"></i>
                             <p class="file-folder-text">${fileTitleAndURLS.title}</p>
                         </div>
                     </td>
@@ -278,7 +278,7 @@ buildFilesAndFolderExplorer = function () {
                 `<tr>
                     <td> 
                         <div id="folder-${folderId}" class="folder">
-                            <span class="file-folder-icon glyphicon glyphicon-folder-open"></span>
+                            <i class="file-folder-icon bi bi-folder2-open"></i>
                             <p class="file-folder-text">${folderTitleAndURLS.title}</p>
                         </div>
                     </td>
@@ -320,28 +320,28 @@ htmlForGroupsInNavigation = function (groupId) {
 
     if (permissionToAdd()) {
         newHtml = `
-            <div class="container-for-single-group panel panel-default" id="panel-${groupId}">
-                <div class="panel-heading buttonAppearance" role="tab">
-                    <h4 class="panel-title tool_tip_h" data-toggle="tooltip" data-placement="right" title="${groupTitle}">
-                        <a role="button" data-toggle="collapse" data-target="#collapse_${groupId}" href="#collapse_${groupId}" aria-expanded="true" aria-controls="collapse_${groupId}">
+            <div class="container-for-single-group accordion-item" id="panel-${groupId}">
+                <div class="accordion-header buttonAppearance" role="tab">
+                    <h4 class="accordion-title tool_tip_h" data-bs-toggle="tooltip" data-bs-placement="right" title="${groupTitle}">
+                        <a role="button" data-bs-toggle="collapse" data-bs-target="#collapse_${groupId}" href="#collapse_${groupId}" aria-expanded="true" aria-controls="collapse_${groupId}">
                             <span class="group-name">${groupTitle}</span>
                         </a>
                     </h4>
                     <li class="file-and-buttons-container buttonAppearance" layer-name="none">
                         <button class="group-information btn btn-primary btn-sm">
-                            <span class="glyphicon glyphicon-info-sign"></span>
+                            <i class="bi bi-info-circle"></i>
                         </button>
                         <button class="add-file-to-group btn btn-primary btn-sm">
-                            <span class="glyphicon glyphicon-plus"></span>
+                            <i class="bi bi-plus-lg"></i>
                         </button>
                         <button class="delete-file-from-group btn btn-primary btn-sm">
-                            <span class="glyphicon glyphicon-trash"></span>
+                            <i class="bi bi-trash"></i>
                         </button>
                     </li>
                 </div>
-                <div id="collapse_${groupId}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading_${groupId}">
+                <div id="collapse_${groupId}" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="heading_${groupId}">
                     <div class="iconhydro"><img src="https://img.icons8.com/dusk/24/000000/ssd.png"/>THREDDS Files</div>
-                        <div class="panel-body">
+                        <div class="accordion-body">
                             <div id="separator-${groupId}" class="divForServers">
                             <button class="btn btn-danger btn-block" id="${groupId}-noGroups"> The group is empty</button>
                         </div>
@@ -351,21 +351,21 @@ htmlForGroupsInNavigation = function (groupId) {
         return newHtml;
     } else {
         newHtml = `
-            <div class="container-for-single-group panel panel-default" id="panel-${groupId}">
-                <div class="panel-heading buttonAppearance" role="tab">
-                    <h4 class="panel-title tool_tip_h" data-toggle="tooltip" data-placement="right" title="${groupTitle}">
-                        <a role="button" data-toggle="collapse" data-target="#collapse_${groupId}" href="#collapse_${groupId}" aria-expanded="true" aria-controls="collapse_${groupId}">
+            <div class="container-for-single-group accordion-item" id="panel-${groupId}">
+                <div class="accordion-header buttonAppearance" role="tab">
+                    <h4 class="accordion-title tool_tip_h" data-bs-toggle="tooltip" data-bs-placement="right" title="${groupTitle}">
+                        <a role="button" data-bs-toggle="collapse" data-bs-target="#collapse_${groupId}" href="#collapse_${groupId}" aria-expanded="true" aria-controls="collapse_${groupId}">
                             <span class="group-name">${groupTitle}</span>
                         </a>
                     </h4>
                     <li class="file-and-buttons-container buttonAppearance" id="${groupId}" layer-name="none">
                         <button class="group-information btn btn-primary btn-sm">
-                            <span class="glyphicon glyphicon-info-sign"></span>
+                            <i class="bi bi-info-circle"></i>
                         </button>
                     </li>
                 </div>
-                <div id="collapse_${groupId}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading_${groupId}">
-                    <div class="panel-body">
+                <div id="collapse_${groupId}" class="accordion-collapse collapse show" role="tabpanel" aria-labelledby="heading_${groupId}">
+                    <div class="accordion-body">
                         <div id="separator-${groupId}" class="divForServers"></div>
                     </div>
                 </div>
@@ -383,19 +383,19 @@ htmlForFilesInNavigation = function (groupId, fileId) {
         if (permissionToDelete()) {
             newHtml = `
                 <li class="file-and-buttons-container" id="container-${fileId}">
-                    <span  id= "span-${fileId}" class="file-name" data-toggle="tooltip" data-placement="right" title="${currentFile.title}">${currentFile.title}</span>
+                    <span  id= "span-${fileId}" class="file-name" data-bs-toggle="tooltip" data-bs-placement="right" title="${currentFile.title}">${currentFile.title}</span>
                     <!--TODO fix these buttons
-                    <button class="refresh-file btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-refresh"></span>
+                    <button class="refresh-file btn btn-outline-secondary btn-xs">
+                        <i class="bi bi-arrow-clockwise"></i>
                     </button>
-                    <button class="edit-file btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-cog"></span>
+                    <button class="edit-file btn btn-outline-secondary btn-xs">
+                        <i class="bi bi-gear-wide"></i>
                     </button>
-                    <button class="add-variable btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-plus"></span>
+                    <button class="add-variable btn btn-outline-secondary btn-xs">
+                        <i class="bi bi-plus-lg"></i>
                     </button>
-                    <button class="delete-variable btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-trash"></span>
+                    <button class="delete-variable btn btn-outline-secondary btn-xs">
+                        <i class="bi bi-trash"></i>
                     </button>
                     -->
                 </li>`;
@@ -404,10 +404,10 @@ htmlForFilesInNavigation = function (groupId, fileId) {
         } else {
             newHtml = `
                 <li class="file-and-buttons-container" id="container-${fileId}">
-                    <span  id= "span-${fileId}" class="file-name" data-toggle="tooltip" data-placement="right" title="${currentFile.title}">${currentFile.title}</span>
+                    <span  id= "span-${fileId}" class="file-name" data-bs-toggle="tooltip" data-bs-placement="right" title="${currentFile.title}">${currentFile.title}</span>
                     <!--ToDO Add back in when fixed
-                    <button class="edit-file btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-cog"></span>
+                    <button class="edit-file btn btn-outline-secondary btn-xs">
+                        <i class="bi bi-gear-wide"></i>
                     </button>
                     -->
                 </li>`;

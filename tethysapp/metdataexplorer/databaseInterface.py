@@ -6,15 +6,14 @@ import math
 import numpy as np
 
 from glob import glob
-from math import sqrt
-from math import log as ln
-from math import log10 as log
 from datetime import datetime
 
 from tethys_sdk.permissions import has_permission
 from django.http import JsonResponse
 from .app import Metdataexplorer as app
 from .model import Files, Groups, Variables, Shapefiles
+
+from tethys_sdk.routing import controller
 
 Persistent_Store_Name = 'thredds_db'
 
@@ -29,6 +28,7 @@ def add_variables_to_opendap_url(opendap_url, list_of_variables):
     return opendap_url
 
 
+@controller(name='addFileToDatabase', url='addFileToDatabase/')
 def add_file_to_database(request):
     try:
         if request.is_ajax() and request.method == 'POST':
@@ -136,6 +136,7 @@ def add_file_to_database(request):
     return JsonResponse(file_to_return)
 
 
+@controller(name='addGroupToDatabase', url='addGroupToDatabase/')
 def add_group_to_database(request):
     try:
         if request.is_ajax() and request.method == 'POST':
@@ -159,6 +160,7 @@ def add_group_to_database(request):
     return JsonResponse(group)
 
 
+@controller(name='calculateNewDataset', url='calculateNewDataset/')
 def calculate_new_dataset(request):
     try:
         if request.is_ajax() and request.method == 'POST':
@@ -259,6 +261,7 @@ def commit_shapefile_to_database(geojson, filename):
         return False
 
 
+@controller(name='addShapefileToDAtabase', url='addShapefileToDAtabase/')
 def add_shapefile_to_database(request):
     try:
         if request.is_ajax() and request.method == 'POST':
@@ -307,6 +310,7 @@ def add_shapefile_to_database(request):
     return JsonResponse(shapefile_array)
 
 
+@controller(name='deleteFilesFromDatabase', url='deleteFilesFromDatabase/')
 def delete_files_from_database(request):
     try:
         if has_permission(request, "delete_groups"):
@@ -336,6 +340,7 @@ def delete_files_from_database(request):
     return JsonResponse(result_message)
 
 
+@controller(name='deleteGroupsFromDatabase', url='deleteGroupsFromDatabase/')
 def delete_groups_from_database(request):
     try:
         if has_permission(request, "delete_groups"):
@@ -365,6 +370,7 @@ def delete_groups_from_database(request):
     return JsonResponse(result_message)
 
 
+@controller(name='deleteShapefileFromDatabase', url='deleteShapefileFromDatabase/')
 def delete_shapefile_from_database(request):
     try:
         if request.is_ajax() and request.method == 'POST':
@@ -418,6 +424,7 @@ def determine_dimension_type(dimension, variables):
     return dimension_type
 
 
+@controller(name='getAllGroupsFromDatabase', url='getAllGroupsFromDatabase/')
 def get_all_groups_from_database(request):
     try:
         thredds_groups_list = []
@@ -441,6 +448,7 @@ def get_all_groups_from_database(request):
     return JsonResponse(list_catalog)
 
 
+@controller(name='getAllThreddsFilesFromDatabase', url='getAllThreddsFilesFromDatabase/')
 def get_all_files_from_a_group(request):
     try:
         group_title = request.GET.get('group')
@@ -505,10 +513,10 @@ def get_approximate_variable_value_range(variable):
             small_array = variable[::indexing_list[0], ::indexing_list[1], ::indexing_list[2], ::indexing_list[3]]
         elif len(var_size) == 5:
             small_array = variable[::indexing_list[0], ::indexing_list[1], ::indexing_list[2], ::indexing_list[3],
-                          ::indexing_list[4]]
+                                   ::indexing_list[4]]
         elif len(var_size) == 6:
             small_array = variable[::indexing_list[0], ::indexing_list[1], ::indexing_list[2], ::indexing_list[3],
-                          ::indexing_list[4], ::indexing_list[5]]
+                                   ::indexing_list[4], ::indexing_list[5]]
 
         min_value = np.nanmin(small_array)
         max_value = np.nanmax(small_array)
@@ -524,7 +532,10 @@ def get_approximate_variable_value_range(variable):
         }
     return min_max_array
 
-
+@controller(
+    name='getDisclaimerFromServer',
+    url='getDisclaimerFromServer/',
+)
 def get_disclaimer(request):
     try:
         disclaimer_message = app.get_custom_setting('disclaimer_message')
@@ -549,6 +560,7 @@ def get_variable_metadata(variable):
     return variable_metadata
 
 
+@controller(name='getShapefileCoordinatesFromDatabase', url='getShapefileCoordinatesFromDatabase/')
 def get_shapefile_coordinates(request):
     try:
         if request.is_ajax() and request.method == 'POST':
@@ -577,6 +589,7 @@ def get_shapefile_coordinates(request):
     return JsonResponse(array_to_return)
 
 
+@controller(name='getShapefileNamesFromDatabase', url='getShapefileNamesFromDatabase/')
 def get_shapefile_names(request):
     try:
         list_of_names = []
