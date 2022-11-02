@@ -99,6 +99,7 @@ addDatasetsToCalculator = function () {
 };
 
 //modalListAuthentication
+/*
 addCredentialToServer = async function () {
   try {
     if (
@@ -141,6 +142,8 @@ addCredentialToServer = async function () {
     console.error(error);
   }
 };
+
+
 
 formatEndRowsForModalListAuthentication = function () {
   const html = `<tr id="new-credential-row" class="no-credentials-row">
@@ -220,7 +223,7 @@ removeCredentialFromServer = async function (credentialId) {
     console.error(error);
   }
 };
-
+*/
 //modalMetaDataForVariable
 
 //modalRemoveVariable
