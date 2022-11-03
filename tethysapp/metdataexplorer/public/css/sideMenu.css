@@ -112,7 +112,7 @@
     display: flex;
     align-items: center;
     justify-content: left;
-    font-size: 0.90em;
+    font-size: 'initial';
 }
 
 .server-name, .variable-name {
