@@ -1,11 +1,14 @@
+from tethys_sdk.workspaces import get_app_workspace
+from .app import Metdataexplorer as app
+
 import os
 import geojson
 import geopandas as gpd
 
 
 def print_geojson_to_file(geojson_geometry, filename):
-    filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                            'workspaces', 'user_workspaces', filename + '.geojson')
+    app_workspace = get_app_workspace(app)
+    filepath = os.path.join(app_workspace.path, filename + '.geojson')
     with open(filepath, 'w') as f:
         geojson.dump(geojson_geometry, f)
     return filepath

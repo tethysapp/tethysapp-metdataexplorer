@@ -1,12 +1,14 @@
 import os
 from django.http import JsonResponse
 from tethys_sdk.routing import controller
+from tethys_sdk.workspaces import get_app_workspace
+from .app import Metdataexplorer as app
 
 
 @controller(name='getCredentialsFromServer', url='getCredentialsFromServer/')
 def get_authentication_credentials_from_file(request):
-    file_with_credentials = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                              'workspaces', 'app_workspace', '.netrc'), 'r')
+    app_workspace = get_app_workspace(app)
+    file_with_credentials = open(os.path.join(app_workspace.path, '.netrc'), 'r')
     lines = file_with_credentials.readlines()
     array_for_authentication_credentials = {}
     x = 1
@@ -33,23 +35,19 @@ def get_authentication_credentials_from_file(request):
 
 def make_files_for_authentication_credentials():
     try:
-        with open(os.open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'workspaces', 'app_workspace',
-                                       '.netrc'), os.O_CREAT | os.O_WRONLY, 0o744), 'w') as fh:
+        app_workspace = get_app_workspace(app)
+        with open(os.open(os.path.join(app_workspace.path, '.netrc'), os.O_CREAT | os.O_WRONLY, 0o744), 'w') as fh:
             fh.truncate()
             fh.close()
 
-        with open(os.open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'workspaces', 'app_workspace',
-                                       '.urs_cookies'), os.O_CREAT | os.O_WRONLY, 0o744), 'w') as fl:
+        with open(os.open(os.path.join(app_workspace.path, '.urs_cookies'), os.O_CREAT | os.O_WRONLY, 0o744), 'w') as fl:
             fl.truncate()
             fl.close()
 
-        with open(os.open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'workspaces', 'app_workspace',
-                                       '.dodsrc'), os.O_CREAT | os.O_WRONLY, 0o744), 'w') as ft:
+        with open(os.open(os.path.join(app_workspace.path, '.dodsrc'), os.O_CREAT | os.O_WRONLY, 0o744), 'w') as ft:
             ft.truncate()
-            ft.write('HTTP.COOKIEJAR=' + os.path.join(os.path.dirname(os.path.realpath(__file__)), 'workspaces',
-                                                      'app_workspace', '.urs_cookies') + '\nHTTP.NETRC='
-                     + os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                    'workspaces', 'app_workspace', '.netrc'))
+            ft.write('HTTP.COOKIEJAR=' + os.path.join(app_workspace.path, '.urs_cookies') + '\nHTTP.NETRC='
+                     + os.path.join(app_workspace.path, '.netrc'))
             ft.close()
 
     except Exception as e:
@@ -63,15 +61,15 @@ def remove_authentication_credentials_from_file(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
+        app_workspace = get_app_workspace(app)
+
         string_to_remove = 'machine ' + machine + ' login ' + username + ' password ' + password + '\n'
-        file_with_credentials = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                  'workspaces', 'app_workspace', '.netrc'), 'r+')
+        file_with_credentials = open(os.path.join(app_workspace.path, '.netrc'), 'r+')
         lines = file_with_credentials.readlines()
         lines.remove(string_to_remove)
         file_with_credentials.close()
 
-        new_file = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                     'workspaces', 'app_workspace', '.netrc'), 'w')
+        new_file = open(os.path.join(app_workspace.path, '.netrc'), 'w')
         for line in lines:
             new_file.write(line)
 
@@ -93,8 +91,11 @@ def remove_authentication_credentials_from_file(request):
 #         machine = request.POST.get('machine')
 #         username = request.POST.get('username')
 #         password = request.POST.get('password')
-#         file_with_credentials = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-#                                                   'workspaces', 'app_workspace', '.netrc'), 'a+')
+#
+#         app_workspace = get_app_workspace(app)
+#
+#
+#         file_with_credentials = open(os.path.join(app_workspace, '.netrc'), 'a+')
 #         lines = file_with_credentials.readlines()
 #         if len(lines) == 0:
 #             file_with_credentials.write('machine ' + machine + ' login ' + username + ' password ' + password + '\n')

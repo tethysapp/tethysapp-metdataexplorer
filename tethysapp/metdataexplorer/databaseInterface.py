@@ -9,6 +9,7 @@ from glob import glob
 from datetime import datetime
 
 from tethys_sdk.permissions import has_permission
+from tethys_sdk.workspaces import get_app_workspace
 from django.http import JsonResponse
 from .app import Metdataexplorer as app
 from .model import Files, Groups, Variables, Shapefiles
@@ -45,6 +46,7 @@ def add_file_to_database(request):
             }
 
             all_variables = request.POST.getlist('allVariables[]')
+
             list_for_opendap = []
 
             SessionMaker = app.get_persistent_store_database(Persistent_Store_Name, as_sessionmaker=True)
@@ -99,7 +101,11 @@ def add_file_to_database(request):
 
                 for variable in file_dictionary['variablesAndDimensions']:
                     if 'actual_range' in dataset.variables[variable].__dict__:
-                        actual_range = dataset.variables[variable].__dict__['actual_range']
+                        actual_range = []
+                        for value in dataset.variables[variable].__dict__['actual_range']:
+                            actual_range.append(value)
+                        if len(actual_range) != 2:
+                            actual_range = get_approximate_variable_value_range(dataset.variables[variable])
                     else:
                         actual_range = get_approximate_variable_value_range(dataset.variables[variable])
 
@@ -266,8 +272,9 @@ def add_shapefile_to_database(request):
     try:
         if request.is_ajax() and request.method == 'POST':
             shapefiles = request.FILES.getlist('uploadedFiles')
-            path_to_shapefile_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                    'workspaces', 'user_workspaces')
+
+            app_workspace = get_app_workspace(app)
+            path_to_shapefile_folder = app_workspace.path
 
             for n, shapefile in enumerate(shapefiles):
                 with open(os.path.join(path_to_shapefile_folder, shapefile.name), 'wb') as dst:

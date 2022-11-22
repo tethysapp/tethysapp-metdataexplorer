@@ -35,14 +35,17 @@ def extract_time_series_using_grids(request):
                 # print('engine is grids')
             dimensions_for_grids, _, formatted_values, filepath_to_geojson, filepath_to_shifted_geojson \
                 = prep_parameters_for_grids(geojson_type, geojson_feature, dimensions, dimension_values)
-
+            print(dimensions_for_grids)
             if credentials != 'none':
                 grids_initializer = grids.TimeSeries([opendap_url], variable, dimensions_for_grids,
                                                      user=credentials['username'], pswd=credentials['password'])
+                print('initializer')
+                print(grids_initializer)
             else:
                 grids_initializer = grids.TimeSeries([opendap_url], variable, dimensions_for_grids)
 
             if geojson_type == 'marker':
+                print('marker')
                 time_series = get_time_series_with_point(grids_initializer, formatted_values)
             elif geojson_type == 'rectangle':
 
@@ -255,6 +258,8 @@ def format_parameters_for_grids(request):
 
 
 def get_time_series_with_point(grids_initializer, dimension_values):
+    print(dimension_values)
+    print(len(dimension_values))
     if len(dimension_values[0]) == 1:
         time_series = grids_initializer.point(dimension_values[0][1])
     elif len(dimension_values[0]) == 2:
@@ -267,6 +272,7 @@ def get_time_series_with_point(grids_initializer, dimension_values):
     elif len(dimension_values[0]) == 5:
         time_series = grids_initializer.point(dimension_values[0][0], dimension_values[0][1],
                                               dimension_values[0][2], dimension_values[0][3], dimension_values[0][4])
+    print('finished')
     return time_series
 
 

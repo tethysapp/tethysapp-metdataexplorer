@@ -13,18 +13,21 @@ import json
 import netCDF4
 import requests
 
+# DODS_CONF
+# DAPRCFILE
+# DODS_CACHE_INIT
 
 def set_rc_vars():
     home_variable = app.get_custom_setting('server_home_directory')
-    os.environ['HOME'] = home_variable
+    os.environ['USERPROFILE'] = home_variable
     return home_variable
 
 
 def reset_home_var(home_variable):
     if home_variable is not None:
-        os.environ['HOME'] = home_variable
+        os.environ['USERPROFILE'] = home_variable
     else:
-        os.environ.pop('HOME')
+        os.environ.pop('USERPROFILE')
 
 
 @controller(name='getFoldersAndFilesFromCatalog', url='getFoldersAndFilesFromCatalog/')
