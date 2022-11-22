@@ -250,7 +250,9 @@
 }
 
 #disclaimer-header {
-    text-align: center
+    text-align: center;
+    width: 100%;
+
 }
 
 .calculator-button {
