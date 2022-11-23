@@ -101,11 +101,13 @@ def add_file_to_database(request):
 
                 for variable in file_dictionary['variablesAndDimensions']:
                     if 'actual_range' in dataset.variables[variable].__dict__:
-                        actual_range = []
+                        actual_range_list = []
                         for value in dataset.variables[variable].__dict__['actual_range']:
-                            actual_range.append(value)
-                        if len(actual_range) != 2:
+                            actual_range_list.append(value)
+                        if len(actual_range_list) != 2:
                             actual_range = get_approximate_variable_value_range(dataset.variables[variable])
+                        else:
+                            actual_range = {'min': actual_range_list[0], 'max': actual_range_list[1]}
                     else:
                         actual_range = get_approximate_variable_value_range(dataset.variables[variable])
 
