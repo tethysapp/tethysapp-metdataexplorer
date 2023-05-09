@@ -1,5 +1,8 @@
 # This file should be committed to your app code.
 version: 2.0.0
+# This should be greater or equal to your tethys-platform in your environment
+tethys_version: '>=4.0.0'
+
 # This should match the app - package name in your setup.py
 name: metdataexplorer
 
@@ -11,6 +14,7 @@ requirements:
       - conda-forge
     packages:
       - pandas
+      - ncarrays
       - geopandas
       - geojson
       - xarray
