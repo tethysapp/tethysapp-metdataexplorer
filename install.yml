@@ -22,4 +22,5 @@ requirements:
   pip:
     - grids
     - cfbuild
+    - ncarrays
 post:
